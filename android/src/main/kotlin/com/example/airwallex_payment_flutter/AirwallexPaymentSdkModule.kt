@@ -6,14 +6,15 @@ import com.airwallex.android.core.Airwallex
 import com.airwallex.android.core.AirwallexPaymentStatus
 import com.airwallex.android.core.AirwallexSession
 import com.airwallex.android.core.log.AirwallexLogger
-import com.airwallex.android.view.AirwallexAddPaymentDialog
 import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionConverter
+import com.example.airwallex_payment_flutter.util.CardConverter
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class AirwallexPaymentSdkModule {
+    private lateinit var airwallex: Airwallex
 
     fun presentEntirePaymentFlow(
         activity: ComponentActivity,
@@ -69,18 +70,21 @@ class AirwallexPaymentSdkModule {
         )
     }
 
-    fun presentCardPaymentDialog(
+    fun startPayWithCardDetails(
         activity: ComponentActivity,
         call: MethodCall,
         result: MethodChannel.Result
-    ) {
+    ) = runWithAirwallex(activity) {
         val session = parseSessionFromCall(call)
-        val dialog = AirwallexAddPaymentDialog(
-            activity = activity,
+        val card = CardConverter.fromMethodCall(call)
+        airwallex.confirmPaymentIntent(
             session = session,
-            paymentResultListener = object : Airwallex.PaymentResultListener {
+            card = card,
+            billing = null,
+            saveCard = false,
+            listener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
-                    AirwallexLogger.info("AirwallexPaymentSdkModule: presentCardPaymentDialog, status = $status")
+                    AirwallexLogger.info("AirwallexPaymentSdkModule: startPayWithCardDetails, status = $status")
                     when (status) {
                         is AirwallexPaymentStatus.Failure -> {
                             result.error("payment_failure", status.exception.localizedMessage, null)
@@ -94,9 +98,14 @@ class AirwallexPaymentSdkModule {
                 }
             }
         )
-        dialog.show()
     }
 
+    private fun runWithAirwallex(activity: ComponentActivity, block: () -> Unit) {
+        if (!::airwallex.isInitialized) {
+            airwallex = Airwallex(activity)
+        }
+        block()
+    }
 
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
         val argumentsMap = call.arguments<Map<String, Any?>>()

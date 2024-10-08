@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'api/payment_intent_repository.dart';
 import 'util/payment_result_parser.dart';
 import 'util/session_creator.dart';
+import 'util/card_creator.dart';
 import 'api/api_client.dart';
 
 void main() {
@@ -48,8 +48,11 @@ class MyHomePageState extends State<MyHomePage> {
 
   bool _isLoading = false;
 
-  Future<void> _handleSubmit<T>(Future<T> Function() fetchData,
-      String methodName, Map<String, dynamic> Function(T) transformData) async {
+  Future<void> _handleSubmit<T>(
+      Future<T> Function() fetchData,
+      String methodName,
+      Map<String, dynamic>? param,
+      Map<String, dynamic> Function(T) transformData) async {
     setState(() {
       _isLoading = true;
     });
@@ -57,8 +60,11 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       final data = await fetchData();
       final Map<String, dynamic> sessionParams = transformData(data);
-
-      final result = await platform.invokeMethod(methodName, sessionParams);
+      final mergedParams = {
+        ...sessionParams,
+        if (param != null) ...param,
+      };
+      final result = await platform.invokeMethod(methodName, mergedParams);
       final paymentResult = PaymentResultParser.parsePaymentResult(
           Map<String, dynamic>.from(result));
 
@@ -86,6 +92,15 @@ class MyHomePageState extends State<MyHomePage> {
     await _handleSubmit(
             () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
         methodName,
+        null,
+        _transformPaymentIntent);
+  }
+
+  Future<void> _startFlow(String methodName, Map<String, dynamic> param) async {
+    await _handleSubmit(
+            () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
+        methodName,
+        param,
         _transformPaymentIntent);
   }
 
@@ -128,6 +143,10 @@ class MyHomePageState extends State<MyHomePage> {
               child: const Text('presentCardPaymentFlow'),
             ),
             const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _startFlow('startPayWithCardDetails', CardCreator.createDemoCard()),
+              child: const Text('startPayWithCardDetails'),
+            ),
             _isLoading
                 ? const CircularProgressIndicator()
                 : const SizedBox.shrink(),
