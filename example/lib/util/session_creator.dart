@@ -25,7 +25,7 @@ class SessionCreator {
       isBillingRequired: true,
       isEmailRequired: false,
       countryCode: 'UK',
-      returnUrl: 'airwallexcheckou://com.airwallex.paymentacceptance',
+      returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
         billingAddressRequired: true,
         billingAddressParameters: BillingAddressParameters(format: Format.FULL),
@@ -41,7 +41,7 @@ class SessionCreator {
   static Shipping createShipping() {
     Address exampleAddress = Address(
       city: "Example City",
-      countryCode: "EX",
+      countryCode: "UK",
       street: "123 Example Street",
       postcode: "12345",
       state: "Example State",

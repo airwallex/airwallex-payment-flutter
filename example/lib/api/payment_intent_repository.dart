@@ -23,7 +23,7 @@ class PaymentIntentRepository {
       'descriptor': 'Airwallex - T-shirt',
       'metadata': {'id': 1},
       'email': 'yimadangxian@airwallex.com',
-      'return_url': 'airwallexcheckout://com.airwallex.paymentacceptance',
+      'return_url': 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
     };
 
     if (force3DS == true) {
