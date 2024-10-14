@@ -18,12 +18,14 @@ dependencies:
     sdk: flutter
 
   airwallex_payment_flutter:
+    path: ../
+#  airwallex_payment_flutter: ^0.0.1
     # When depending on this package from a real application you should use:
     #   airwallex_payment_flutter: ^x.y.z
     # See https://dart.dev/tools/pub/dependencies#version-constraints
     # The example app is bundled with the plugin so we use a path dependency on
     # the parent directory to use the current plugin's version.
-    path: ../
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
