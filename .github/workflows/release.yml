@@ -2,12 +2,15 @@ name: Publish to Pub.dev
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*' # Trigger on all tags
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v1
@@ -15,12 +18,20 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.3'
+
+      - name: Update version based on tag
+        run: |
+          chmod +x ./.github/workflows/update_version.sh
+          ./.github/workflows/update_version.sh
+
       - name: Install dependencies
         run: flutter pub get
+
       #      - name: Analyze
       #        run: flutter analyze
       - name: Run tests
         run: flutter test
+
       - name: Setup Pub Credentials
         shell: bash
         env:
@@ -30,7 +41,9 @@ jobs:
           PUB_DEV_PUBLISH_EXPIRATION: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
         run: |
           sh ./pub_login.sh
+
       - name: Check Publish Warnings
         run: flutter pub publish --dry-run
+
       - name: Publish Package
         run: flutter pub publish -f
