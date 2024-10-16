@@ -1,15 +1,32 @@
-# airwallex_payment_flutter
+# Airwallex Flutter Plugin
+[![Platform](https://img.shields.io/badge/platform-flutter-darkgreen)](https://flutter.dev/)
+[![Flutter version: 3.24.3](https://img.shields.io/badge/flutter-3.24.3-brightgreen)](https://medium.com/flutter/flutter-3-24-dart-3-5-204b7d20c45d)
+[![GitHub release](https://img.shields.io/badge/release-v0.0.1-blue)](https://github.com/airwallex/airwallex-payment-flutter/releases)
+[![license: BSD 3-Clause](https://img.shields.io/badge/license-BSD%203--Clause-lightblue)](https://github.com/airwallex/airwallex-payment-flutter/blob/main/LICENSE)
 
-A new Flutter plugin project.
+EN | [中文](README-zh.md)
 
-## Getting Started
+This library makes it quick and easy to build an excellent payment experience in your Flutter application.
+Currently, this library supports both Android and iOS platforms.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+## Installation
+The Components are available through[pub.dev](https://pub.dev/packages/airwallex_payment_flutter), you only need to add the dependency.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Add the dependency in`pubspec.yaml`
+```yaml
+dependencies:
+    airwallex_payment_flutter: 0.0.1
+```
+
+## Getting Start
+[Quick Start](GUIDE-zh.md)for integrating Airwallex Flutter Plugin in your Flutter application.
+
+## Feedback
+We appreciate the time you take to try out our sample code and welcome your feedback. Here are a few ways to get in touch:
+
+* For general issues and feedback,create an issue in this repository[`Issues`](https://github.com/airwallex/airwallex-payment-flutter/issues).
+* [pa_mobile_sdk@airwallex.com](mailto:pa_mobile_sdk@airwallex.com)- For personal support at any phase of integration.
+
+## Changelog
+All notable changes to this project will be documented in[Changelog](CHANGELOG.md).
 
