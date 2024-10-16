@@ -19,7 +19,7 @@ dependencies:
 ```
 
 ## Getting Start
-[Quick Start](GUIDE-zh.md)for integrating Airwallex Flutter Plugin in your Flutter application.
+[Quick Start](GUIDE.md)for integrating Airwallex Flutter Plugin in your Flutter application.
 
 ## Feedback
 We appreciate the time you take to try out our sample code and welcome your feedback. Here are a few ways to get in touch:
