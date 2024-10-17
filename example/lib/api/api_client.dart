@@ -2,11 +2,24 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiClient {
-  final String baseUrl;
+  late String baseUrl;
   final String apiKey;
   final String clientId;
 
-  ApiClient({required this.baseUrl, required this.apiKey, required this.clientId});
+  ApiClient({required String environment, required this.apiKey, required this.clientId}) {
+    baseUrl = _getBaseUrlForEnvironment(environment);
+  }
+
+  String _getBaseUrlForEnvironment(String environment) {
+    switch (environment) {
+      case 'demo':
+        return 'https://demo-pacheckoutdemo.airwallex.com';
+      case 'staging':
+        return 'https://staging-pacheckoutdemo.airwallex.com';
+      default:
+        throw Exception('Unsupported environment: $environment');
+    }
+  }
 
   Future<Map<String, dynamic>> createPaymentIntent(Map<String, dynamic> params) async {
     print('Creating payment intent with params: $params');
@@ -58,7 +71,7 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> createClientSecretWithQuery(
-      String customerId, String apiKey, String clientId) async {
+      String customerId) async {
     print('Generating client secret for customer: $customerId');
     try {
       final response = await http.get(

@@ -21,6 +21,7 @@ class AirwallexPaymentInitProvider : ContentProvider() {
         context?.let {
             val application = it as Application
             val environment = getEnvironment(it)
+            AirwallexPaymentSettings.env = environment.value
             initAirwallexStarter(application, environment)
             initAirwallex(application, environment)
         }

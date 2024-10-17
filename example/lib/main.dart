@@ -35,18 +35,31 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   static const platform =
-  MethodChannel('samples.flutter.dev/airwallex_payment');
+      MethodChannel('samples.flutter.dev/airwallex_payment');
 
-  final apiClient = ApiClient(
-      baseUrl: 'https://demo-pacheckoutdemo.airwallex.com',
-      // baseUrl: 'https://staging-pacheckoutdemo.airwallex.com/',
-      apiKey: '',
-      clientId: '');
-
-  late final paymentIntentRepository =
-  PaymentIntentRepository(apiClient: apiClient);
-
+  late final PaymentIntentRepository paymentIntentRepository;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeEnvironment();
+  }
+
+  Future<void> _initializeEnvironment() async {
+    try {
+      final String environment = await platform.invokeMethod('getEnvironment');
+      final apiClient =
+          ApiClient(environment: environment, apiKey: '', clientId: '');
+      setState(() {
+        paymentIntentRepository = PaymentIntentRepository(apiClient: apiClient);
+      });
+    } on PlatformException catch (e) {
+      _showDialog('Error', 'Unable to get environment: ${e.message}');
+    } on Exception catch (e) {
+      _showDialog('Error', e.toString());
+    }
+  }
 
   Future<void> _handleSubmit<T>(
       Future<T> Function() fetchData,
@@ -83,14 +96,9 @@ class MyHomePageState extends State<MyHomePage> {
     return SessionCreator.createOneOffSession(paymentIntent);
   }
 
-  Map<String, dynamic> _transformOtherDataType(dynamic data) {
-    // Implement the logic to transform other data types here
-    return <String, dynamic>{};
-  }
-
   Future<void> _launchUI(String methodName) async {
     await _handleSubmit(
-            () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
+        () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
         methodName,
         null,
         _transformPaymentIntent);
@@ -98,7 +106,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   Future<void> _startFlow(String methodName, Map<String, dynamic> param) async {
     await _handleSubmit(
-            () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
+        () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
         methodName,
         param,
         _transformPaymentIntent);
@@ -146,7 +154,8 @@ class MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _startFlow('startPayWithCardDetails', CardCreator.createDemoCard()),
+                  onPressed: () => _startFlow(
+                      'startPayWithCardDetails', CardCreator.createDemoCard()),
                   child: const Text('startPayWithCardDetails'),
                 ),
                 const SizedBox(height: 40),
@@ -156,17 +165,15 @@ class MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _startFlow('startGooglePay', <String, dynamic>{}),
+                  onPressed: () =>
+                      _startFlow('startGooglePay', <String, dynamic>{}),
                   child: const Text('startGooglePay'),
                 ),
                 const SizedBox(height: 20),
               ],
             ),
           ),
-          if (_isLoading)
-            const Center(
-                child: CircularProgressIndicator()
-            ),
+          if (_isLoading) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

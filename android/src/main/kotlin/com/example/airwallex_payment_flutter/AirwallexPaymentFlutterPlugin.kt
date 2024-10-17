@@ -27,10 +27,12 @@ class AirwallexPaymentFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityA
     AirwallexLogger.info("AirwallexPaymentFlutterPlugin: onMethodCall call.method= ${call.method}")
     activity?.let {
       when (call.method) {
-        ///ui
+        //sdk
+        "getEnvironment" -> result.success(AirwallexPaymentSettings.env)
+        //ui
         "presentEntirePaymentFlow" -> sdkModule.presentEntirePaymentFlow(it, call, result)
         "presentCardPaymentFlow" -> sdkModule.presentCardPaymentFlow(it, call, result)
-        ///low-level
+        //low-level
         "startPayWithCardDetails" -> sdkModule.startPayWithCardDetails(it, call, result)
         "startGooglePay" -> sdkModule.startGooglePay(it, call, result)
         else -> {
