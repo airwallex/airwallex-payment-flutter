@@ -129,29 +129,45 @@ class MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Airwallex Example'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () => _launchUI('presentEntirePaymentFlow'),
-              child: const Text('presentEntirePaymentFlow'),
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => _launchUI('presentEntirePaymentFlow'),
+                  child: const Text('presentEntirePaymentFlow'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => _launchUI('presentCardPaymentFlow'),
+                  child: const Text('presentCardPaymentFlow'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => _startFlow('startPayWithCardDetails', CardCreator.createDemoCard()),
+                  child: const Text('startPayWithCardDetails'),
+                ),
+                const SizedBox(height: 40),
+                const Text(
+                  'Android Specific Features',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => _startFlow('startGooglePay', <String, dynamic>{}),
+                  child: const Text('startGooglePay'),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _launchUI('presentCardPaymentFlow'),
-              child: const Text('presentCardPaymentFlow'),
+          ),
+          if (_isLoading)
+            const Center(
+                child: CircularProgressIndicator()
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _startFlow('startPayWithCardDetails', CardCreator.createDemoCard()),
-              child: const Text('startPayWithCardDetails'),
-            ),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : const SizedBox.shrink(),
-          ],
-        ),
+        ],
       ),
     );
   }

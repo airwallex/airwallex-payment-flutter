@@ -3,6 +3,7 @@ package com.example.airwallex_payment_flutter
 import androidx.activity.ComponentActivity
 import com.airwallex.android.AirwallexStarter
 import com.airwallex.android.core.Airwallex
+import com.airwallex.android.core.AirwallexPaymentSession
 import com.airwallex.android.core.AirwallexPaymentStatus
 import com.airwallex.android.core.AirwallexSession
 import com.airwallex.android.core.log.AirwallexLogger
@@ -85,6 +86,32 @@ class AirwallexPaymentSdkModule {
             listener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
                     AirwallexLogger.info("AirwallexPaymentSdkModule: startPayWithCardDetails, status = $status")
+                    when (status) {
+                        is AirwallexPaymentStatus.Failure -> {
+                            result.error("payment_failure", status.exception.localizedMessage, null)
+                        }
+
+                        else -> {
+                            val resultData = mapAirwallexPaymentStatusToResult(status)
+                            result.success(resultData)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    fun startGooglePay(
+        activity: ComponentActivity,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) = runWithAirwallex(activity) {
+        val session = parseSessionFromCall(call)
+        airwallex.startGooglePay(
+            session = session as AirwallexPaymentSession,
+            listener = object : Airwallex.PaymentResultListener {
+                override fun onCompleted(status: AirwallexPaymentStatus) {
+                    AirwallexLogger.info("AirwallexPaymentSdkModule: startGooglePay, status = $status")
                     when (status) {
                         is AirwallexPaymentStatus.Failure -> {
                             result.error("payment_failure", status.exception.localizedMessage, null)

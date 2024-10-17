@@ -32,6 +32,7 @@ class AirwallexPaymentFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityA
         "presentCardPaymentFlow" -> sdkModule.presentCardPaymentFlow(it, call, result)
         ///low-level
         "startPayWithCardDetails" -> sdkModule.startPayWithCardDetails(it, call, result)
+        "startGooglePay" -> sdkModule.startGooglePay(it, call, result)
         else -> {
           result.notImplemented()
         }
