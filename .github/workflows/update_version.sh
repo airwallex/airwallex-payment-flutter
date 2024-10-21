@@ -38,7 +38,7 @@ git config user.name "github-actions[bot]"
 
 # Commits and pushes with Github Actions' token
 git add pubspec.yaml CHANGELOG.md
-git commit -m "Update version to $VERSION" || exit 0 # Do not fail if no changes
+git commit -m "chore: bumped versions to $VERSION" || exit 0 # Do not fail if no changes
 git push origin HEAD:main
 
 echo "Updated pubspec.yaml and CHANGELOG.md with version $VERSION"
