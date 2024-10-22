@@ -1,12 +1,19 @@
 package com.example.airwallex_payment_flutter
 
+import android.app.Application
 import androidx.activity.ComponentActivity
 import com.airwallex.android.AirwallexStarter
+import com.airwallex.android.card.CardComponent
 import com.airwallex.android.core.Airwallex
+import com.airwallex.android.core.AirwallexConfiguration
 import com.airwallex.android.core.AirwallexPaymentSession
 import com.airwallex.android.core.AirwallexPaymentStatus
 import com.airwallex.android.core.AirwallexSession
+import com.airwallex.android.core.Environment
 import com.airwallex.android.core.log.AirwallexLogger
+import com.airwallex.android.googlepay.GooglePayComponent
+import com.airwallex.android.redirect.RedirectComponent
+import com.airwallex.android.wechat.WeChatComponent
 import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionConverter
@@ -16,6 +23,32 @@ import io.flutter.plugin.common.MethodChannel
 
 class AirwallexPaymentSdkModule {
     private lateinit var airwallex: Airwallex
+
+    fun initialize(application: Application, call: MethodCall, result: MethodChannel.Result) {
+        val argumentsMap = call.arguments<Map<String, Any?>>()
+            ?: throw IllegalArgumentException("Arguments data is required")
+        val environment = getEnvironment(argumentsMap["environment"] as? String)
+        val enableLogging = argumentsMap["enableLogging"] as? Boolean ?: true
+        val saveLogToLocal = argumentsMap["saveLogToLocal"] as? Boolean ?: false
+        AirwallexLogger.info("AirwallexPaymentSdkModule: initialize, environment = $environment, enableLogging = $enableLogging, saveLogToLocal = $saveLogToLocal")
+        AirwallexStarter.initialize(
+            application,
+            AirwallexConfiguration.Builder()
+                .enableLogging(enableLogging)
+                .saveLogToLocal(saveLogToLocal)
+                .setEnvironment(environment)
+                .setSupportComponentProviders(
+                    listOf(
+                        CardComponent.PROVIDER,
+                        WeChatComponent.PROVIDER,
+                        RedirectComponent.PROVIDER,
+                        GooglePayComponent.PROVIDER
+                    )
+                )
+                .build()
+        )
+        result.success(null)
+    }
 
     fun presentEntirePaymentFlow(
         activity: ComponentActivity,
@@ -190,6 +223,16 @@ class AirwallexPaymentSdkModule {
                     "status" to "cancelled"
                 )
             }
+        }
+    }
+
+    private fun getEnvironment(environment: String?): Environment {
+        val defaultEnvironment = if (BuildConfig.DEBUG) Environment.DEMO else Environment.PRODUCTION
+        return when (environment) {
+            Environment.STAGING.value -> Environment.STAGING
+            Environment.DEMO.value -> Environment.DEMO
+            Environment.PRODUCTION.value -> Environment.PRODUCTION
+            else -> defaultEnvironment
         }
     }
 }

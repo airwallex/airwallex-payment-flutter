@@ -1,5 +1,7 @@
 package com.example.airwallex_payment_flutter
 
+import android.app.Application
+import android.content.Context
 import androidx.activity.ComponentActivity
 import com.airwallex.android.core.log.AirwallexLogger
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -12,10 +14,12 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 /** AirwallexPaymentFlutterPlugin */
 class AirwallexPaymentFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var channel: MethodChannel
+  private lateinit var applicationContext: Context
   private var activity: ComponentActivity? = null
   private var sdkModule = AirwallexPaymentSdkModule()
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    applicationContext = flutterPluginBinding.applicationContext
     channel = MethodChannel(
       flutterPluginBinding.binaryMessenger,
       "samples.flutter.dev/airwallex_payment"
@@ -27,8 +31,8 @@ class AirwallexPaymentFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityA
     AirwallexLogger.info("AirwallexPaymentFlutterPlugin: onMethodCall call.method= ${call.method}")
     activity?.let {
       when (call.method) {
-        //sdk
-        "getEnvironment" -> result.success(AirwallexPaymentSettings.env)
+        //initialize
+        "initialize" -> sdkModule.initialize(applicationContext as Application, call, result)
         //ui
         "presentEntirePaymentFlow" -> sdkModule.presentEntirePaymentFlow(it, call, result)
         "presentCardPaymentFlow" -> sdkModule.presentCardPaymentFlow(it, call, result)
