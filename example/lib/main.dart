@@ -105,7 +105,11 @@ class MyHomePageState extends State<MyHomePage> {
             await paymentIntentRepository.getClientSecret(customerId);
         return SessionCreator.createRecurringSession(clientSecret, customerId);
       case 'recurring and payment':
-        return {};
+        final customerId = await paymentIntentRepository.getCustomerId();
+        final paymentIntent = await paymentIntentRepository
+            .getPaymentIntentFromServer(false, customerId);
+        return SessionCreator.createRecurringWithIntentSession(
+            paymentIntent, customerId);
       default:
         return {};
     }

@@ -28,7 +28,8 @@ class SessionCreator {
       isBillingRequired: true,
       isEmailRequired: false,
       countryCode: 'HK',
-      returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      returnUrl:
+          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
         billingAddressRequired: true,
         billingAddressParameters: BillingAddressParameters(format: Format.FULL),
@@ -54,7 +55,39 @@ class SessionCreator {
       amount: 1.00,
       currency: 'HKD',
       countryCode: 'HK',
-      returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      returnUrl:
+          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      nextTriggeredBy: NextTriggeredBy.Merchant,
+      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+    ).toMap();
+    return paramMap;
+  }
+
+  static Map<String, dynamic> createRecurringWithIntentSession(
+      Map<String, dynamic> paymentIntent, String customerId) {
+    final String paymentIntentId = paymentIntent['id'];
+    final String clientSecret = paymentIntent['client_secret'];
+    final double amount = (paymentIntent['amount'] as int).toDouble();
+    final String currency = paymentIntent['currency'];
+
+    print('paymentIntentId: $paymentIntentId\n'
+        'clientSecret: $clientSecret\n'
+        'amount: $amount\n'
+        'customerId: $customerId\n'
+        'currency: $currency');
+
+    final paramMap = RecurringWithIntentSession(
+      customerId: customerId,
+      clientSecret: clientSecret,
+      currency: currency,
+      countryCode: 'HK',
+      amount: amount,
+      paymentIntentId: paymentIntentId,
+      shipping: createShipping(),
+      isBillingRequired: true,
+      isEmailRequired: false,
+      returnUrl:
+          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       nextTriggeredBy: NextTriggeredBy.Merchant,
       merchantTriggerReason: MerchantTriggerReason.Scheduled,
     ).toMap();
