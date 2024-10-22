@@ -52,14 +52,13 @@ class ApiClient {
         Uri.parse('$baseUrl/api/v1/pa/customers/create'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $apiKey',
         },
         body: jsonEncode(params),
       );
       print('HTTP Response Status Code: ${response.statusCode}');
       print('HTTP Response Body: ${response.body}');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return jsonDecode(response.body);
       } else {
         throw Exception('Failed to create customer: ${response.body}');
@@ -77,14 +76,11 @@ class ApiClient {
       final response = await http.get(
         Uri.parse(
             '$baseUrl/api/v1/pa/customers/$customerId/generate_client_secret?apiKey=$apiKey&clientId=$clientId'),
-        headers: {
-          'Authorization': 'Bearer $apiKey',
-        },
       );
       print('HTTP Response Status Code: ${response.statusCode}');
       print('HTTP Response Body: ${response.body}');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return jsonDecode(response.body);
       } else {
         throw Exception('Failed to create client secret: ${response.body}');

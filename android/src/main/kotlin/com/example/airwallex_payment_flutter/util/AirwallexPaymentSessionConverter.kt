@@ -26,7 +26,7 @@ object AirwallexPaymentSessionConverter {
         val isEmailRequired = sessionMap["isEmailRequired"] as? Boolean ?: false
 
         val shipping = (sessionMap["shipping"] as? Map<String, Any?>)?.toShipping()
-        val amount = BigDecimal((sessionMap["amount"] as? Int)?.toString() ?: "0")
+        val amount = BigDecimal((sessionMap["amount"] as? Double)?.toString() ?: "0")
         val currency = sessionMap["currency"] as? String
             ?: throw IllegalArgumentException("currency is required")
         val countryCode = sessionMap["countryCode"] as? String

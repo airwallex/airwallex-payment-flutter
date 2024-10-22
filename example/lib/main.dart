@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'api/payment_intent_repository.dart';
+import 'api/payment_repository.dart';
 import 'util/payment_result_parser.dart';
 import 'util/session_creator.dart';
 import 'util/card_creator.dart';
@@ -37,8 +37,9 @@ class MyHomePageState extends State<MyHomePage> {
   static const platform =
       MethodChannel('samples.flutter.dev/airwallex_payment');
 
-  late final PaymentIntentRepository paymentIntentRepository;
+  late final PaymentRepository paymentIntentRepository;
   bool _isLoading = false;
+  String _selectedOption = 'one off';
 
   @override
   void initState() {
@@ -49,15 +50,15 @@ class MyHomePageState extends State<MyHomePage> {
   Future<void> _initialize() async {
     try {
       const environment = 'demo';
-      await platform.invokeMethod('initialize', {
+      platform.invokeMethod('initialize', {
         'environment': environment,
         'enableLogging': true,
-        'saveLogToLocal': false
+        'saveLogToLocal': false,
       });
       final apiClient =
           ApiClient(environment: environment, apiKey: '', clientId: '');
       setState(() {
-        paymentIntentRepository = PaymentIntentRepository(apiClient: apiClient);
+        paymentIntentRepository = PaymentRepository(apiClient: apiClient);
       });
     } on PlatformException catch (e) {
       _showDialog('Error', 'Unable to initialize: ${e.message}');
@@ -67,25 +68,21 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _handleSubmit<T>(
-      Future<T> Function() fetchData,
-      String methodName,
-      Map<String, dynamic>? param,
-      Map<String, dynamic> Function(T) transformData) async {
+    String methodName, [
+    Map<String, dynamic> param = const {},
+  ]) async {
     setState(() {
       _isLoading = true;
     });
-
     try {
-      final data = await fetchData();
-      final Map<String, dynamic> sessionParams = transformData(data);
+      final sessionParams = await _createParam();
       final mergedParams = {
         ...sessionParams,
-        if (param != null) ...param,
+        ...param,
       };
       final result = await platform.invokeMethod(methodName, mergedParams);
       final paymentResult = PaymentResultParser.parsePaymentResult(
           Map<String, dynamic>.from(result));
-
       _showDialog('Payment Result', paymentResult.status);
     } catch (e) {
       _showDialog('Failed to get response', e.toString());
@@ -96,25 +93,22 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Map<String, dynamic> _transformPaymentIntent(
-      Map<String, dynamic> paymentIntent) {
-    return SessionCreator.createOneOffSession(paymentIntent);
-  }
-
-  Future<void> _launchUI(String methodName) async {
-    await _handleSubmit(
-        () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
-        methodName,
-        null,
-        _transformPaymentIntent);
-  }
-
-  Future<void> _startFlow(String methodName, Map<String, dynamic> param) async {
-    await _handleSubmit(
-        () => paymentIntentRepository.getPaymentIntentFromServer(false, null),
-        methodName,
-        param,
-        _transformPaymentIntent);
+  Future<Map<String, dynamic>> _createParam() async {
+    switch (_selectedOption) {
+      case 'one off':
+        final paymentIntent = await paymentIntentRepository
+            .getPaymentIntentFromServer(false, null);
+        return SessionCreator.createOneOffSession(paymentIntent);
+      case 'recurring':
+        final customerId = await paymentIntentRepository.getCustomerId();
+        final clientSecret =
+            await paymentIntentRepository.getClientSecret(customerId);
+        return SessionCreator.createRecurringSession(clientSecret, customerId);
+      case 'recurring and payment':
+        return {};
+      default:
+        return {};
+    }
   }
 
   void _showDialog(String title, String message) {
@@ -148,33 +142,53 @@ class MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                DropdownButton<String>(
+                  value: _selectedOption,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedOption = newValue!;
+                    });
+                  },
+                  items: <String>[
+                    'one off',
+                    'recurring',
+                    'recurring and payment'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _launchUI('presentEntirePaymentFlow'),
+                  onPressed: () => _handleSubmit('presentEntirePaymentFlow'),
                   child: const Text('presentEntirePaymentFlow'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _launchUI('presentCardPaymentFlow'),
+                  onPressed: () => _handleSubmit('presentCardPaymentFlow'),
                   child: const Text('presentCardPaymentFlow'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _startFlow(
+                  onPressed: () => _handleSubmit(
                       'startPayWithCardDetails', CardCreator.createDemoCard()),
                   child: const Text('startPayWithCardDetails'),
                 ),
                 const SizedBox(height: 40),
-                const Text(
-                  'Android Specific Features',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () =>
-                      _startFlow('startGooglePay', <String, dynamic>{}),
-                  child: const Text('startGooglePay'),
-                ),
-                const SizedBox(height: 20),
+                if (_selectedOption == 'one off') ...[
+                  const Text(
+                    'Android Specific Features',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () =>
+                        _handleSubmit('startGooglePay'),
+                    child: const Text('startGooglePay'),
+                  ),
+                ],
               ],
             ),
           ),

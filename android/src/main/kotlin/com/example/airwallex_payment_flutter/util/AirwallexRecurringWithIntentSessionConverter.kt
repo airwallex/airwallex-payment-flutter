@@ -22,7 +22,7 @@ object AirwallexRecurringWithIntentSessionConverter {
         val countryCode = sessionMap["countryCode"] as? String
             ?: throw IllegalArgumentException("countryCode is required")
 
-        val amount = BigDecimal((sessionMap["amount"] as? Int)?.toString() ?: throw IllegalArgumentException("amount is required"))
+        val amount = BigDecimal((sessionMap["amount"] as? Double)?.toString() ?: throw IllegalArgumentException("amount is required"))
 
         val customerId = sessionMap["customerId"] as? String
             ?: throw IllegalArgumentException("customerId is required")

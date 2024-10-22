@@ -1,6 +1,8 @@
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
 import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
+import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
+import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
 import 'package:airwallex_payment_flutter/types/apple_pay_options.dart';
 
 class SessionCreator {
@@ -8,7 +10,7 @@ class SessionCreator {
       Map<String, dynamic> paymentIntent) {
     final String paymentIntentId = paymentIntent['id'];
     final String clientSecret = paymentIntent['client_secret'];
-    final int amount = paymentIntent['amount'];
+    final double amount = (paymentIntent['amount'] as int).toDouble();
     final String currency = paymentIntent['currency'];
 
     print('paymentIntentId: $paymentIntentId\n'
@@ -18,13 +20,14 @@ class SessionCreator {
 
     final paramMap = OneOffSession(
       paymentIntentId: paymentIntentId,
+      clientSecret: clientSecret,
       amount: amount,
       currency: currency,
       customerId: '',
       shipping: createShipping(),
       isBillingRequired: true,
       isEmailRequired: false,
-      countryCode: 'UK',
+      countryCode: 'HK',
       returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
         billingAddressRequired: true,
@@ -34,7 +37,27 @@ class SessionCreator {
       autoCapture: true,
       hidePaymentConsents: false,
     ).toMap();
-    paramMap['clientSecret'] = clientSecret;
+    return paramMap;
+  }
+
+  static Map<String, dynamic> createRecurringSession(
+      String clientSecret, String customerId) {
+    print('clientSecret: $clientSecret\n'
+        'customerId: $customerId');
+
+    final paramMap = RecurringSession(
+      customerId: customerId,
+      clientSecret: clientSecret,
+      shipping: createShipping(),
+      isBillingRequired: true,
+      isEmailRequired: false,
+      amount: 1.00,
+      currency: 'HKD',
+      countryCode: 'HK',
+      returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      nextTriggeredBy: NextTriggeredBy.Merchant,
+      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+    ).toMap();
     return paramMap;
   }
 
