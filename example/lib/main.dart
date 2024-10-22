@@ -43,19 +43,24 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _initializeEnvironment();
+    _initialize();
   }
 
-  Future<void> _initializeEnvironment() async {
+  Future<void> _initialize() async {
     try {
-      final String environment = await platform.invokeMethod('getEnvironment');
+      const environment = 'demo';
+      await platform.invokeMethod('initialize', {
+        'environment': environment,
+        'enableLogging': true,
+        'saveLogToLocal': false
+      });
       final apiClient =
           ApiClient(environment: environment, apiKey: '', clientId: '');
       setState(() {
         paymentIntentRepository = PaymentIntentRepository(apiClient: apiClient);
       });
     } on PlatformException catch (e) {
-      _showDialog('Error', 'Unable to get environment: ${e.message}');
+      _showDialog('Error', 'Unable to initialize: ${e.message}');
     } on Exception catch (e) {
       _showDialog('Error', e.toString());
     }
