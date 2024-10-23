@@ -22,7 +22,6 @@ class SessionCreator {
       clientSecret: clientSecret,
       amount: amount,
       currency: currency,
-      customerId: '',
       shipping: createShipping(),
       isBillingRequired: true,
       isEmailRequired: false,
