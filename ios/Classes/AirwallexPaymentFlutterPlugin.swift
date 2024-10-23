@@ -5,10 +5,12 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
     private var sdk: AirwallexSdk?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "airwallex_payment_flutter", binaryMessenger: registrar.messenger())
-        channel.setMethodCallHandler(handle)
-        let instance = AirwallexPaymentFlutterPlugin()
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        let channel = FlutterMethodChannel(name: "samples.flutter.dev/airwallex_payment", binaryMessenger: registrar.messenger())
+        let plugin = AirwallexPaymentFlutterPlugin()
+        channel.setMethodCallHandler{ (call, result) in
+            plugin.handle(call, result: result)
+        }
+        registrar.addMethodCallDelegate(plugin, channel: channel)
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -18,7 +20,7 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             sdk?.initialize(environment: "demo")
         case "presentEntirePaymentFlow":
             if let arguments = call.arguments as? NSDictionary {
-                sdk?.presentEntirePaymentFlow(clientSecret: arguments["clientSecret"] as! String, session: arguments["session"] as! NSDictionary, result: result)
+                sdk?.presentEntirePaymentFlow(clientSecret: arguments["clientSecret"] as! String, session: arguments, result: result)
             }
         default:
             result(FlutterMethodNotImplemented)
