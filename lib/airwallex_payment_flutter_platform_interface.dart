@@ -1,3 +1,6 @@
+import '/types/card.dart';
+import '/types/payment_result.dart';
+import '/types/payment_session.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'airwallex_payment_flutter_method_channel.dart';
@@ -23,7 +26,25 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<bool> initialize(
+      String environment, bool enableLogging, bool saveLogToLocal) {
+    throw UnimplementedError(
+        'presentEntirePaymentFlow() has not been implemented.');
+  }
+
+  Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {
+    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
+  }
+
+  Future<PaymentResult> presentCardPaymentFlow(BaseSession session) {
+    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
+  }
+
+  Future<PaymentResult> startPayWithCardDetails(BaseSession session, Card card) {
+    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
+  }
+
+  Future<PaymentResult> startGooglePay(BaseSession session) {
+    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
   }
 }

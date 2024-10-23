@@ -6,8 +6,7 @@ import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
 import 'package:airwallex_payment_flutter/types/apple_pay_options.dart';
 
 class SessionCreator {
-  static Map<String, dynamic> createOneOffSession(
-      Map<String, dynamic> paymentIntent) {
+  static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
     final String paymentIntentId = paymentIntent['id'];
     final String clientSecret = paymentIntent['client_secret'];
     final double amount = (paymentIntent['amount'] as int).toDouble();
@@ -18,7 +17,7 @@ class SessionCreator {
         'amount: $amount\n'
         'currency: $currency');
 
-    final paramMap = OneOffSession(
+    return OneOffSession(
       paymentIntentId: paymentIntentId,
       clientSecret: clientSecret,
       amount: amount,
@@ -37,16 +36,15 @@ class SessionCreator {
       // paymentMethods: ['card'],
       autoCapture: true,
       hidePaymentConsents: false,
-    ).toMap();
-    return paramMap;
+    );
   }
 
-  static Map<String, dynamic> createRecurringSession(
+  static BaseSession createRecurringSession(
       String clientSecret, String customerId) {
     print('clientSecret: $clientSecret\n'
         'customerId: $customerId');
 
-    final paramMap = RecurringSession(
+    return RecurringSession(
       customerId: customerId,
       clientSecret: clientSecret,
       shipping: createShipping(),
@@ -59,11 +57,10 @@ class SessionCreator {
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       nextTriggeredBy: NextTriggeredBy.Merchant,
       merchantTriggerReason: MerchantTriggerReason.Scheduled,
-    ).toMap();
-    return paramMap;
+    );
   }
 
-  static Map<String, dynamic> createRecurringWithIntentSession(
+  static BaseSession createRecurringWithIntentSession(
       Map<String, dynamic> paymentIntent, String customerId) {
     final String paymentIntentId = paymentIntent['id'];
     final String clientSecret = paymentIntent['client_secret'];
@@ -76,7 +73,7 @@ class SessionCreator {
         'customerId: $customerId\n'
         'currency: $currency');
 
-    final paramMap = RecurringWithIntentSession(
+    return RecurringWithIntentSession(
       customerId: customerId,
       clientSecret: clientSecret,
       currency: currency,
@@ -90,8 +87,7 @@ class SessionCreator {
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       nextTriggeredBy: NextTriggeredBy.Merchant,
       merchantTriggerReason: MerchantTriggerReason.Scheduled,
-    ).toMap();
-    return paramMap;
+    );
   }
 
   static Shipping createShipping() {

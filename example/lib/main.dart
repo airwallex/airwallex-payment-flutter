@@ -1,11 +1,13 @@
+import 'package:airwallex_payment_flutter/types/payment_result.dart';
+import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'api/payment_repository.dart';
-import 'util/payment_result_parser.dart';
 import 'util/session_creator.dart';
 import 'util/card_creator.dart';
 import 'api/api_client.dart';
+import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,9 +36,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  static const platform =
-      MethodChannel('samples.flutter.dev/airwallex_payment');
-
+  final airwallexPaymentFlutter = AirwallexPaymentFlutter();
+  final environment = 'demo';
   late final PaymentRepository paymentIntentRepository;
   bool _isLoading = false;
   String _selectedOption = 'one off';
@@ -49,12 +50,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initialize() async {
     try {
-      const environment = 'demo';
-      platform.invokeMethod('initialize', {
-        'environment': environment,
-        'enableLogging': true,
-        'saveLogToLocal': false,
-      });
+      airwallexPaymentFlutter.initialize(environment, true, false);
       final apiClient =
           ApiClient(environment: environment, apiKey: '', clientId: '');
       setState(() {
@@ -68,21 +64,12 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _handleSubmit<T>(
-    String methodName, [
-    Map<String, dynamic> param = const {},
-  ]) async {
+      Future<PaymentResult> Function() paymentFunction) async {
     setState(() {
       _isLoading = true;
     });
     try {
-      final sessionParams = await _createParam();
-      final mergedParams = {
-        ...sessionParams,
-        ...param,
-      };
-      final result = await platform.invokeMethod(methodName, mergedParams);
-      final paymentResult = PaymentResultParser.parsePaymentResult(
-          Map<String, dynamic>.from(result));
+      PaymentResult paymentResult = await paymentFunction();
       _showDialog('Payment Result', paymentResult.status);
     } catch (e) {
       _showDialog('Failed to get response', e.toString());
@@ -93,7 +80,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<Map<String, dynamic>> _createParam() async {
+  Future<BaseSession> _createSession() async {
     switch (_selectedOption) {
       case 'one off':
         final paymentIntent = await paymentIntentRepository
@@ -104,14 +91,12 @@ class MyHomePageState extends State<MyHomePage> {
         final clientSecret =
             await paymentIntentRepository.getClientSecret(customerId);
         return SessionCreator.createRecurringSession(clientSecret, customerId);
-      case 'recurring and payment':
+      default: //'recurring and payment':
         final customerId = await paymentIntentRepository.getCustomerId();
         final paymentIntent = await paymentIntentRepository
             .getPaymentIntentFromServer(false, customerId);
         return SessionCreator.createRecurringWithIntentSession(
             paymentIntent, customerId);
-      default:
-        return {};
     }
   }
 
@@ -166,18 +151,24 @@ class MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _handleSubmit('presentEntirePaymentFlow'),
+                  onPressed: () => _handleSubmit(() async =>
+                      airwallexPaymentFlutter
+                          .presentEntirePaymentFlow(await _createSession())),
                   child: const Text('presentEntirePaymentFlow'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _handleSubmit('presentCardPaymentFlow'),
+                  onPressed: () => _handleSubmit(() async =>
+                      airwallexPaymentFlutter
+                          .presentCardPaymentFlow(await _createSession())),
                   child: const Text('presentCardPaymentFlow'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _handleSubmit(
-                      'startPayWithCardDetails', CardCreator.createDemoCard()),
+                  onPressed: () => _handleSubmit(() async =>
+                      airwallexPaymentFlutter.startPayWithCardDetails(
+                          await _createSession(),
+                          CardCreator.createDemoCard(environment))),
                   child: const Text('startPayWithCardDetails'),
                 ),
                 const SizedBox(height: 40),
@@ -188,8 +179,9 @@ class MyHomePageState extends State<MyHomePage> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () =>
-                        _handleSubmit('startGooglePay'),
+                    onPressed: () => _handleSubmit(() async =>
+                        airwallexPaymentFlutter
+                            .startGooglePay(await _createSession())),
                     child: const Text('startGooglePay'),
                   ),
                 ],
