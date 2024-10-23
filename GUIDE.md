@@ -10,9 +10,7 @@ Our demo is open source on [Github](https://github.com/airwallex/airwallex-payme
     * [Airwallex API](#airwallex-api)
     * [Airwallex Native UI](#airwallex-native-ui)
 * [Installation](#Installation)
-* [Environment](#Environment)
-    * [Android Configuration](#android-configuration)
-    * [iOS Configuration](#ios-configuration)
+* [Initialization](#Initialization)
 * [Create Payment Intent](#create-payment-intent)
 * [Create Payment Session](#create-payment-session)
     * [Create One Off Session](#create-one-off-session)
@@ -24,6 +22,7 @@ Our demo is open source on [Github](https://github.com/airwallex/airwallex-payme
     * [Custom Theme](#custom-theme)
 * [Low-level API Integration](#low-level-api-integration)
     * [Confirm payment with card details](#confirm-payment-with-card-details)
+    * [Google Pay](#google-pay)
 * [Plugin Example](#plugin-example)
 * [Test Card Numbers](#test-card-numbers)
 * [Contributing](#Contributing)
@@ -46,20 +45,18 @@ To install the Plugin, in your `bpubspec.yaml`, add the following:
 dependencies:
   airwallex_payment_flutter: 0.0.1
 ```
-## Environment
-The Airwallex Flutter Plugin allows setting up three environments: `staging`, `demo`, and `production`.
-If you are in the testing phase, it is recommended to set the environment to `staging` or `demo` for functionality debugging. If you are in the production phase, you must set it to `production`. 
-The method of setting the environment differs across platforms.
-
-#### Android Configuration:
-For the Android platform, by default, the release build uses the `production` environment, and the debug build uses the `demo` environment.
-If you need to change the environment, you must manually specify it during the build phase with the following command:
+## Initialization
+Call the initialize method of the Airwallex Flutter Plugin to initialize the plugin.
+```dart
+import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
 ```
-flutter build apk --debug -Penv=staging
+```dart
+final airwallexPaymentFlutter = AirwallexPaymentFlutter();
+airwallexPaymentFlutter.initialize('demo', true, false);
 ```
-This command generates an APK for the specified environment, which you need to manually install on the device.
-
-#### iOS Configuration:
+parameter `environment` specifies the environment options for the Airwallex Flutter Plugin, which include `staging`, `demo`, and `production`. 
+If you are in the testing phase, it is recommended to set the environment to `staging` or `demo` for feature debugging. 
+If you are in the production phase, it must be set to `production`.
 
 ## Create Payment Intent
 Before confirming the `PaymentIntent`, You must create a `PaymentIntent` on the server and pass it to the client.
@@ -85,15 +82,16 @@ import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
 import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
 
-static Map<String, dynamic> createOneOffSession(Map<String, dynamic> paymentIntent) {
+static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
   //get paymentIntent from your server, or you can only get paymentIntentId, clientSecret, amount, currency from your server
   final String paymentIntentId = paymentIntent['id'];
   final String clientSecret = paymentIntent['client_secret'];
   final int amount = paymentIntent['amount'];
   final String currency = paymentIntent['currency'];
 
-  final paramMap = OneOffSession(
+  return OneOffSession(
     paymentIntentId: paymentIntentId,
+    clientSecret: clientSecret,
     amount: amount,
     currency: currency,
     customerId: '',
@@ -108,9 +106,7 @@ static Map<String, dynamic> createOneOffSession(Map<String, dynamic> paymentInte
     ),
     autoCapture: true,
     hidePaymentConsents: false,
-    ).toMap();
-    paramMap['clientSecret'] = clientSecret;
-  return paramMap;
+    );
 }
 ```
 #### Set up GooglePayOptions
@@ -140,21 +136,72 @@ Note that if you wish to use redirection to invoke third-party payments, you mus
 #####iOS：
 
 ### Create Recurring Session
-The current version does not support passing the RecurringSessions object, but this feature will be supported in upcoming versions.
+
+```dart
+import 'package:airwallex_payment_flutter/types/payment_session.dart';
+import 'package:airwallex_payment_flutter/types/shipping.dart';
+
+//get clientSecret and customerId from your server
+static BaseSession createRecurringSession(
+      String clientSecret, String customerId) {
+    return RecurringSession(
+      customerId: customerId,
+      clientSecret: clientSecret,
+      //shipping: createShipping(),
+      isBillingRequired: true,
+      isEmailRequired: false,
+      amount: 1.00,
+      currency: 'HKD',
+      countryCode: 'HK',
+      returnUrl:
+          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      nextTriggeredBy: NextTriggeredBy.Merchant,
+      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+    );
+  }
+```
 
 ### Create Recurring With Intent Session
-The current version does not support passing the RecurringWithIntentSession object, but this feature will be supported in upcoming versions.
+
+```dart
+import 'package:airwallex_payment_flutter/types/payment_session.dart';
+import 'package:airwallex_payment_flutter/types/shipping.dart';
+
+//get customerId and paymentIntent from your server
+static BaseSession createRecurringWithIntentSession(
+      Map<String, dynamic> paymentIntent, String customerId) {
+    final String paymentIntentId = paymentIntent['id'];
+    final String clientSecret = paymentIntent['client_secret'];
+    final double amount = (paymentIntent['amount'] as int).toDouble();
+    final String currency = paymentIntent['currency'];
+
+    return RecurringWithIntentSession(
+      customerId: customerId,
+      clientSecret: clientSecret,
+      currency: currency,
+      countryCode: 'HK',
+      amount: amount,
+      paymentIntentId: paymentIntentId,
+      // shipping: createShipping(),
+      isBillingRequired: true,
+      isEmailRequired: false,
+      returnUrl:'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      nextTriggeredBy: NextTriggeredBy.Merchant,
+      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+    );
+  }
+```
 
 ## Airwallex Native UI integration
 ### Launch payment list page
 - Use `presentEntirePaymentFlow` to launch the payment list page and complete the entire payment process
 ```dart
-   final result = await platform.invokeMethod('presentEntirePaymentFlow', paymentSession);
+  final result = await airwallexPaymentFlutter.presentEntirePaymentFlow(paymentSession);
 ```
 ### Launch card payment page
 - Use `presentCardPaymentFlow` to launch the card payment page and complete the entire payment process.
 ```kotlin
-   final result = await platform.invokeMethod('presentCardPaymentFlow', paymentSession);
+   final result = await airwallexPaymentFlutter.presentCardPaymentFlow(paymentSession);
 ```
 ### Custom Theme
 #### Android：
@@ -171,24 +218,23 @@ Create a Card, and then call the `startPayWithCardDetails` method to complete th
 ```dart
 import 'package:airwallex_payment_flutter/types/card.dart';
 
-static Map<String, dynamic> createDemoCard() {
-    final card = Card(
+static Card createDemoCard() {
+    // this card number is for demo environment only
+    return Card(
       number: "4012000300001003",
       name: "John Citizen",
       expiryMonth: "12",
       expiryYear: "2029",
       cvc: "737"
     );
-
-    return card.toMap();
   }
 ```
 ```dart
-final params = {
-        ...paymentSession,
-        ...cardParams,
-      };
-final result = await platform.invokeMethod('startPayWithCardDetails', params);
+final result = await airwallexPaymentFlutter.startPayWithCardDetails(paymentSession, card);
+```
+### Google Pay
+```dart
+final result = await airwallexPaymentFlutter.startGooglePay(paymentSession);
 ```
 
 ## Plugin Example

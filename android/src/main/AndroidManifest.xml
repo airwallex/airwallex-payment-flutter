@@ -7,9 +7,6 @@
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         >
-        <meta-data
-            android:name="environment"
-            android:value="@string/environment" />
         <provider
             android:name="com.example.airwallex_payment_flutter.AirwallexPaymentInitProvider"
             android:authorities="${applicationId}.initprovider"

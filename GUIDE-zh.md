@@ -10,9 +10,7 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将付款方式集�
     * [Airwallex API](#airwallex-api)
     * [Airwallex Native UI](#airwallex-native-ui)
 * [添加依赖](#添加依赖)
-* [环境配置](#环境配置)
-    * [Android配置](#Android配置)
-    * [iOS配置](#iOS配置)
+* [初始化](#初始化)
 * [创建PaymentIntent](#创建PaymentIntent)
 * [创建PaymentSession](#创建PaymentSession)
     * [创建一个OneOffSession对象](#创建一个OneOffSession对象)
@@ -24,6 +22,7 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将付款方式集�
     * [自定义主题](#自定义主题)
 * [低层API集成](#低层API集成)
     * [用卡和账单详情确认支付](#用卡和账单详情确认支付)
+    * [Google Pay支付](#google-pay支付)
 * [Plugin Example](#plugin-example)
 * [测试卡号](#测试卡号)
 * [贡献](#贡献)
@@ -47,20 +46,17 @@ dependencies:
   airwallex_payment_flutter: 0.0.1
 ```
 
-## 环境配置
-Airwallex Flutter Plugin允许设置三种环境, 分别是`staging`, `demo`和`production`。
+## 初始化
+调用Airwallex Flutter Plugin的`initialize`方法来初始化插件
+```dart
+import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
+```
+```dart
+final airwallexPaymentFlutter = AirwallexPaymentFlutter();
+airwallexPaymentFlutter.initialize('demo', true, false);
+```
+参数`environment`是 Airwallex Flutter Plugin的环境选项，包括`staging`, `demo`和`production`。
 如果您处于测试阶段，建议将环境设置为`staging`或`demo`来进行功能调试。如果您处于生产阶段，则必须设置`production`。
-对于不同的平台，设置环境的方式有所不同。
-
-#### Android配置：
-对于Android平台而言，默认情况下，release包会使用`production`环境，debug包会使用`demo`环境。
-如果您需要更改环境，则需要在打包阶段手动指定环境，具体命令如下：
-```
-flutter build apk --debug -Penv=demo
-```
-这个指令仅生成一个指定环境的apk，您需要手动将其安装到设备上。
-
-#### iOS配置：
 
 
 ## 创建PaymentIntent
@@ -87,15 +83,16 @@ import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
 import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
 
-static Map<String, dynamic> createOneOffSession(Map<String, dynamic> paymentIntent) {
+static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
   //get paymentIntent from your server, or you can only get paymentIntentId, clientSecret, amount, currency from your server
   final String paymentIntentId = paymentIntent['id'];
   final String clientSecret = paymentIntent['client_secret'];
   final int amount = paymentIntent['amount'];
   final String currency = paymentIntent['currency'];
 
-  final paramMap = OneOffSession(
+  return OneOffSession(
     paymentIntentId: paymentIntentId,
+    clientSecret: clientSecret,
     amount: amount,
     currency: currency,
     customerId: '',
@@ -110,9 +107,7 @@ static Map<String, dynamic> createOneOffSession(Map<String, dynamic> paymentInte
     ),
     autoCapture: true,
     hidePaymentConsents: false,
-    ).toMap();
-    paramMap['clientSecret'] = clientSecret;
-  return paramMap;
+    );
 }
 ```
 #### 配置GooglePayOptions
@@ -139,24 +134,75 @@ final googlePayOptions = GooglePayOptions(
             android:scheme="airwallexcheckout" />
     </intent-filter>
 ```
-#####iOS：
+##### iOS：
 
 ### 创建一个RecurringSession对象
-当前版本暂时不支持传递RecurringSessions对象，但相关功能会在接下来的版本中支持
+
+```dart
+import 'package:airwallex_payment_flutter/types/payment_session.dart';
+import 'package:airwallex_payment_flutter/types/shipping.dart';
+
+//get clientSecret and customerId from your server
+static BaseSession createRecurringSession(
+      String clientSecret, String customerId) {
+    return RecurringSession(
+      customerId: customerId,
+      clientSecret: clientSecret,
+      //shipping: createShipping(),
+      isBillingRequired: true,
+      isEmailRequired: false,
+      amount: 1.00,
+      currency: 'HKD',
+      countryCode: 'HK',
+      returnUrl:
+          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      nextTriggeredBy: NextTriggeredBy.Merchant,
+      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+    );
+  }
+```
 
 ### 创建一个RecurringWithIntentSession对象
-当前版本暂时不支持传递RecurringWithIntentSession对象，但相关功能会在接下来的版本中支持
+
+```dart
+import 'package:airwallex_payment_flutter/types/payment_session.dart';
+import 'package:airwallex_payment_flutter/types/shipping.dart';
+
+//get customerId and paymentIntent from your server
+static BaseSession createRecurringWithIntentSession(
+      Map<String, dynamic> paymentIntent, String customerId) {
+    final String paymentIntentId = paymentIntent['id'];
+    final String clientSecret = paymentIntent['client_secret'];
+    final double amount = (paymentIntent['amount'] as int).toDouble();
+    final String currency = paymentIntent['currency'];
+
+    return RecurringWithIntentSession(
+      customerId: customerId,
+      clientSecret: clientSecret,
+      currency: currency,
+      countryCode: 'HK',
+      amount: amount,
+      paymentIntentId: paymentIntentId,
+      // shipping: createShipping(),
+      isBillingRequired: true,
+      isEmailRequired: false,
+      returnUrl:'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      nextTriggeredBy: NextTriggeredBy.Merchant,
+      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+    );
+  }
+```
 
 ## UI集成
 ### 支付列表页面
 - 使用 `presentEntirePaymentFlow` 调起支付列表页面，来完成整个支付流程
 ```dart
-   final result = await platform.invokeMethod('presentEntirePaymentFlow', paymentSession);
+   final result = await airwallexPaymentFlutter.presentEntirePaymentFlow(paymentSession);
 ```
 ### 卡支付页面
 - 使用 `presentCardPaymentFlow` 调起卡支付页面，来完成整个支付流程
 ```kotlin
-   final result = await platform.invokeMethod('presentCardPaymentFlow', paymentSession);
+   final result = await airwallexPaymentFlutter.presentCardPaymentFlow(paymentSession);
 ```
 ### 自定义主题
 #### Android：
@@ -173,24 +219,23 @@ final googlePayOptions = GooglePayOptions(
 ```dart
 import 'package:airwallex_payment_flutter/types/card.dart';
 
-static Map<String, dynamic> createDemoCard() {
-    final card = Card(
+static Card createCard() {
+    // this card number is for demo environment only
+    return Card(
       number: "4012000300001003",
       name: "John Citizen",
       expiryMonth: "12",
       expiryYear: "2029",
       cvc: "737"
     );
-
-    return card.toMap();
   }
 ```
 ```dart
-final params = {
-        ...paymentSession,
-        ...cardParams,
-      };
-final result = await platform.invokeMethod('startPayWithCardDetails', params);
+final result = await airwallexPaymentFlutter.startPayWithCardDetails(paymentSession, card);
+```
+### Google Pay支付
+```dart
+final result = await airwallexPaymentFlutter.startGooglePay(paymentSession);
 ```
 
 ## Plugin Example
