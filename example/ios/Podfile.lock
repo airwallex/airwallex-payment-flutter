@@ -1,0 +1,44 @@
+PODS:
+  - Airwallex/ApplePay (5.5.6):
+    - Airwallex/Core
+  - Airwallex/Card (5.5.6):
+    - Airwallex/Core
+  - Airwallex/Core (5.5.6)
+  - Airwallex/Redirect (5.5.6):
+    - Airwallex/Core
+  - airwallex_payment_flutter (0.0.1):
+    - Airwallex/ApplePay (~> 5.5.6)
+    - Airwallex/Card (~> 5.5.6)
+    - Airwallex/Core (~> 5.5.6)
+    - Airwallex/Redirect (~> 5.5.6)
+    - Flutter
+  - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - airwallex_payment_flutter (from `.symlinks/plugins/airwallex_payment_flutter/ios`)
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Airwallex
+
+EXTERNAL SOURCES:
+  airwallex_payment_flutter:
+    :path: ".symlinks/plugins/airwallex_payment_flutter/ios"
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+
+SPEC CHECKSUMS:
+  Airwallex: f0f16c67012bd9223b7babf0ad6353866cd15b5c
+  airwallex_payment_flutter: 1147f9912c9bf36a4f235db78b7f2036b3daddcf
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+
+PODFILE CHECKSUM: 61ea3154d7e290f055b2b6397046632b501b5a17
+
+COCOAPODS: 1.15.2
