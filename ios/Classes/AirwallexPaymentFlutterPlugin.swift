@@ -19,8 +19,12 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             sdk = AirwallexSdk()
             sdk?.initialize(environment: "demo")
         case "presentEntirePaymentFlow":
-            if let arguments = call.arguments as? NSDictionary {
-                sdk?.presentEntirePaymentFlow(clientSecret: arguments["clientSecret"] as! String, session: arguments, result: result)
+            if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
+                sdk?.presentEntirePaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
+            }
+        case "presentCardPaymentFlow":
+            if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
+                sdk?.presentCardPaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
             }
         default:
             result(FlutterMethodNotImplemented)
