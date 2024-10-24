@@ -8,6 +8,7 @@ class AirwallexSdk: NSObject, AWXPaymentResultDelegate {
     func initialize(environment: String) {
         if let mode = AirwallexSDKMode.from(environment) {
             Airwallex.setMode(mode)
+            AWXAPIClientConfiguration.shared()
         }
     }
     
@@ -23,7 +24,23 @@ class AirwallexSdk: NSObject, AWXPaymentResultDelegate {
         context.session = session
         
         DispatchQueue.main.async {
-            context.presentEntirePaymentFlow(from: UIApplication.shared.delegate?.window??.rootViewController ?? UIViewController())
+            context.presentEntirePaymentFlow(from: self.getViewController())
+        }
+    }
+    
+    func presentCardPaymentFlow(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
+        self.result = result
+        
+        AWXAPIClientConfiguration.shared().clientSecret = clientSecret
+        
+        let session = buildAirwallexSession(from: session)
+        
+        let context = AWXUIContext.shared()
+        context.delegate = self
+        context.session = session
+        
+        DispatchQueue.main.async {
+            context.presentCardPaymentFlow(from: self.getViewController())
         }
     }
     
@@ -49,6 +66,16 @@ class AirwallexSdk: NSObject, AWXPaymentResultDelegate {
     
     func paymentViewController(_ controller: UIViewController, didCompleteWithPaymentConsentId paymentConsentId: String) {
         self.paymentConsentID = paymentConsentId
+    }
+    
+    private func getViewController() -> UIViewController {
+        var presentingViewController = UIApplication.shared.delegate?.window??.rootViewController
+        
+        while let presented = presentingViewController?.presentedViewController {
+            presentingViewController = presented
+        }
+
+        return presentingViewController ?? UIViewController()
     }
 }
 
