@@ -37,22 +37,29 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   final airwallexPaymentFlutter = AirwallexPaymentFlutter();
-  final environment = 'demo';
-  late final PaymentRepository paymentIntentRepository;
+  late PaymentRepository paymentIntentRepository;
+  late List<String> environmentOptions;
+
+  String _environment = 'demo';
   bool _isLoading = false;
   String _selectedOption = 'one off';
 
   @override
   void initState() {
     super.initState();
+    environmentOptions = ['demo', 'staging', 'production'];
+    assert(() {
+      environmentOptions = ['demo', 'staging'];
+      return true;
+    }());
     _initialize();
   }
 
   Future<void> _initialize() async {
     try {
-      airwallexPaymentFlutter.initialize(environment, true, false);
+      airwallexPaymentFlutter.initialize(_environment, true, false);
       final apiClient =
-          ApiClient(environment: environment, apiKey: '', clientId: '');
+          ApiClient(environment: _environment, apiKey: '', clientId: '');
       setState(() {
         paymentIntentRepository = PaymentRepository(apiClient: apiClient);
       });
@@ -124,6 +131,26 @@ class MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Airwallex Example'),
+        actions: [
+          DropdownButton<String>(
+            value: _environment,
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  _environment = newValue;
+                });
+                _initialize();
+              }
+            },
+            items: environmentOptions
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -168,7 +195,7 @@ class MyHomePageState extends State<MyHomePage> {
                   onPressed: () => _handleSubmit(() async =>
                       airwallexPaymentFlutter.startPayWithCardDetails(
                           await _createSession(),
-                          CardCreator.createDemoCard(environment))),
+                          CardCreator.createDemoCard(_environment))),
                   child: const Text('startPayWithCardDetails'),
                 ),
                 const SizedBox(height: 40),

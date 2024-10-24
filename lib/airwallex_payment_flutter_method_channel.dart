@@ -32,9 +32,9 @@ class MethodChannelAirwallexPaymentFlutter
   @override
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) async {
     try {
-      final result = await methodChannel.invokeMethod<Map<Object?, Object?>>(
-          'presentEntirePaymentFlow', session.toMap());
-      return parsePaymentResult(result?.cast<String, dynamic>());
+      final result = await methodChannel.invokeMethod(
+          'presentEntirePaymentFlow', {'session': session.toMap()});
+      return parsePaymentResult(result);
     } catch (e) {
       rethrow;
     }
@@ -43,9 +43,9 @@ class MethodChannelAirwallexPaymentFlutter
   @override
   Future<PaymentResult> presentCardPaymentFlow(BaseSession session) async {
     try {
-      final result = await methodChannel.invokeMethod<Map<Object?, Object?>>(
-          'presentCardPaymentFlow', session.toMap());
-      return parsePaymentResult(result?.cast<String, dynamic>());
+      final result = await methodChannel
+          .invokeMethod('presentCardPaymentFlow', {'session': session.toMap()});
+      return parsePaymentResult(result);
     } catch (e) {
       rethrow;
     }
@@ -55,12 +55,12 @@ class MethodChannelAirwallexPaymentFlutter
   Future<PaymentResult> startPayWithCardDetails(
       BaseSession session, Card card) async {
     try {
-      final result = await methodChannel
-          .invokeMethod<Map<Object?, Object?>>('startPayWithCardDetails', {
-        ...session.toMap(),
-        ...card.toMap(),
+      final result =
+          await methodChannel.invokeMethod('startPayWithCardDetails', {
+        'session': session.toMap(),
+        'card': card.toMap(),
       });
-      return parsePaymentResult(result?.cast<String, dynamic>());
+      return parsePaymentResult(result);
     } catch (e) {
       rethrow;
     }
@@ -69,15 +69,15 @@ class MethodChannelAirwallexPaymentFlutter
   @override
   Future<PaymentResult> startGooglePay(BaseSession session) async {
     try {
-      final result = await methodChannel.invokeMethod<Map<Object?, Object?>>(
-          'startGooglePay', session.toMap());
-      return parsePaymentResult(result?.cast<String, dynamic>());
+      final result = await methodChannel
+          .invokeMethod('startGooglePay', {'session': session.toMap()});
+      return parsePaymentResult(result);
     } catch (e) {
       rethrow;
     }
   }
 
-  PaymentResult parsePaymentResult(Map<String, dynamic>? result) {
+  PaymentResult parsePaymentResult(result) {
     if (result == null) {
       throw Exception('Result is null');
     }

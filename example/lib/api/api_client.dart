@@ -5,8 +5,12 @@ class ApiClient {
   late String baseUrl;
   final String apiKey;
   final String clientId;
+  final String environment;
 
-  ApiClient({required String environment, required this.apiKey, required this.clientId}) {
+  ApiClient(
+      {required this.environment,
+      required this.apiKey,
+      required this.clientId}) {
     baseUrl = _getBaseUrlForEnvironment(environment);
   }
 
@@ -17,17 +21,45 @@ class ApiClient {
       case 'staging':
         return 'https://staging-pacheckoutdemo.airwallex.com';
       default:
-        throw Exception('Unsupported environment: $environment');
+        return 'https://api.airwallex.com';
     }
   }
 
-  Future<Map<String, dynamic>> createPaymentIntent(Map<String, dynamic> params) async {
+  Future<String> authenticate() async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/v1/authentication/login'),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'x-client-id': clientId,
+        },
+      );
+
+      print('HTTP Response Status Code: ${response.statusCode}');
+      print('HTTP Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body)['token'];
+      } else {
+        throw Exception('Failed to authenticate: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred during authentication: $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> createPaymentIntent(
+      Map<String, dynamic> params) async {
     print('Creating payment intent with params: $params');
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/v1/pa/payment_intents/create'),
         headers: {
           'Content-Type': 'application/json',
+          if (environment == 'production')
+            'Authorization': 'Bearer ${await authenticate()}',
         },
         body: jsonEncode(params),
       );
@@ -45,7 +77,8 @@ class ApiClient {
     }
   }
 
-  Future<Map<String, dynamic>> createCustomer(Map<String, dynamic> params) async {
+  Future<Map<String, dynamic>> createCustomer(
+      Map<String, dynamic> params) async {
     print('Creating customer with params: $params');
     try {
       final response = await http.post(

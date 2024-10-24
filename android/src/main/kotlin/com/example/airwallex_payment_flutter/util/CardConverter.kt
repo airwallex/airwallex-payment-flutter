@@ -6,7 +6,9 @@ import io.flutter.plugin.common.MethodCall
 object CardConverter {
 
     fun fromMethodCall(call: MethodCall): PaymentMethod.Card {
-        val cardMap = call.arguments as? Map<*, *>
+        val arguments = call.arguments as? Map<*, *>
+
+        val cardMap = arguments?.get("card") as? Map<*, *>
         val builder = PaymentMethod.Card.Builder()
 
         cardMap?.let {

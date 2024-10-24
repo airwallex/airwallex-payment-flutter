@@ -170,26 +170,30 @@ class AirwallexPaymentSdkModule {
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
         val argumentsMap = call.arguments<Map<String, Any?>>()
             ?: throw IllegalArgumentException("Arguments data is required")
-        val clientSecret = argumentsMap["clientSecret"] as? String
+
+        val sessionMap = argumentsMap["session"] as? Map<String, Any?>
+            ?: throw IllegalArgumentException("session is required")
+
+        val clientSecret = sessionMap["clientSecret"] as? String
             ?: throw IllegalArgumentException("clientSecret is required")
-        val type = argumentsMap["type"] as? String
+        val type = sessionMap["type"] as? String
             ?: throw IllegalArgumentException("type is required")
 
         return when (type) {
             "OneOff" -> {
-                AirwallexPaymentSessionConverter.fromMap(argumentsMap, clientSecret)
+                AirwallexPaymentSessionConverter.fromMap(sessionMap, clientSecret)
             }
 
             "Recurring" -> {
                 AirwallexRecurringSessionConverter.fromMapToRecurringSession(
-                    argumentsMap,
+                    sessionMap,
                     clientSecret
                 )
             }
 
             "RecurringWithIntent" -> {
                 AirwallexRecurringWithIntentSessionConverter.fromMapToRecurringWithIntentSession(
-                    argumentsMap,
+                    sessionMap,
                     clientSecret
                 )
             }
