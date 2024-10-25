@@ -8,6 +8,7 @@ import 'util/session_creator.dart';
 import 'util/card_creator.dart';
 import 'api/api_client.dart';
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
+import 'ui/credentials_dialog.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,6 +44,10 @@ class MyHomePageState extends State<MyHomePage> {
   String _environment = 'demo';
   bool _isLoading = false;
   String _selectedOption = 'one off';
+  //for demo or staging environment, you can set your own api key and client id,
+  // if you don't, We will use the default value
+  String apiKey = '';
+  String clientId = '';
 
   @override
   void initState() {
@@ -59,7 +64,7 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       airwallexPaymentFlutter.initialize(_environment, true, false);
       final apiClient =
-          ApiClient(environment: _environment, apiKey: '', clientId: '');
+          ApiClient(environment: _environment, apiKey: apiKey, clientId: clientId);
       setState(() {
         paymentIntentRepository = PaymentRepository(apiClient: apiClient);
       });
@@ -139,7 +144,18 @@ class MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   _environment = newValue;
                 });
-                _initialize();
+                if (_environment == 'production') {
+                  showCredentialsDialog(context,
+                      (String apiKeyValue, String clientIdValue) {
+                    setState(() {
+                      apiKey = apiKeyValue;
+                      clientId = clientIdValue;
+                    });
+                    _initialize();
+                  });
+                } else {
+                  _initialize();
+                }
               }
             },
             items: environmentOptions
