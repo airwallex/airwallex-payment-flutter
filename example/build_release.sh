@@ -1,3 +1,8 @@
+#!/bin/bash
+
+FILE_PATH="lib/api/api_client.dart"
+
+REPLACEMENT_CONTENT=$(cat << 'EOF'
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -21,7 +26,32 @@ class ApiClient {
       case 'staging':
         return 'https://staging-pacheckoutdemo.airwallex.com';
       default:
-        return '';
+        return 'https://api.airwallex.com';
+    }
+  }
+
+  Future<String> authenticate() async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/v1/authentication/login'),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'x-client-id': clientId,
+        },
+      );
+
+      print('HTTP Response Status Code: ${response.statusCode}');
+      print('HTTP Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body)['token'];
+      } else {
+        throw Exception('Failed to authenticate: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred during authentication: $e');
+      rethrow;
     }
   }
 
@@ -33,6 +63,8 @@ class ApiClient {
         Uri.parse('$baseUrl/api/v1/pa/payment_intents/create'),
         headers: {
           'Content-Type': 'application/json',
+          if (environment == 'production')
+            'Authorization': 'Bearer ${await authenticate()}',
         },
         body: jsonEncode(params),
       );
@@ -58,6 +90,8 @@ class ApiClient {
         Uri.parse('$baseUrl/api/v1/pa/customers/create'),
         headers: {
           'Content-Type': 'application/json',
+          if (environment == 'production')
+            'Authorization': 'Bearer ${await authenticate()}',
         },
         body: jsonEncode(params),
       );
@@ -82,6 +116,10 @@ class ApiClient {
       final response = await http.get(
         Uri.parse(
             '$baseUrl/api/v1/pa/customers/$customerId/generate_client_secret?apiKey=$apiKey&clientId=$clientId'),
+        headers: {
+          if (environment == 'production')
+            'Authorization': 'Bearer ${await authenticate()}',
+        },
       );
       print('HTTP Response Status Code: ${response.statusCode}');
       print('HTTP Response Body: ${response.body}');
@@ -97,3 +135,25 @@ class ApiClient {
     }
   }
 }
+EOF
+)
+
+cp $FILE_PATH "${FILE_PATH}.backup"
+
+echo "$REPLACEMENT_CONTENT" > $FILE_PATH
+
+case "$1" in
+    android)
+        flutter build apk --release
+        ;;
+    ios)
+        flutter build ios --release
+        ;;
+    *)
+        echo "Please specify a supported platform：android, ios"
+        mv "${FILE_PATH}.backup" "$FILE_PATH"
+        exit 1
+        ;;
+esac
+
+mv "${FILE_PATH}.backup" "$FILE_PATH"
