@@ -45,6 +45,30 @@ To install the Plugin, in your `bpubspec.yaml`, add the following:
 dependencies:
   airwallex_payment_flutter: 0.0.1
 ```
+### Android
+We've noticed that with some versions of Gradle, building a release package can lead to these obfuscation issues.
+```
+E/AndroidRuntime(26598): Caused by: java.lang.IncompatibleClassChangeError: Class 'android.content.res.XmlBlock$Parser' does not implement interface 'q7.a' in call to 'int q7.a.next()' (declaration of 'k0.c' appears in /data/app/~~Ed8ejoXekHz3e7T6xxikvA==/com.example.airwallex_payment_flutter_example-bolBxWvE6SI_ArHfsB-Aow==/base.apk)
+E/AndroidRuntime(26598): 	at k0.c.a(SourceFile:1)
+E/AndroidRuntime(26598): 	at k0.h.k(SourceFile:1)
+E/AndroidRuntime(26598): 	at k0.h.d(SourceFile:1)
+E/AndroidRuntime(26598): 	at i0.a.c(SourceFile:1)
+E/AndroidRuntime(26598): 	at j.a.a(SourceFile:1)
+E/AndroidRuntime(26598): 	at androidx.appcompat.widget.g1.c(SourceFile:1)
+E/AndroidRuntime(26598): 	at androidx.appcompat.widget.Toolbar.<init>(SourceFile:2)
+E/AndroidRuntime(26598): 	at androidx.appcompat.widget.Toolbar.<init>(SourceFile:1)
+```
+A common solution is to add the following code to `android/app/gradle.properties`, but this will weaken R8's obfuscation capability.
+```
+android.enableR8.fullMode=false
+```
+We recommend adding the following code to `android/app/proguard-rules.pro` to resolve the obfuscation issues.
+```
+-keep class org.xmlpull.v1.XmlPullParser { *; }
+-keep interface org.xmlpull.v1.XmlPullParser { *; }
+```
+You can also follow the relevant issues on the Flutter official page to get the best solution.[issues/146266](https://github.com/flutter/flutter/issues/146266)
+
 ## Initialization
 Call the initialize method of the Airwallex Flutter Plugin to initialize the plugin.
 ```dart

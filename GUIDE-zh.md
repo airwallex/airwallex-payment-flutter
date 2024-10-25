@@ -9,7 +9,7 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将付款方式集�
 * [Overview](#Overview)
     * [Airwallex API](#airwallex-api)
     * [Airwallex Native UI](#airwallex-native-ui)
-* [添加依赖](#添加依赖)
+* [集成](#集成)
 * [初始化](#初始化)
 * [创建PaymentIntent](#创建PaymentIntent)
 * [创建PaymentSession](#创建PaymentSession)
@@ -39,12 +39,36 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将付款方式集�
 ### Airwallex Native UI
 Airwallex Native UI 是一个预构建的UI，可让您自定义UI颜色并适合您的App主题。 您可以单独使用这些组件，也可以将我们的预构建UI打包到一个流程中以显示您的付款。
 
-## 添加依赖
+## 集成
 在 `pubspec.yaml`中添加以下依赖
 ```yaml
 dependencies:
   airwallex_payment_flutter: 0.0.1
 ```
+### Android
+我们发现在某些Gradle版本下，build release包会出现以下混淆问题
+```
+E/AndroidRuntime(26598): Caused by: java.lang.IncompatibleClassChangeError: Class 'android.content.res.XmlBlock$Parser' does not implement interface 'q7.a' in call to 'int q7.a.next()' (declaration of 'k0.c' appears in /data/app/~~Ed8ejoXekHz3e7T6xxikvA==/com.example.airwallex_payment_flutter_example-bolBxWvE6SI_ArHfsB-Aow==/base.apk)
+E/AndroidRuntime(26598): 	at k0.c.a(SourceFile:1)
+E/AndroidRuntime(26598): 	at k0.h.k(SourceFile:1)
+E/AndroidRuntime(26598): 	at k0.h.d(SourceFile:1)
+E/AndroidRuntime(26598): 	at i0.a.c(SourceFile:1)
+E/AndroidRuntime(26598): 	at j.a.a(SourceFile:1)
+E/AndroidRuntime(26598): 	at androidx.appcompat.widget.g1.c(SourceFile:1)
+E/AndroidRuntime(26598): 	at androidx.appcompat.widget.Toolbar.<init>(SourceFile:2)
+E/AndroidRuntime(26598): 	at androidx.appcompat.widget.Toolbar.<init>(SourceFile:1)
+```
+比较普遍的解决方法是在`android/app/gradle.properties`中添加以下代码，但这会导致R8混淆能力减弱
+```
+android.enableR8.fullMode=false
+```
+我们建议您在`android/app/proguard-rules.pro`中添加以下代码，以解决混淆问题
+```
+-keep class org.xmlpull.v1.XmlPullParser { *; }
+-keep interface org.xmlpull.v1.XmlPullParser { *; }
+```
+当然您也可以关注flutter官方的相关issue，以获取最佳的解决方案[issues/146266](https://github.com/flutter/flutter/issues/146266)
+
 
 ## 初始化
 调用Airwallex Flutter Plugin的`initialize`方法来初始化插件
