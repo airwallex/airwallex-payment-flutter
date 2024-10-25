@@ -26,6 +26,10 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
                 sdk?.presentCardPaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
             }
+        case "startApplePay":
+            if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
+                sdk?.presentCardPaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
+            }
         default:
             result(FlutterMethodNotImplemented)
         }

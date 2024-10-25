@@ -33,6 +33,12 @@ class SessionCreator {
         billingAddressRequired: true,
         billingAddressParameters: BillingAddressParameters(format: Format.full),
       ),
+      applePayOptions: ApplePayOptions(
+        merchantIdentifier: 'merchant.demo.com.airwallex.paymentacceptance',
+        supportedNetworks: [ApplePaySupportedNetwork.visa, ApplePaySupportedNetwork.masterCard, ApplePaySupportedNetwork.unionPay],
+        requiredBillingContactFields: [ContactField.postalAddress, ContactField.emailAddress],
+        supportedCountries: ['HK', 'US']
+      ),
       // paymentMethods: ['card'],
       autoCapture: true,
       hidePaymentConsents: false,

@@ -52,7 +52,7 @@ class MethodChannelAirwallexPaymentFlutter
   }
 
   @override
-  Future<PaymentResult> startPayWithCardDetails(
+  Future<PaymentResult> payWithCardDetails(
       BaseSession session, Card card) async {
     try {
       final result =
@@ -71,6 +71,17 @@ class MethodChannelAirwallexPaymentFlutter
     try {
       final result = await methodChannel
           .invokeMethod('startGooglePay', {'session': session.toMap()});
+      return parsePaymentResult(result);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PaymentResult> startApplePay(BaseSession session) async {
+    try {
+      final result = await methodChannel
+          .invokeMethod('startApplePay', {'session': session.toMap()});
       return parsePaymentResult(result);
     } catch (e) {
       rethrow;

@@ -37,14 +37,18 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
   }
 
   Future<PaymentResult> presentCardPaymentFlow(BaseSession session) {
-    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
+    throw UnimplementedError('presentCardPaymentFlow() has not been implemented.');
   }
 
-  Future<PaymentResult> startPayWithCardDetails(BaseSession session, Card card) {
-    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
+  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card) {
+    throw UnimplementedError('payWithCardDetails() has not been implemented.');
   }
 
   Future<PaymentResult> startGooglePay(BaseSession session) {
-    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
+    throw UnimplementedError('startGooglePay() has not been implemented.');
+  }
+
+  Future<PaymentResult> startApplePay(BaseSession session) {
+    throw UnimplementedError('startApplePay() has not been implemented.');
   }
 }

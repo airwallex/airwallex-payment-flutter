@@ -87,6 +87,9 @@ private extension AWXSession {
             self.returnURL = returnUrl
         }
         paymentMethods = params["paymentMethods"] as? [String]
+        if let applePayDict = params["applePayOptions"] as? NSDictionary {
+            applePayOptions = .init(params: applePayDict)
+        }
     }
 }
 

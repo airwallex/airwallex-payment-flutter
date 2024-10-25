@@ -21,12 +21,16 @@ class AirwallexPaymentFlutter {
         .presentCardPaymentFlow(session);
   }
 
-  Future<PaymentResult> startPayWithCardDetails(BaseSession session, Card card) {
+  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card) {
     return AirwallexPaymentFlutterPlatform.instance
-        .startPayWithCardDetails(session, card);
+        .payWithCardDetails(session, card);
   }
 
   Future<PaymentResult> startGooglePay(BaseSession session) {
     return AirwallexPaymentFlutterPlatform.instance.startGooglePay(session);
+  }
+
+  Future<PaymentResult> startApplePay(BaseSession session) {
+    return AirwallexPaymentFlutterPlatform.instance.startApplePay(session);
   }
 }

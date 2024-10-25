@@ -212,7 +212,7 @@ class MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter.startPayWithCardDetails(
+                      airwallexPaymentFlutter.payWithCardDetails(
                           await _createSession(),
                           CardCreator.createDemoCard(_environment))),
                   child: const Text('startPayWithCardDetails'),
@@ -224,6 +224,18 @@ class MyHomePageState extends State<MyHomePage> {
                         airwallexPaymentFlutter
                             .startGooglePay(await _createSession())),
                     child: const Text('startGooglePay'),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'iOS Specific Features',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => _handleSubmit(() async =>
+                        airwallexPaymentFlutter
+                            .startApplePay(await _createSession())),
+                    child: const Text('startApplePay'),
                   ),
                 ],
               ],
