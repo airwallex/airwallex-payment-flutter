@@ -9,7 +9,8 @@ class SessionCreator {
   static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
     final String paymentIntentId = paymentIntent['id'];
     final String clientSecret = paymentIntent['client_secret'];
-    final double amount = (paymentIntent['amount'] as int).toDouble();
+    final amountValue = paymentIntent['amount'];
+    final double amount = (amountValue is int) ? amountValue.toDouble() : amountValue as double;
     final String currency = paymentIntent['currency'];
 
     print('paymentIntentId: $paymentIntentId\n'

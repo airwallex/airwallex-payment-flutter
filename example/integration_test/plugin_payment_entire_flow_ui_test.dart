@@ -5,11 +5,12 @@ import 'package:integration_test/integration_test.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('test presentCardPaymentFlow', (WidgetTester tester) async {
+
+  testWidgets('test presentEntirePaymentFlow', (WidgetTester tester) async {
     app.main();
     await tester.pumpAndSettle();
 
-    final button = find.text('presentCardPaymentFlow');
+    final button = find.text('presentEntirePaymentFlow');
     await tester.tap(button);
     await tester.pumpAndSettle();
 
@@ -18,3 +19,4 @@ void main() {
         reason: 'Dialog should not be shown for valid parameters.');
   });
 }
+

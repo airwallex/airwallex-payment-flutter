@@ -5,12 +5,11 @@ import 'package:integration_test/integration_test.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  testWidgets('test presentEntirePaymentFlow', (WidgetTester tester) async {
+  testWidgets('test presentCardPaymentFlow', (WidgetTester tester) async {
     app.main();
     await tester.pumpAndSettle();
 
-    final button = find.text('presentEntirePaymentFlow');
+    final button = find.text('presentCardPaymentFlow');
     await tester.tap(button);
     await tester.pumpAndSettle();
 

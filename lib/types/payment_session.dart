@@ -58,35 +58,22 @@ class OneOffSession extends BaseSession {
   bool? hidePaymentConsents;
 
   OneOffSession({
-    customerId,
-    required clientSecret,
-    shipping,
-    isBillingRequired,
-    isEmailRequired,
-    required currency,
-    required countryCode,
-    required amount,
-    returnUrl,
-    googlePayOptions,
-    applePayOptions,
-    paymentMethods,
+    super.customerId,
+    required super.clientSecret,
+    super.shipping,
+    super.isBillingRequired,
+    super.isEmailRequired,
+    required super.currency,
+    required super.countryCode,
+    required super.amount,
+    super.returnUrl,
+    super.googlePayOptions,
+    super.applePayOptions,
+    super.paymentMethods,
     required this.paymentIntentId,
     this.autoCapture,
     this.hidePaymentConsents,
-  }) : super(
-    customerId: customerId,
-    clientSecret: clientSecret,
-    shipping: shipping,
-    isBillingRequired: isBillingRequired,
-    isEmailRequired: isEmailRequired,
-    currency: currency,
-    countryCode: countryCode,
-    amount: amount,
-    returnUrl: returnUrl,
-    googlePayOptions: googlePayOptions,
-    applePayOptions: applePayOptions,
-    paymentMethods: paymentMethods,
-  );
+  });
 
   @override
   Map<String, dynamic> toMap() {
@@ -107,34 +94,21 @@ class RecurringSession extends BaseSession {
   MerchantTriggerReason merchantTriggerReason;
 
   RecurringSession({
-    required customerId,
-    required clientSecret,
-    shipping,
-    isBillingRequired,
-    isEmailRequired,
-    required currency,
-    required countryCode,
-    required amount,
-    returnUrl,
-    googlePayOptions,
-    applePayOptions,
-    paymentMethods,
+    required super.customerId,
+    required super.clientSecret,
+    super.shipping,
+    super.isBillingRequired,
+    super.isEmailRequired,
+    required super.currency,
+    required super.countryCode,
+    required super.amount,
+    super.returnUrl,
+    super.googlePayOptions,
+    super.applePayOptions,
+    super.paymentMethods,
     required this.nextTriggeredBy,
     required this.merchantTriggerReason,
-  }) : super(
-          customerId: customerId,
-          clientSecret: clientSecret,
-          shipping: shipping,
-          isBillingRequired: isBillingRequired,
-          isEmailRequired: isEmailRequired,
-          currency: currency,
-          countryCode: countryCode,
-          amount: amount,
-          returnUrl: returnUrl,
-          googlePayOptions: googlePayOptions,
-          applePayOptions: applePayOptions,
-          paymentMethods: paymentMethods,
-        );
+  });
 
   @override
   Map<String, dynamic> toMap() {
@@ -156,36 +130,23 @@ class RecurringWithIntentSession extends BaseSession {
   MerchantTriggerReason merchantTriggerReason;
 
   RecurringWithIntentSession({
-    required customerId,
-    required clientSecret,
-    shipping,
-    isBillingRequired,
-    isEmailRequired,
-    required currency,
-    required countryCode,
-    required amount,
-    returnUrl,
-    googlePayOptions,
-    applePayOptions,
-    paymentMethods,
+    required super.customerId,
+    required super.clientSecret,
+    super.shipping,
+    super.isBillingRequired,
+    super.isEmailRequired,
+    required super.currency,
+    required super.countryCode,
+    required super.amount,
+    super.returnUrl,
+    super.googlePayOptions,
+    super.applePayOptions,
+    super.paymentMethods,
     required this.paymentIntentId,
     this.autoCapture,
     required this.nextTriggeredBy,
     required this.merchantTriggerReason,
-  }) : super(
-    customerId: customerId,
-    clientSecret: clientSecret,
-    shipping: shipping,
-    isBillingRequired: isBillingRequired,
-    isEmailRequired: isEmailRequired,
-    currency: currency,
-    countryCode: countryCode,
-    amount: amount,
-    returnUrl: returnUrl,
-    googlePayOptions: googlePayOptions,
-    applePayOptions: applePayOptions,
-    paymentMethods: paymentMethods,
-  );
+  });
 
   @override
   Map<String, dynamic> toMap() {
