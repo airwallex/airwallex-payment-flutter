@@ -1,14 +1,17 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:flutter/services.dart';
-import 'api/payment_repository.dart';
-import 'util/session_creator.dart';
-import 'util/card_creator.dart';
+
 import 'api/api_client.dart';
-import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
+import 'api/payment_repository.dart';
 import 'ui/credentials_dialog.dart';
+import 'util/card_creator.dart';
+import 'util/session_creator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -214,13 +217,8 @@ class MyHomePageState extends State<MyHomePage> {
                           CardCreator.createDemoCard(_environment))),
                   child: const Text('startPayWithCardDetails'),
                 ),
-                const SizedBox(height: 40),
-                if (_selectedOption == 'one off') ...[
-                  const Text(
-                    'Android Specific Features',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
+                if (_selectedOption == 'one off' && Platform.isAndroid) ...[
                   ElevatedButton(
                     onPressed: () => _handleSubmit(() async =>
                         airwallexPaymentFlutter
