@@ -126,16 +126,16 @@ class CartSummaryItem {
 }
 
 enum CartSummaryItemType {
-  Final,
-  pending,
+  finalType,
+  pendingType,
 }
 
 extension CartSummaryItemTypeExtension on CartSummaryItemType {
   String toMap() {
     switch (this) {
-      case CartSummaryItemType.Final:
+      case CartSummaryItemType.finalType:
         return 'final';
-      case CartSummaryItemType.pending:
+      case CartSummaryItemType.pendingType:
         return 'pending';
     }
   }

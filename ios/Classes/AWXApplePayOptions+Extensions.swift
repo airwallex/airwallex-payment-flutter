@@ -13,6 +13,16 @@ extension AWXApplePayOptions {
         if let networks = params["supportedNetworks"] as? [String] {
             supportedNetworks = networks.map { PKPaymentNetwork.from($0) }
         }
+        if let items = params["additionalPaymentSummaryItems"] as? [NSDictionary] {
+            additionalPaymentSummaryItems = items.map { PKPaymentSummaryItem(params: $0) }
+        }
+        if let capabilities = params["merchantCapabilities"] as? [String] {
+            var capabilitiesBitmask: PKMerchantCapability = []
+            capabilities.compactMap { PKMerchantCapability.from($0) }.forEach { capability in
+                capabilitiesBitmask.insert(capability)
+            }
+            merchantCapabilities = capabilitiesBitmask
+        }
         if let contacts = params["requiredBillingContactFields"] as? [String] {
             requiredBillingContactFields = Set(contacts.map { PKContactField(rawValue: $0) })
         }
@@ -30,6 +40,47 @@ private extension PKPaymentNetwork {
             .chinaUnionPay
         default:
             PKPaymentNetwork(rawValue: stringValue)
+        }
+    }
+}
+
+private extension PKMerchantCapability {
+    static func from(_ stringValue: String) -> Self? {
+        switch stringValue {
+        case "supports3DS":
+            .threeDSecure
+        case "supportsCredit":
+            .credit
+        case "supportsDebit":
+            .debit
+        case "supportsEMV":
+            .emv
+        default:
+            nil
+        }
+    }
+}
+
+private extension PKPaymentSummaryItem {
+    convenience init(params: NSDictionary) {
+        self.init()
+        label = params["label"] as! String
+        amount = NSDecimalNumber(decimal: (params["amount"] as! NSNumber).decimalValue)
+        if let typeString = params["type"] as? String, let itemType = PKPaymentSummaryItemType.from(typeString) {
+            type = itemType
+        }
+    }
+}
+
+private extension PKPaymentSummaryItemType {
+    static func from(_ stringValue: String) -> Self? {
+        switch stringValue {
+        case "final":
+            .final
+        case "pending":
+            .pending
+        default:
+            nil
         }
     }
 }

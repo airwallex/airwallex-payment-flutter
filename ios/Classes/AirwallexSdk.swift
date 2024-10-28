@@ -1,9 +1,10 @@
 import Airwallex
 import Flutter
 
-class AirwallexSdk: NSObject, AWXPaymentResultDelegate {
+class AirwallexSdk: NSObject {
     private var result: FlutterResult?
     private var paymentConsentID: String?
+    private var applePayProvider: AWXApplePayProvider?
     
     func initialize(environment: String) {
         if let mode = AirwallexSDKMode.from(environment) {
@@ -44,6 +45,22 @@ class AirwallexSdk: NSObject, AWXPaymentResultDelegate {
         }
     }
     
+    func startApplePay(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
+        self.result = result
+        
+        AWXAPIClientConfiguration.shared().clientSecret = clientSecret
+        
+        let session = buildAirwallexSession(from: session)
+        
+        let applePayProvider = AWXApplePayProvider(delegate: self, session: session)
+        DispatchQueue.main.async {
+            applePayProvider.startPayment()
+        }
+        self.applePayProvider = applePayProvider
+    }
+}
+
+extension AirwallexSdk: AWXPaymentResultDelegate {
     func paymentViewController(_ controller: UIViewController, didCompleteWith status: AirwallexPaymentStatus, error: Error?) {
         controller.dismiss(animated: true) {
             switch status {
@@ -76,6 +93,32 @@ class AirwallexSdk: NSObject, AWXPaymentResultDelegate {
         }
 
         return presentingViewController ?? UIViewController()
+    }
+}
+
+extension AirwallexSdk: AWXProviderDelegate {
+    func providerDidStartRequest(_ provider: AWXDefaultProvider) {
+    }
+    
+    func providerDidEndRequest(_ provider: AWXDefaultProvider) {
+    }
+    
+    func provider(_ provider: AWXDefaultProvider, didInitializePaymentIntentId paymentIntentId: String) {
+    }
+    
+    func provider(_ provider: AWXDefaultProvider, didCompleteWith status: AirwallexPaymentStatus, error: (any Error)?) {
+        switch status {
+        case .success:
+            result?(["status": "success"])
+        case .inProgress:
+            result?(["status": "inProgress"])
+        case .failure:
+            result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: error))
+        case .cancel:
+            result?(["status": "cancelled"])
+        }
+        result = nil
+        applePayProvider = nil
     }
 }
 
