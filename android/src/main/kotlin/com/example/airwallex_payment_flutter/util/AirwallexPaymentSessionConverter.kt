@@ -35,6 +35,10 @@ object AirwallexPaymentSessionConverter {
         val paymentIntentId = sessionMap["paymentIntentId"] as? String
             ?: throw IllegalArgumentException("paymentIntentId is required")
 
+        if (customerId == "") {
+            throw IllegalArgumentException("customerId must not be empty")
+        }
+
         val order = shipping?.let {
             PurchaseOrder(
                 shipping = it
@@ -45,7 +49,7 @@ object AirwallexPaymentSessionConverter {
             id = paymentIntentId,
             amount = amount,
             currency = currency,
-            customerId = if (customerId.isNullOrEmpty()) null else customerId,
+            customerId = customerId,
             order = order,
             clientSecret = clientSecret
         )
