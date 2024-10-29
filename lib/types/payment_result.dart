@@ -6,9 +6,8 @@ abstract class PaymentResult {
 class PaymentSuccessResult extends PaymentResult {
   final String? paymentConsentId;
 
-  PaymentSuccessResult({String? paymentConsentId})
-      : paymentConsentId = paymentConsentId,
-        super('success');
+  PaymentSuccessResult({this.paymentConsentId})
+      : super('success');
 }
 
 class PaymentInProgressResult extends PaymentResult {

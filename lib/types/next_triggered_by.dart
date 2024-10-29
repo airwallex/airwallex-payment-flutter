@@ -1,13 +1,13 @@
 enum NextTriggeredBy {
-  Merchant,
-  Customer,
+  merchant,
+  customer,
 }
 extension NextTriggeredByExtension on NextTriggeredBy {
   String toMap() {
     switch (this) {
-      case NextTriggeredBy.Merchant:
+      case NextTriggeredBy.merchant:
         return 'merchant';
-      case NextTriggeredBy.Customer:
+      case NextTriggeredBy.customer:
         return 'customer';
     }
   }

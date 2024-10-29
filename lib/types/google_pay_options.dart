@@ -59,7 +59,7 @@ class BillingAddressParameters {
   bool? phoneNumberRequired;
 
   BillingAddressParameters({
-    this.format = Format.MIN,
+    this.format = Format.min,
     this.phoneNumberRequired = false,
   });
 
@@ -72,16 +72,16 @@ class BillingAddressParameters {
 }
 
 enum Format {
-  MIN,
-  FULL,
+  min,
+  full,
 }
 
 extension FormatExtension on Format {
   String toMap() {
     switch (this) {
-      case Format.MIN:
+      case Format.min:
         return 'min';
-      case Format.FULL:
+      case Format.full:
         return 'full';
     }
   }

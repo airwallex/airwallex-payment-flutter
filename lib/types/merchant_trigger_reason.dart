@@ -1,13 +1,13 @@
 enum MerchantTriggerReason {
-  Unscheduled,
-  Scheduled,
+  unscheduled,
+  scheduled,
 }
 extension MerchantTriggerReasonExtension on MerchantTriggerReason {
   String toMap() {
     switch (this) {
-      case MerchantTriggerReason.Unscheduled:
+      case MerchantTriggerReason.unscheduled:
         return 'unscheduled';
-      case MerchantTriggerReason.Scheduled:
+      case MerchantTriggerReason.scheduled:
         return 'scheduled';
     }
   }

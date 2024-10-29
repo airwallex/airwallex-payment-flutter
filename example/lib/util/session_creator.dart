@@ -31,7 +31,7 @@ class SessionCreator {
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
         billingAddressRequired: true,
-        billingAddressParameters: BillingAddressParameters(format: Format.FULL),
+        billingAddressParameters: BillingAddressParameters(format: Format.full),
       ),
       // paymentMethods: ['card'],
       autoCapture: true,
@@ -55,8 +55,8 @@ class SessionCreator {
       countryCode: 'HK',
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
-      nextTriggeredBy: NextTriggeredBy.Merchant,
-      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+      nextTriggeredBy: NextTriggeredBy.merchant,
+      merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
   }
 
@@ -85,8 +85,8 @@ class SessionCreator {
       isEmailRequired: false,
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
-      nextTriggeredBy: NextTriggeredBy.Merchant,
-      merchantTriggerReason: MerchantTriggerReason.Scheduled,
+      nextTriggeredBy: NextTriggeredBy.merchant,
+      merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
   }
 
