@@ -27,6 +27,7 @@ class AirwallexPaymentFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityA
     channel.setMethodCallHandler(this)
   }
 
+  /// MethodCallHandler
   override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
     AirwallexLogger.info("AirwallexPaymentFlutterPlugin: onMethodCall call.method= ${call.method}")
     activity?.let {
