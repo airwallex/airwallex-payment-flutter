@@ -28,7 +28,7 @@ class AirwallexPaymentInitProvider : ContentProvider() {
             RedirectComponent.PROVIDER,
             GooglePayComponent.PROVIDER
         )
-        Airwallex.initializeAirwallexPlugins(application, providers)
+        Airwallex.initializeComponents(application, providers)
         AirwallexStarter.initializeActivityLaunch(application)
     }
 

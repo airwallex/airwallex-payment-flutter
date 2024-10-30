@@ -1,0 +1,87 @@
+name: Flutter CI
+
+on:
+  pull_request:
+    branches:
+      - test-ci
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Ensure Flutter dependencies
+        run: flutter pub get
+
+      - name: Check code format
+        run: flutter format --set-exit-if-changed .
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Ensure Flutter dependencies
+        run: flutter pub get
+
+      - name: Run unit tests
+        run: flutter test
+
+  ios_integration_test:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Ensure Flutter dependencies
+        run: flutter pub get
+
+      - name: Start iOS Simulator
+        run: |
+          xcrun simctl boot "iPhone 14" || echo "Simulator already started."
+
+      - name: Run Flutter iOS integration tests
+        run: flutter drive --target=example/integration_test/
+
+  android_integration_test:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Ensure Flutter dependencies
+        run: flutter pub get
+
+      - name: Start Android Emulator and run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: 'default'
+          arch: 'x86_64'
+          profile: 'pixel_3'
+          emulator-options: '-no-boot-anim -accel off'
+          script: |
+            flutter drive --target=example/integration_test/
