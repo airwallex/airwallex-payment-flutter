@@ -100,5 +100,5 @@ jobs:
           emulator-boot-timeout: 600
           script: |
             echo "Emulator launched"
-            adb devices # 添加一行查看设备状态
+            adb devices
             flutter drive --target=example/integration_test/
