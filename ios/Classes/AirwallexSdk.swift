@@ -73,7 +73,7 @@ extension AirwallexSdk: AWXPaymentResultDelegate {
             case .inProgress:
                 self.result?(["status": "inProgress"])
             case .failure:
-                self.result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: error))
+                self.result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: nil))
             case .cancel:
                 self.result?(["status": "cancelled"])
             }
@@ -113,7 +113,7 @@ extension AirwallexSdk: AWXProviderDelegate {
         case .inProgress:
             result?(["status": "inProgress"])
         case .failure:
-            result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: error))
+            result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: nil))
         case .cancel:
             result?(["status": "cancelled"])
         }

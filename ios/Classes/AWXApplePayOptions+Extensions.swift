@@ -38,6 +38,18 @@ private extension PKPaymentNetwork {
         switch stringValue {
         case "unionPay":
             .chinaUnionPay
+        case "masterCard":
+            .masterCard
+        case "visa":
+            .visa
+        case "amex":
+            .amex
+        case "discover":
+            .discover
+        case "jcb":
+            .JCB
+        case "maestro":
+            .maestro
         default:
             PKPaymentNetwork(rawValue: stringValue)
         }

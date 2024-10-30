@@ -17,7 +17,9 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "initialize":
             sdk = AirwallexSdk()
-            sdk?.initialize(environment: "demo")
+            if let arguments = call.arguments as? NSDictionary {
+                sdk?.initialize(environment: arguments["environment"] as! String)
+            }
         case "presentEntirePaymentFlow":
             if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
                 sdk?.presentEntirePaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)

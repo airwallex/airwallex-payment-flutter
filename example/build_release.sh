@@ -147,7 +147,7 @@ case "$1" in
         flutter build apk --release
         ;;
     ios)
-        flutter build ios --release
+        flutter run --release
         ;;
     *)
         echo "Please specify a supported platform：android, ios"

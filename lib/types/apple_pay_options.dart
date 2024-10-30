@@ -37,6 +37,7 @@ enum ApplePaySupportedNetwork {
   amex,
   discover,
   jcb,
+  maestro
 }
 
 extension ApplePaySupportedNetworkExtension on ApplePaySupportedNetwork {
@@ -54,6 +55,8 @@ extension ApplePaySupportedNetworkExtension on ApplePaySupportedNetwork {
         return 'discover';
       case ApplePaySupportedNetwork.jcb:
         return 'jcb';
+      case ApplePaySupportedNetwork.maestro:
+        return 'maestro';
     }
   }
 }
