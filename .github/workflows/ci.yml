@@ -68,8 +68,6 @@ jobs:
         run: |
           echo "Navigating to example directory"
           cd example
-          echo "Ensuring Flutter dependencies"
-          flutter pub get
           echo "Listing files in example directory"
           ls -al
           echo "Running Flutter Drive Test"
