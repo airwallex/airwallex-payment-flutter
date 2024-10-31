@@ -34,3 +34,4 @@ pkill -9 -f dart
 set -e
 
 echo "All tests completed successfully."
+exit 0
