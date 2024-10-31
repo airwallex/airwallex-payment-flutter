@@ -62,8 +62,15 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            echo "Changing directory to example and running Flutter Drive Test"
-            cd example
-            ls -al
-            flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_card_ui_test.dart
+          script: echo "AVD is running now."
+
+      - name: Prepare and Run Integration Tests
+        run: |
+          echo "Navigating to example directory"
+          cd example
+          echo "Ensuring Flutter dependencies"
+          flutter pub get
+          echo "Listing files in example directory"
+          ls -al
+          echo "Running Flutter Drive Test"
+          flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_card_ui_test.dart
