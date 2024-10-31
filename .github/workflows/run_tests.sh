@@ -14,8 +14,5 @@ do
   flutter drive --driver=test_driver/integration_test.dart --target=$test_file
 done
 
-#adb emu kill || true
-pkill -f emulator || true
-pkill -f adb || true
-
+adb -s emulator-5554 emu kill
 #echo "All tests completed."
