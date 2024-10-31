@@ -1,16 +1,15 @@
 #!/bin/bash
-
-echo "AVD is running now."
-adb devices
-
 # Change directory to example
-echo "Attempting to change directory to example"
+echo "change directory to example"
 cd example
-ls -al  # This is for debugging to ensure we're in the correct directory
 
 # Install dependencies
 flutter pub get
 
 # Run the integration tests
-echo "Running Flutter Drive Test"
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_card_ui_test.dart -d emulator-5554
+echo "Running Flutter Drive"
+for test_file in integration_test/*.dart
+do
+  echo "Running Flutter Drive Test for $test_file"
+  flutter drive --driver=test_driver/integration_test.dart --target=$test_file
+done
