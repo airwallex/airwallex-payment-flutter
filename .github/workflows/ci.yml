@@ -51,7 +51,7 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
 
       - name: Make run_tests.sh executable
-        run: chmod +x .github/workflows/run_tests.sh
+        run: chmod +x ./.github/workflows/run_tests.sh
 
       - name: Run UI test
         uses: reactivecircus/android-emulator-runner@v2
