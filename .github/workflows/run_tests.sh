@@ -13,3 +13,7 @@ do
   echo "Running Flutter Drive Test for $test_file"
   flutter drive --driver=test_driver/integration_test.dart --target=$test_file
 done
+
+adb emu kill || true
+
+echo "All tests completed."
