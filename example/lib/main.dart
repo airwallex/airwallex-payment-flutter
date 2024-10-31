@@ -66,8 +66,8 @@ class MyHomePageState extends State<MyHomePage> {
   Future<void> _initialize() async {
     try {
       airwallexPaymentFlutter.initialize(_environment, true, false);
-      final apiClient =
-          ApiClient(environment: _environment, apiKey: apiKey, clientId: clientId);
+      final apiClient = ApiClient(
+          environment: _environment, apiKey: apiKey, clientId: clientId);
       setState(() {
         paymentIntentRepository = PaymentRepository(apiClient: apiClient);
       });
@@ -214,8 +214,9 @@ class MyHomePageState extends State<MyHomePage> {
                   onPressed: () => _handleSubmit(() async =>
                       airwallexPaymentFlutter.payWithCardDetails(
                           await _createSession(),
-                          CardCreator.createDemoCard(_environment))),
-                  child: const Text('startPayWithCardDetails'),
+                          CardCreator.createDemoCard(_environment),
+                          false)),
+                  child: const Text('payWithCardDetails'),
                 ),
                 const SizedBox(height: 20),
                 if (_selectedOption == 'one off' && Platform.isAndroid) ...[

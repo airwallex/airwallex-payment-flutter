@@ -50,7 +50,7 @@ void main() {
           case 'presentEntirePaymentFlow':
           case 'presentCardPaymentFlow':
             return {'status': 'success', 'consentId': '123'};
-          case 'startPayWithCardDetails':
+          case 'payWithCardDetails':
             return {'status': 'success', 'consentId': 'pay_with_card_123'};
           case 'startGooglePay':
             return {'status': 'success', 'consentId': 'google_pay_123'};
@@ -89,11 +89,11 @@ void main() {
       expect((result as PaymentSuccessResult).paymentConsentId, '123');
     });
 
-    test('startPayWithCardDetails should return PaymentSuccessResult',
+    test('payWithCardDetails should return PaymentSuccessResult',
         () async {
       final session = createMockSession();
       final card = createMockCard();
-      final result = await platform.startPayWithCardDetails(session, card);
+      final result = await platform.payWithCardDetails(session, card, true);
 
       expect(result, isA<PaymentSuccessResult>());
       expect((result as PaymentSuccessResult).paymentConsentId,

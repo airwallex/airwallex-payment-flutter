@@ -239,7 +239,7 @@ static BaseSession createRecurringWithIntentSession(
 
 ## 低层API集成
 ### 用卡和账单详情确认支付
-创建Card对象，然后调用`startPayWithCardDetails`方法来完成支付
+创建Card对象，然后调用`payWithCardDetails`方法来完成支付
 ```dart
 import 'package:airwallex_payment_flutter/types/card.dart';
 
@@ -255,7 +255,7 @@ static Card createCard() {
   }
 ```
 ```dart
-final result = await airwallexPaymentFlutter.startPayWithCardDetails(paymentSession, card);
+final result = await airwallexPaymentFlutter.payWithCardDetails(paymentSession, card);
 ```
 ### Google Pay支付
 ```dart

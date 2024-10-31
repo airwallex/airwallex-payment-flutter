@@ -21,9 +21,9 @@ class AirwallexPaymentFlutter {
         .presentCardPaymentFlow(session);
   }
 
-  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card) {
+  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card, bool saveCard) {
     return AirwallexPaymentFlutterPlatform.instance
-        .payWithCardDetails(session, card);
+        .payWithCardDetails(session, card, saveCard);
   }
 
   Future<PaymentResult> startGooglePay(BaseSession session) {

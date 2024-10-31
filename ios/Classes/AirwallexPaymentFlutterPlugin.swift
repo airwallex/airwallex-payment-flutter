@@ -17,21 +17,26 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "initialize":
             sdk = AirwallexSdk()
-            if let arguments = call.arguments as? NSDictionary {
-                sdk?.initialize(environment: arguments["environment"] as! String)
-            }
+            let arguments = call.arguments as! NSDictionary
+            sdk?.initialize(environment: arguments["environment"] as! String)
         case "presentEntirePaymentFlow":
-            if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
-                sdk?.presentEntirePaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
-            }
+            let arguments = call.arguments as! NSDictionary
+            let session = arguments["session"] as! NSDictionary
+            sdk?.presentEntirePaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
         case "presentCardPaymentFlow":
-            if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
-                sdk?.presentCardPaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
-            }
+            let arguments = call.arguments as! NSDictionary
+            let session = arguments["session"] as! NSDictionary
+            sdk?.presentCardPaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
         case "startApplePay":
-            if let arguments = call.arguments as? NSDictionary, let session = arguments["session"] as? NSDictionary {
-                sdk?.startApplePay(clientSecret: session["clientSecret"] as! String, session: session, result: result)
-            }
+            let arguments = call.arguments as! NSDictionary
+            let session = arguments["session"] as! NSDictionary
+            sdk?.startApplePay(clientSecret: session["clientSecret"] as! String, session: session, result: result)
+        case "payWithCardDetails":
+            let arguments = call.arguments as! NSDictionary
+            let session = arguments["session"] as! NSDictionary
+            let card = arguments["card"] as! NSDictionary
+            let saveCard = arguments["saveCard"] as! Bool
+            sdk?.payWithCardDetails(clientSecret: session["clientSecret"] as! String, session: session, card: card, saveCard: saveCard, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }

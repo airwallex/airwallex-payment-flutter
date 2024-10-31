@@ -104,21 +104,26 @@ class AirwallexPaymentSdkModule {
         )
     }
 
-    fun startPayWithCardDetails(
+    fun payWithCardDetails(
         activity: ComponentActivity,
         call: MethodCall,
         result: MethodChannel.Result
     ) = runWithAirwallex(activity) {
         val session = parseSessionFromCall(call)
         val card = CardConverter.fromMethodCall(call)
+        val argumentsMap = call.arguments<Map<String, Any?>>()
+            ?: throw IllegalArgumentException("Arguments data is required")
+        val saveCard = argumentsMap["saveCard"] as? Boolean
+            ?: throw IllegalArgumentException("saveCard is required")
+
         airwallex.confirmPaymentIntent(
             session = session,
             card = card,
             billing = null,
-            saveCard = false,
+            saveCard = saveCard,
             listener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
-                    AirwallexLogger.info("AirwallexPaymentSdkModule: startPayWithCardDetails, status = $status")
+                    AirwallexLogger.info("AirwallexPaymentSdkModule: payWithCardDetails, status = $status")
                     when (status) {
                         is AirwallexPaymentStatus.Failure -> {
                             result.error("payment_failure", status.exception.localizedMessage, null)

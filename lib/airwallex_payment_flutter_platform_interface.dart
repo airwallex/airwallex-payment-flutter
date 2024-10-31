@@ -40,7 +40,7 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('presentCardPaymentFlow() has not been implemented.');
   }
 
-  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card) {
+  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card, bool saveCard) {
     throw UnimplementedError('payWithCardDetails() has not been implemented.');
   }
 

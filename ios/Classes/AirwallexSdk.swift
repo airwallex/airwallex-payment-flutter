@@ -5,6 +5,7 @@ class AirwallexSdk: NSObject {
     private var result: FlutterResult?
     private var paymentConsentID: String?
     private var applePayProvider: AWXApplePayProvider?
+    private var cardProvider: AWXCardProvider?
     
     func initialize(environment: String) {
         if let mode = AirwallexSDKMode.from(environment) {
@@ -57,6 +58,21 @@ class AirwallexSdk: NSObject {
             applePayProvider.startPayment()
         }
         self.applePayProvider = applePayProvider
+    }
+    
+    func payWithCardDetails(clientSecret: String, session: NSDictionary, card: NSDictionary, saveCard: Bool, result: @escaping FlutterResult) {
+        self.result = result
+        
+        AWXAPIClientConfiguration.shared().clientSecret = clientSecret
+        
+        let session = buildAirwallexSession(from: session)
+        let card = AWXCard(params: card)
+        
+        let cardProvider = AWXCardProvider(delegate: self, session: session)
+        DispatchQueue.main.async {
+            cardProvider.confirmPaymentIntent(with: card, billing: nil, saveCard: saveCard)
+        }
+        self.cardProvider = cardProvider
     }
 }
 

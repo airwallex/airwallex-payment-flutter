@@ -37,7 +37,7 @@ class MockAirwallexPaymentFlutterPlatform
 
   @override
   Future<PaymentResult> payWithCardDetails(
-      BaseSession session, Card card) {
+      BaseSession session, Card card, bool saveCard) {
     throw UnimplementedError();
   }
 }

@@ -53,12 +53,13 @@ class MethodChannelAirwallexPaymentFlutter
 
   @override
   Future<PaymentResult> payWithCardDetails(
-      BaseSession session, Card card) async {
+      BaseSession session, Card card, bool saveCard) async {
     try {
       final result =
-          await methodChannel.invokeMethod('startPayWithCardDetails', {
+          await methodChannel.invokeMethod('payWithCardDetails', {
         'session': session.toMap(),
         'card': card.toMap(),
+        'saveCard': saveCard,
       });
       return parsePaymentResult(result);
     } catch (e) {
