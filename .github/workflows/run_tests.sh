@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 # Change directory to example
 echo "change directory to example"
 cd example
@@ -15,4 +16,12 @@ do
 done
 
 adb -s emulator-5554 emu kill
+
+pkill -f emulator || true
+pkill -f flutter || true
+
+echo "All tests completed."
+
+exit 0
+
 #echo "All tests completed."
