@@ -61,12 +61,9 @@ jobs:
           script: |
             echo "AVD is running now."
             adb devices
-
-      - name: Prepare and Run Integration Tests
-        run: |
-            echo "Navigating to example directory"
-            cd example
-            echo "Ensuring Flutter dependencies"
+            cd example || exit 1
+            ls -al  # Debugging line to make sure we are in the correct directory
             flutter pub get
-            echo "Running Flutter Drive Test on emulator-5554"
+            echo "Running Flutter Drive Test"
             flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_card_ui_test.dart -d emulator-5554
+          
