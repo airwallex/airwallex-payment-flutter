@@ -4,7 +4,7 @@ echo "change directory to example"
 cd example
 
 # Install dependencies
-flutter pub get
+#flutter pub get
 
 # Run the integration tests
 echo "Running Flutter Drive"
@@ -15,7 +15,7 @@ do
 done
 
 #adb emu kill || true
-#pkill -f emulator || true
-#pkill -f adb || true
+pkill -f emulator || true
+pkill -f adb || true
 
-echo "All tests completed."
+#echo "All tests completed."
