@@ -22,10 +22,6 @@ jobs:
         with:
           flutter-version: '3.24.3'
 
-      - name: Ensure Flutter dependencies
-        run: |
-          flutter pub get
-
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -62,13 +58,18 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: echo "AVD is running now."
+          script: |
+            echo "AVD is running now."
+            adb devices
 
       - name: Prepare and Run Integration Tests
         run: |
           echo "Navigating to example directory"
           cd example
-          echo "Listing files in example directory"
-          ls -al
+          echo "Ensuring Flutter dependencies"
+          flutter pub get
+          echo "Listing devices"
+          DEVICE_ID=$(adb devices | grep emulator | cut -f1)
+          echo "Using device: $DEVICE_ID"
           echo "Running Flutter Drive Test"
-          flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_card_ui_test.dart
+          flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_card_ui_test.dart -d $DEVICE_ID
