@@ -15,6 +15,6 @@ do
 done
 
 set +e
-pkill -9 -f emulator
-pkill -9 -f flutter
+pkill -f emulator
+pkill -f flutter
 set -e
