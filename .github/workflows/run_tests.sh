@@ -15,5 +15,7 @@ do
 done
 
 adb emu kill || true
+pkill -f emulator || true
+pkill -f adb || true
 
 echo "All tests completed."
