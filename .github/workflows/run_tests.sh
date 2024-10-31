@@ -5,13 +5,8 @@ adb devices
 
 # Change directory to example
 echo "Attempting to change directory to example"
-if [ -d "example" ]; then
-  cd example
-  ls -al  # This is for debugging to ensure we're in the correct directory
-else
-  echo "Directory 'example' does not exist!"
-  exit 1
-fi
+cd example
+ls -al  # This is for debugging to ensure we're in the correct directory
 
 # Install dependencies
 flutter pub get
