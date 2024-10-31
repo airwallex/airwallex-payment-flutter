@@ -63,4 +63,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
-            flutter drive --driver=example/test_driver/integration_test.dart --target=example/integration_test/plugin_payment_card_ui_test.dart
+            echo "Changing directory to example and running Flutter Drive Test"
+            cd example && \
+            ls -al && \
+            flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_card_ui_test.dart
