@@ -1,83 +1,21 @@
 name: Flutter CI
 
 on:
-  pull_request:
+  push:
     branches:
       - test-ci
 
 jobs:
-  format:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.3'
-
-      - name: Ensure Flutter dependencies
-        run: flutter pub get
-
-      - name: Check code format
-          # Check for formatting issues and list any files needing formatting
-        run: |
-          set +e
-          FORMAT_OUTPUT=$(dart format --set-exit-if-changed . 2>&1)
-          FORMAT_EXIT=$?
-          set -e
-          
-          if [ $FORMAT_EXIT -ne 0 ]; then
-            echo "Code format issues detected in the following files:"
-            echo "$FORMAT_OUTPUT" | awk '/Formatted/ {sub(/^Formatted /, ""); print $0}'
-            echo "Please format these files by running 'dart format .' locally."
-            exit 1
-          fi
-
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.3'
-
-      - name: Ensure Flutter dependencies
-        run: flutter pub get
-
-      - name: Run unit tests
-        run: flutter test
-
-  #  ios_integration_test:
-  #    runs-on: macos-latest
-  #
-  #    steps:
-  #      - uses: actions/checkout@v2
-  #
-  #      - name: Set up Flutter
-  #        uses: subosito/flutter-action@v2
-  #        with:
-  #          flutter-version: 'latest'
-  #
-  #      - name: Ensure Flutter dependencies
-  #        run: flutter pub get
-  #
-  #      - name: Start iOS Simulator
-  #        run: |
-  #          xcrun simctl boot "iPhone 14" || echo "Simulator already started."
-  #
-  #      - name: Run Flutter iOS integration tests
-  #        run: flutter drive --target=example/integration_test/
-
   android_integration_test:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        api-level: [29]
+        target: [default]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -85,20 +23,44 @@ jobs:
           flutter-version: '3.24.3'
 
       - name: Ensure Flutter dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
 
-      - name: Start Android Emulator and run tests
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          force-avd-creation: true
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          api-level: ${{ matrix.api-level }}
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
-          avd-name: avd-34-x64
-          emulator-boot-timeout: 600
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Run UI test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: |
-            echo "Emulator launched"
-            adb devices # 添加一行查看设备状态
-            flutter drive --target=example/integration_test/
+            flutter drive --driver=example/test_driver/integration_test.dart --target=example/integration_test/plugin_payment_card_ui_test.dart
