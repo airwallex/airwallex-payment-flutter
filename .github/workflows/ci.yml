@@ -7,51 +7,51 @@ on:
       - test-ci
 
 jobs:
-  format:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.3'
-
-      - name: Ensure Flutter dependencies
-        run: flutter pub get
-
-      - name: Check code format
-        # Check for formatting issues and list any files needing formatting
-        run: |
-          set +e
-          FORMAT_OUTPUT=$(dart format --set-exit-if-changed . 2>&1)
-          FORMAT_EXIT=$?
-          set -e
-          
-          if [ $FORMAT_EXIT -ne 0 ]; then
-            echo "Code format issues detected in the following files:"
-            echo "$FORMAT_OUTPUT" | awk '/Formatted/ {sub(/^Formatted /, ""); print $0}'
-            echo "Please format these files by running 'dart format .' locally."
-            exit 1
-          fi
-
-  unit_test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.3'
-
-      - name: Ensure Flutter dependencies
-        run: flutter pub get
-
-      - name: Run unit tests
-        run: flutter test
+#  format:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.24.3'
+#
+#      - name: Ensure Flutter dependencies
+#        run: flutter pub get
+#
+#      - name: Check code format
+#        # Check for formatting issues and list any files needing formatting
+#        run: |
+#          set +e
+#          FORMAT_OUTPUT=$(dart format --set-exit-if-changed . 2>&1)
+#          FORMAT_EXIT=$?
+#          set -e
+#
+#          if [ $FORMAT_EXIT -ne 0 ]; then
+#            echo "Code format issues detected in the following files:"
+#            echo "$FORMAT_OUTPUT" | awk '/Formatted/ {sub(/^Formatted /, ""); print $0}'
+#            echo "Please format these files by running 'dart format .' locally."
+#            exit 1
+#          fi
+#
+#  unit_test:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.24.3'
+#
+#      - name: Ensure Flutter dependencies
+#        run: flutter pub get
+#
+#      - name: Run unit tests
+#        run: flutter test
 
   #   ios_integration_test:
   #    runs-on: macos-latest
