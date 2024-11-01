@@ -6,6 +6,15 @@ set -x
 echo "AVD is running now."
 adb devices
 
+# Log periodically to ensure the script isn't stuck
+check_interval=60  # Check every 60 seconds
+(
+  while true; do
+    echo "Script still running at $(date)..."
+    sleep $check_interval
+  done
+) &
+
 # Change directory to example
 echo "Attempting to change directory to example"
 if [ -d "example" ]; then
