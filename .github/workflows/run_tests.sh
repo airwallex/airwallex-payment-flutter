@@ -17,10 +17,10 @@ echo "Running Flutter Drive Test"
 flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_ui_test.dart
 
 
-pkill -9 -f emulator || true
-pkill -9 -f adb || true
-pkill -9 -f dart || true
-pkill -9 -f flutter || true
+#pkill -9 -f emulator || true
+#pkill -9 -f adb || true
+#pkill -9 -f dart || true
+#pkill -9 -f flutter || true
 
 echo "All tests completed successfully."
 exit 0

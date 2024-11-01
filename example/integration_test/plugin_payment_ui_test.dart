@@ -8,6 +8,8 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Test multiple payment flows', (WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle();
     await testStartPayWithCardDetails(tester);
     await testPresentCardPaymentFlow(tester);
     await closeNativeScreenAndSettle(tester);
@@ -16,9 +18,7 @@ void main() {
 }
 
 Future<void> testStartPayWithCardDetails(WidgetTester tester) async {
-  app.main();
   await tester.pumpAndSettle();
-
   final startPayButton = find.text('startPayWithCardDetails');
   await tester.tap(startPayButton);
   await tester.pumpAndSettle();
@@ -33,9 +33,7 @@ Future<void> testStartPayWithCardDetails(WidgetTester tester) async {
 }
 
 Future<void> testPresentCardPaymentFlow(WidgetTester tester) async {
-  app.main();
   await tester.pumpAndSettle();
-
   final presentCardFlowButton = find.text('presentCardPaymentFlow');
   await tester.tap(presentCardFlowButton);
   await tester.pumpAndSettle();
@@ -46,9 +44,7 @@ Future<void> testPresentCardPaymentFlow(WidgetTester tester) async {
 }
 
 Future<void> testPresentEntirePaymentFlow(WidgetTester tester) async {
-  app.main();
   await tester.pumpAndSettle();
-
   final entirePaymentFlowButton = find.text('presentEntirePaymentFlow');
   await tester.tap(entirePaymentFlowButton);
   await tester.pumpAndSettle();
@@ -62,7 +58,6 @@ const platform = MethodChannel('samples.flutter.dev/airwallex_payment');
 
 Future<void> closeNativeScreenAndSettle(WidgetTester tester) async {
   await closeNativeScreen();
-  app.main();
   await tester.pumpAndSettle();
   final closeSuccessDialogButton = find.text('OK');
   await tester.tap(closeSuccessDialogButton);
