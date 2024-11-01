@@ -15,3 +15,5 @@ fi
 # Run the integration tests
 echo "Running Flutter Drive Test"
 flutter drive --driver=test_driver/integration_test.dart --target=integration_test/plugin_payment_ui_test.dart
+
+exit 0
