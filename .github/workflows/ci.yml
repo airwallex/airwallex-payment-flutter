@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [ 30 ]
+        api-level: [29,30,31,32,33]
         target: [ default ]
 
     steps:
