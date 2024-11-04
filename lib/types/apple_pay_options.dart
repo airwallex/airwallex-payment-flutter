@@ -37,47 +37,11 @@ enum ApplePaySupportedNetwork {
   maestro
 }
 
-extension ApplePaySupportedNetworkExtension on ApplePaySupportedNetwork {
-  String toMap() {
-    switch (this) {
-      case ApplePaySupportedNetwork.visa:
-        return 'visa';
-      case ApplePaySupportedNetwork.masterCard:
-        return 'masterCard';
-      case ApplePaySupportedNetwork.unionPay:
-        return 'unionPay';
-      case ApplePaySupportedNetwork.amex:
-        return 'amex';
-      case ApplePaySupportedNetwork.discover:
-        return 'discover';
-      case ApplePaySupportedNetwork.jcb:
-        return 'jcb';
-      case ApplePaySupportedNetwork.maestro:
-        return 'maestro';
-    }
-  }
-}
-
 enum ApplePayMerchantCapability {
   supports3DS,
   supportsCredit,
   supportsDebit,
   supportsEMV,
-}
-
-extension ApplePayMerchantCapabilityExtension on ApplePayMerchantCapability {
-  String toMap() {
-    switch (this) {
-      case ApplePayMerchantCapability.supports3DS:
-        return 'supports3DS';
-      case ApplePayMerchantCapability.supportsCredit:
-        return 'supportsCredit';
-      case ApplePayMerchantCapability.supportsDebit:
-        return 'supportsDebit';
-      case ApplePayMerchantCapability.supportsEMV:
-        return 'supportsEMV';
-    }
-  }
 }
 
 enum ContactField {
@@ -86,23 +50,6 @@ enum ContactField {
   phoneNumber,
   phoneticName,
   postalAddress,
-}
-
-extension ContactFieldExtension on ContactField {
-  String toMap() {
-    switch (this) {
-      case ContactField.emailAddress:
-        return 'emailAddress';
-      case ContactField.name:
-        return 'name';
-      case ContactField.phoneNumber:
-        return 'phoneNumber';
-      case ContactField.phoneticName:
-        return 'phoneticName';
-      case ContactField.postalAddress:
-        return 'postalAddress';
-    }
-  }
 }
 
 @JsonSerializable()

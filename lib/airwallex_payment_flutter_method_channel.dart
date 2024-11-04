@@ -44,7 +44,7 @@ class MethodChannelAirwallexPaymentFlutter
       BaseSession session, Card card, bool saveCard) async {
     final result = await methodChannel.invokeMethod('payWithCardDetails', {
       'session': session.toJson(),
-      'card': card.toMap(),
+      'card': card.toJson(),
       'saveCard': saveCard,
     });
     return parsePaymentResult(result);

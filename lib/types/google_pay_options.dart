@@ -54,13 +54,6 @@ class BillingAddressParameters {
     this.phoneNumberRequired = false,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'format': format?.toMap(),
-      'phoneNumberRequired': phoneNumberRequired,
-    };
-  }
-
   factory BillingAddressParameters.fromJson(Map<String, dynamic> json) => _$BillingAddressParametersFromJson(json);
 
   Map<String, dynamic> toJson() => _$BillingAddressParametersToJson(this);
@@ -69,17 +62,6 @@ class BillingAddressParameters {
 enum Format {
   min,
   full,
-}
-
-extension FormatExtension on Format {
-  String toMap() {
-    switch (this) {
-      case Format.min:
-        return 'min';
-      case Format.full:
-        return 'full';
-    }
-  }
 }
 
 @JsonSerializable()
@@ -91,13 +73,6 @@ class ShippingAddressParameters {
     this.allowedCountryCodes,
     this.phoneNumberRequired = false,
   });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'allowedCountryCodes': allowedCountryCodes,
-      'phoneNumberRequired': phoneNumberRequired,
-    };
-  }
 
   factory ShippingAddressParameters.fromJson(Map<String, dynamic> json) => _$ShippingAddressParametersFromJson(json);
 

@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'card.g.dart';
+
+@JsonSerializable()
 class Card {
   String? cvc;
   String? expiryMonth;
@@ -33,23 +38,5 @@ class Card {
     this.cardType,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'cvc': cvc,
-      'expiryMonth': expiryMonth,
-      'expiryYear': expiryYear,
-      'name': name,
-      'number': number,
-      'bin': bin,
-      'last4': last4,
-      'brand': brand,
-      'country': country,
-      'funding': funding,
-      'fingerprint': fingerprint,
-      'cvcCheck': cvcCheck,
-      'avsCheck': avsCheck,
-      'issuerCountryCode': issuerCountryCode,
-      'cardType': cardType,
-    };
-  }
+  Map<String, dynamic> toJson() => _$CardToJson(this);
 }
