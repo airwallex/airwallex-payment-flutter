@@ -31,75 +31,78 @@ class ApplePayOptions {
 }
 
 enum ApplePaySupportedNetwork {
-  Visa,
-  MasterCard,
-  UnionPay,
-  Amex,
-  Discover,
-  JCB,
+  visa,
+  masterCard,
+  unionPay,
+  amex,
+  discover,
+  jcb,
+  maestro
 }
 
 extension ApplePaySupportedNetworkExtension on ApplePaySupportedNetwork {
   String toMap() {
     switch (this) {
-      case ApplePaySupportedNetwork.Visa:
+      case ApplePaySupportedNetwork.visa:
         return 'visa';
-      case ApplePaySupportedNetwork.MasterCard:
+      case ApplePaySupportedNetwork.masterCard:
         return 'masterCard';
-      case ApplePaySupportedNetwork.UnionPay:
+      case ApplePaySupportedNetwork.unionPay:
         return 'unionPay';
-      case ApplePaySupportedNetwork.Amex:
+      case ApplePaySupportedNetwork.amex:
         return 'amex';
-      case ApplePaySupportedNetwork.Discover:
+      case ApplePaySupportedNetwork.discover:
         return 'discover';
-      case ApplePaySupportedNetwork.JCB:
+      case ApplePaySupportedNetwork.jcb:
         return 'jcb';
+      case ApplePaySupportedNetwork.maestro:
+        return 'maestro';
     }
   }
 }
 
 enum ApplePayMerchantCapability {
-  Supports3DS,
-  SupportsCredit,
-  SupportsDebit,
-  SupportsEMV,
+  supports3DS,
+  supportsCredit,
+  supportsDebit,
+  supportsEMV,
 }
 
 extension ApplePayMerchantCapabilityExtension on ApplePayMerchantCapability {
   String toMap() {
     switch (this) {
-      case ApplePayMerchantCapability.Supports3DS:
+      case ApplePayMerchantCapability.supports3DS:
         return 'supports3DS';
-      case ApplePayMerchantCapability.SupportsCredit:
+      case ApplePayMerchantCapability.supportsCredit:
         return 'supportsCredit';
-      case ApplePayMerchantCapability.SupportsDebit:
+      case ApplePayMerchantCapability.supportsDebit:
         return 'supportsDebit';
-      case ApplePayMerchantCapability.SupportsEMV:
+      case ApplePayMerchantCapability.supportsEMV:
         return 'supportsEMV';
     }
   }
 }
 
 enum ContactField {
-  EmailAddress,
-  Name,
-  PhoneNumber,
-  PhoneticName,
-  PostalAddress,
+  emailAddress,
+  name,
+  phoneNumber,
+  phoneticName,
+  postalAddress,
 }
 
 extension ContactFieldExtension on ContactField {
   String toMap() {
     switch (this) {
-      case ContactField.EmailAddress:
+      case ContactField.emailAddress:
         return 'emailAddress';
-      case ContactField.Name:
+      case ContactField.name:
         return 'name';
-      case ContactField.PhoneNumber:
+      case ContactField.phoneNumber:
         return 'phoneNumber';
-      case ContactField.PhoneticName:
+      case ContactField.phoneticName:
         return 'phoneticName';
-      case ContactField.PostalAddress:
+      case ContactField.postalAddress:
         return 'postalAddress';
     }
   }
@@ -126,16 +129,16 @@ class CartSummaryItem {
 }
 
 enum CartSummaryItemType {
-  Final,
-  Pending,
+  finalType,
+  pendingType,
 }
 
 extension CartSummaryItemTypeExtension on CartSummaryItemType {
   String toMap() {
     switch (this) {
-      case CartSummaryItemType.Final:
+      case CartSummaryItemType.finalType:
         return 'final';
-      case CartSummaryItemType.Pending:
+      case CartSummaryItemType.pendingType:
         return 'pending';
     }
   }

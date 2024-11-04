@@ -238,7 +238,7 @@ Add the following color values in res/values/colors.xml.
 
 ## Low-level API Integration
 ### Confirm payment with card details
-Create a Card, and then call the `startPayWithCardDetails` method to complete the payment.
+Create a Card, and then call the `payWithCardDetails` method to complete the payment.
 ```dart
 import 'package:airwallex_payment_flutter/types/card.dart';
 
@@ -254,7 +254,7 @@ static Card createDemoCard() {
   }
 ```
 ```dart
-final result = await airwallexPaymentFlutter.startPayWithCardDetails(paymentSession, card);
+final result = await airwallexPaymentFlutter.payWithCardDetails(paymentSession, card);
 ```
 ### Google Pay
 ```dart

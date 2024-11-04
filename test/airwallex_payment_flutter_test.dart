@@ -31,8 +31,13 @@ class MockAirwallexPaymentFlutterPlatform
   }
 
   @override
-  Future<PaymentResult> startPayWithCardDetails(
-      BaseSession session, Card card) {
+  Future<PaymentResult> startApplePay(BaseSession session) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<PaymentResult> payWithCardDetails(
+      BaseSession session, Card card, bool saveCard) {
     throw UnimplementedError();
   }
 }
