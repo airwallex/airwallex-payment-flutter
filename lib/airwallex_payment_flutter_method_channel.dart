@@ -13,12 +13,12 @@ class MethodChannelAirwallexPaymentFlutter
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel =
-      const MethodChannel('samples.flutter.dev/airwallex_payment');
+      const MethodChannel('samples.flutter.dev/airwallex_payment', JSONMethodCodec());
 
   @override
   Future<void> initialize(
       String environment, bool enableLogging, bool saveLogToLocal) async {
-    await methodChannel.invokeMethod<String>('initialize', {
+    await methodChannel.invokeMethod('initialize', {
       'environment': environment,
       'enableLogging': enableLogging,
       'saveLogToLocal': saveLogToLocal,
@@ -28,14 +28,14 @@ class MethodChannelAirwallexPaymentFlutter
   @override
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) async {
     final result = await methodChannel
-        .invokeMethod('presentEntirePaymentFlow', {'session': session.toMap()});
+        .invokeMethod('presentEntirePaymentFlow', {'session': session.toJson()});
     return parsePaymentResult(result);
   }
 
   @override
   Future<PaymentResult> presentCardPaymentFlow(BaseSession session) async {
     final result = await methodChannel
-        .invokeMethod('presentCardPaymentFlow', {'session': session.toMap()});
+        .invokeMethod('presentCardPaymentFlow', {'session': session.toJson()});
     return parsePaymentResult(result);
   }
 
@@ -43,7 +43,7 @@ class MethodChannelAirwallexPaymentFlutter
   Future<PaymentResult> payWithCardDetails(
       BaseSession session, Card card, bool saveCard) async {
     final result = await methodChannel.invokeMethod('payWithCardDetails', {
-      'session': session.toMap(),
+      'session': session.toJson(),
       'card': card.toMap(),
       'saveCard': saveCard,
     });
@@ -60,14 +60,14 @@ class MethodChannelAirwallexPaymentFlutter
   @override
   Future<PaymentResult> startGooglePay(BaseSession session) async {
     final result = await methodChannel
-        .invokeMethod('startGooglePay', {'session': session.toMap()});
+        .invokeMethod('startGooglePay', {'session': session.toJson()});
     return parsePaymentResult(result);
   }
 
   @override
   Future<PaymentResult> startApplePay(BaseSession session) async {
     final result = await methodChannel
-        .invokeMethod('startApplePay', {'session': session.toMap()});
+        .invokeMethod('startApplePay', {'session': session.toJson()});
     return parsePaymentResult(result);
   }
 

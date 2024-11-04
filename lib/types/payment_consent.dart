@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:airwallex_payment_flutter/types/card.dart';
 import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
 import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
 
-class PaymentConsent {
+class PaymentConsent extends Codec {
   String? id;
   String? requestId;
   String? customerId;
@@ -15,6 +17,14 @@ class PaymentConsent {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? clientSecret;
+  
+  @override
+  // TODO: implement decoder
+  Converter get decoder => throw UnimplementedError();
+  
+  @override
+  // TODO: implement encoder
+  Converter get encoder => throw UnimplementedError();
 }
 
 class PaymentMethod {

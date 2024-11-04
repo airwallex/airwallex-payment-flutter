@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'google_pay_options.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class GooglePayOptions {
   List<String>? allowedCardAuthMethods;
   String? merchantName;
@@ -31,29 +36,15 @@ class GooglePayOptions {
     this.shippingAddressParameters,
     List<String>? allowedCardNetworks,
     this.skipReadinessCheck,
-  }) :allowedCardNetworks = allowedCardNetworks ?? googlePaySupportedNetworks();
+  }) : allowedCardNetworks =
+            allowedCardNetworks ?? googlePaySupportedNetworks();
 
-  Map<String, dynamic> toMap() {
-    return {
-      'allowedCardAuthMethods': allowedCardAuthMethods,
-      'merchantName': merchantName,
-      'allowPrepaidCards': allowPrepaidCards,
-      'allowCreditCards': allowCreditCards,
-      'assuranceDetailsRequired': assuranceDetailsRequired,
-      'billingAddressRequired': billingAddressRequired,
-      'billingAddressParameters': billingAddressParameters?.toMap(),
-      'transactionId': transactionId,
-      'totalPriceLabel': totalPriceLabel,
-      'checkoutOption': checkoutOption,
-      'emailRequired': emailRequired,
-      'shippingAddressRequired': shippingAddressRequired,
-      'shippingAddressParameters': shippingAddressParameters?.toMap(),
-      'allowedCardNetworks': allowedCardNetworks,
-      'skipReadinessCheck': skipReadinessCheck,
-    };
-  }
+  factory GooglePayOptions.fromJson(Map<String, dynamic> json) => _$GooglePayOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GooglePayOptionsToJson(this);
 }
 
+@JsonSerializable()
 class BillingAddressParameters {
   Format? format;
   bool? phoneNumberRequired;
@@ -69,6 +60,10 @@ class BillingAddressParameters {
       'phoneNumberRequired': phoneNumberRequired,
     };
   }
+
+  factory BillingAddressParameters.fromJson(Map<String, dynamic> json) => _$BillingAddressParametersFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BillingAddressParametersToJson(this);
 }
 
 enum Format {
@@ -87,6 +82,7 @@ extension FormatExtension on Format {
   }
 }
 
+@JsonSerializable()
 class ShippingAddressParameters {
   List<String>? allowedCountryCodes;
   bool? phoneNumberRequired;
@@ -102,6 +98,10 @@ class ShippingAddressParameters {
       'phoneNumberRequired': phoneNumberRequired,
     };
   }
+
+  factory ShippingAddressParameters.fromJson(Map<String, dynamic> json) => _$ShippingAddressParametersFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ShippingAddressParametersToJson(this);
 }
 
 List<String> googlePaySupportedNetworks() {

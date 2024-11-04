@@ -1,10 +1,14 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'shipping.dart';
 import 'apple_pay_options.dart';
 import 'google_pay_options.dart';
 import 'next_triggered_by.dart';
 import 'merchant_trigger_reason.dart';
 
-class BaseSession {
+part 'payment_session.g.dart';
+
+abstract class BaseSession {
+  String type;
   String? customerId;
   String clientSecret;
   Shipping? shipping;
@@ -19,8 +23,9 @@ class BaseSession {
   List<String>? paymentMethods;
 
   BaseSession({
-    this.customerId,
+    required this.type,
     required this.clientSecret,
+    this.customerId,
     this.shipping,
     this.isBillingRequired,
     this.isEmailRequired,
@@ -33,26 +38,11 @@ class BaseSession {
     this.paymentMethods,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'customerId': customerId,
-      'clientSecret': clientSecret,
-      'shipping': shipping?.toMap(),
-      'isBillingRequired': isBillingRequired,
-      'isEmailRequired': isEmailRequired,
-      'currency': currency,
-      'countryCode': countryCode,
-      'amount': amount,
-      'returnUrl': returnUrl,
-      'googlePayOptions': googlePayOptions?.toMap(),
-      'applePayOptions': applePayOptions?.toMap(),
-      'paymentMethods': paymentMethods,
-    };
-  }
+  Map<String, dynamic> toJson();
 }
 
+@JsonSerializable(explicitToJson: true)
 class OneOffSession extends BaseSession {
-  final String type = 'OneOff';
   String paymentIntentId;
   bool? autoCapture;
   bool? hidePaymentConsents;
@@ -73,28 +63,19 @@ class OneOffSession extends BaseSession {
     required this.paymentIntentId,
     this.autoCapture,
     this.hidePaymentConsents,
-  });
+  }) : super(type: 'OneOff');
 
   @override
-  Map<String, dynamic> toMap() {
-    final map = super.toMap();
-    map.addAll({
-      'type': type,
-      'paymentIntentId': paymentIntentId,
-      'autoCapture': autoCapture,
-      'hidePaymentConsents': hidePaymentConsents,
-    });
-    return map;
-  }
+  Map<String, dynamic> toJson() => _$OneOffSessionToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class RecurringSession extends BaseSession {
-  final String type = 'Recurring';
   NextTriggeredBy nextTriggeredBy;
   MerchantTriggerReason merchantTriggerReason;
 
   RecurringSession({
-    required super.customerId,
+    super.customerId,
     required super.clientSecret,
     super.shipping,
     super.isBillingRequired,
@@ -108,29 +89,21 @@ class RecurringSession extends BaseSession {
     super.paymentMethods,
     required this.nextTriggeredBy,
     required this.merchantTriggerReason,
-  });
+  }) : super(type: 'Recurring');
 
   @override
-  Map<String, dynamic> toMap() {
-    final map = super.toMap();
-    map.addAll({
-      'type': type,
-      'nextTriggeredBy': nextTriggeredBy.toMap(),
-      'merchantTriggerReason': merchantTriggerReason.toMap(),
-    });
-    return map;
-  }
+  Map<String, dynamic> toJson() => _$RecurringSessionToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class RecurringWithIntentSession extends BaseSession {
-  final String type = 'RecurringWithIntent';
   String paymentIntentId;
   bool? autoCapture;
   NextTriggeredBy nextTriggeredBy;
   MerchantTriggerReason merchantTriggerReason;
 
   RecurringWithIntentSession({
-    required super.customerId,
+    super.customerId,
     required super.clientSecret,
     super.shipping,
     super.isBillingRequired,
@@ -146,18 +119,8 @@ class RecurringWithIntentSession extends BaseSession {
     this.autoCapture,
     required this.nextTriggeredBy,
     required this.merchantTriggerReason,
-  });
+  }) : super(type: 'RecurringWithIntent');
 
   @override
-  Map<String, dynamic> toMap() {
-    final map = super.toMap();
-    map.addAll({
-      'type': type,
-      'paymentIntentId': paymentIntentId,
-      'autoCapture': autoCapture,
-      'nextTriggeredBy': nextTriggeredBy.toMap(),
-      'merchantTriggerReason': merchantTriggerReason.toMap(),
-    });
-    return map;
-  }
+  Map<String, dynamic> toJson() => _$RecurringWithIntentSessionToJson(this);
 }

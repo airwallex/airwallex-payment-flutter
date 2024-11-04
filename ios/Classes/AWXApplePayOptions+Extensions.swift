@@ -87,9 +87,9 @@ private extension PKPaymentSummaryItem {
 private extension PKPaymentSummaryItemType {
     static func from(_ stringValue: String) -> Self? {
         switch stringValue {
-        case "final":
+        case "finalType":
             .final
-        case "pending":
+        case "pendingType":
             .pending
         default:
             nil

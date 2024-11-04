@@ -5,7 +5,7 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
     private var sdk: AirwallexSdk?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "samples.flutter.dev/airwallex_payment", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "samples.flutter.dev/airwallex_payment", binaryMessenger: registrar.messenger(), codec: FlutterJSONMethodCodec())
         let plugin = AirwallexPaymentFlutterPlugin()
         channel.setMethodCallHandler{ (call, result) in
             plugin.handle(call, result: result)
