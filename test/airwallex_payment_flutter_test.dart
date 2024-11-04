@@ -1,6 +1,7 @@
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_method_channel.dart';
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_platform_interface.dart';
 import 'package:airwallex_payment_flutter/types/card.dart';
+import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,6 +39,11 @@ class MockAirwallexPaymentFlutterPlatform
   @override
   Future<PaymentResult> payWithCardDetails(
       BaseSession session, Card card, bool saveCard) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<PaymentResult> payWithConsent(BaseSession session, PaymentConsent consent) {
     throw UnimplementedError();
   }
 }

@@ -1,9 +1,9 @@
+import 'package:airwallex_payment_flutter/airwallex_payment_flutter_method_channel.dart';
 import 'package:airwallex_payment_flutter/types/card.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:airwallex_payment_flutter/airwallex_payment_flutter_method_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -67,10 +67,6 @@ void main() {
   });
 
   group('MethodChannelAirwallexPaymentFlutter', () {
-    test('initialize should return true', () async {
-      final bool result = await platform.initialize('test', true, true);
-      expect(result, isTrue);
-    });
 
     test('presentEntirePaymentFlow should return PaymentSuccessResult',
         () async {

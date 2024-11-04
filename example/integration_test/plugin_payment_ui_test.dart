@@ -19,7 +19,7 @@ Future<void> testStartPayWithCardDetails(WidgetTester tester) async {
   app.main();
   await tester.pumpAndSettle();
 
-  final startPayButton = find.text('startPayWithCardDetails');
+  final startPayButton = find.text('payWithCardDetails');
   await tester.tap(startPayButton);
   await tester.pumpAndSettle();
 
