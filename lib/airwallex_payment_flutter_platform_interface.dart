@@ -1,3 +1,5 @@
+import 'package:airwallex_payment_flutter/types/payment_consent.dart';
+
 import '/types/card.dart';
 import '/types/payment_result.dart';
 import '/types/payment_session.dart';
@@ -26,7 +28,7 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<bool> initialize(
+  Future<void> initialize(
       String environment, bool enableLogging, bool saveLogToLocal) {
     throw UnimplementedError(
         'presentEntirePaymentFlow() has not been implemented.');
@@ -42,6 +44,10 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
 
   Future<PaymentResult> payWithCardDetails(BaseSession session, Card card, bool saveCard) {
     throw UnimplementedError('payWithCardDetails() has not been implemented.');
+  }
+
+  Future<PaymentResult> payWithConsent(BaseSession session, PaymentConsent consent) {
+    throw UnimplementedError('payWithConsent() has not been implemented.');
   }
 
   Future<PaymentResult> startGooglePay(BaseSession session) {

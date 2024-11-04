@@ -1,3 +1,4 @@
+import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -15,78 +16,59 @@ class MethodChannelAirwallexPaymentFlutter
       const MethodChannel('samples.flutter.dev/airwallex_payment');
 
   @override
-  Future<bool> initialize(
+  Future<void> initialize(
       String environment, bool enableLogging, bool saveLogToLocal) async {
-    try {
-      await methodChannel.invokeMethod<String>('initialize', {
-        'environment': environment,
-        'enableLogging': enableLogging,
-        'saveLogToLocal': saveLogToLocal,
-      });
-      return true;
-    } catch (e) {
-      rethrow;
-    }
+    await methodChannel.invokeMethod<String>('initialize', {
+      'environment': environment,
+      'enableLogging': enableLogging,
+      'saveLogToLocal': saveLogToLocal,
+    });
   }
 
   @override
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) async {
-    try {
-      final result = await methodChannel.invokeMethod(
-          'presentEntirePaymentFlow', {'session': session.toMap()});
-      return parsePaymentResult(result);
-    } catch (e) {
-      rethrow;
-    }
+    final result = await methodChannel
+        .invokeMethod('presentEntirePaymentFlow', {'session': session.toMap()});
+    return parsePaymentResult(result);
   }
 
   @override
   Future<PaymentResult> presentCardPaymentFlow(BaseSession session) async {
-    try {
-      final result = await methodChannel
-          .invokeMethod('presentCardPaymentFlow', {'session': session.toMap()});
-      return parsePaymentResult(result);
-    } catch (e) {
-      rethrow;
-    }
+    final result = await methodChannel
+        .invokeMethod('presentCardPaymentFlow', {'session': session.toMap()});
+    return parsePaymentResult(result);
   }
 
   @override
   Future<PaymentResult> payWithCardDetails(
       BaseSession session, Card card, bool saveCard) async {
-    try {
-      final result =
-          await methodChannel.invokeMethod('payWithCardDetails', {
-        'session': session.toMap(),
-        'card': card.toMap(),
-        'saveCard': saveCard,
-      });
-      return parsePaymentResult(result);
-    } catch (e) {
-      rethrow;
-    }
+    final result = await methodChannel.invokeMethod('payWithCardDetails', {
+      'session': session.toMap(),
+      'card': card.toMap(),
+      'saveCard': saveCard,
+    });
+    return parsePaymentResult(result);
+  }
+
+  @override
+  Future<PaymentResult> payWithConsent(
+      BaseSession session, PaymentConsent consent) {
+    // TODO: implement payWithConsent
+    return super.payWithConsent(session, consent);
   }
 
   @override
   Future<PaymentResult> startGooglePay(BaseSession session) async {
-    try {
-      final result = await methodChannel
-          .invokeMethod('startGooglePay', {'session': session.toMap()});
-      return parsePaymentResult(result);
-    } catch (e) {
-      rethrow;
-    }
+    final result = await methodChannel
+        .invokeMethod('startGooglePay', {'session': session.toMap()});
+    return parsePaymentResult(result);
   }
 
   @override
   Future<PaymentResult> startApplePay(BaseSession session) async {
-    try {
-      final result = await methodChannel
-          .invokeMethod('startApplePay', {'session': session.toMap()});
-      return parsePaymentResult(result);
-    } catch (e) {
-      rethrow;
-    }
+    final result = await methodChannel
+        .invokeMethod('startApplePay', {'session': session.toMap()});
+    return parsePaymentResult(result);
   }
 
   PaymentResult parsePaymentResult(result) {
