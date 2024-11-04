@@ -75,11 +75,12 @@ jobs:
   #        run: flutter drive --target=example/integration_test/
 
   android_integration_test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        api-level: [33]
-        target: [default]
+        os: [ macos-latest, ubuntu-latest ]
+        api-level: [ 16, 23, 29 ]
+        target: [ default, google_apis ]
 
     steps:
       - name: Checkout
