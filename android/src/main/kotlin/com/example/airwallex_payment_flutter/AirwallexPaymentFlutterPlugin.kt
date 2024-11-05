@@ -8,10 +8,10 @@ import com.example.airwallex_payment_flutter.util.AirwallexActivityManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.JSONMethodCodec
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-
 
 /** AirwallexPaymentFlutterPlugin */
 class AirwallexPaymentFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -26,7 +26,8 @@ class AirwallexPaymentFlutterPlugin : FlutterPlugin, MethodCallHandler, Activity
         activityManager = AirwallexActivityManager(applicationContext as Application)
         channel = MethodChannel(
             flutterPluginBinding.binaryMessenger,
-            "samples.flutter.dev/airwallex_payment"
+            "airwallex_payment_flutter",
+            JSONMethodCodec.INSTANCE
         )
         channel.setMethodCallHandler(this)
     }

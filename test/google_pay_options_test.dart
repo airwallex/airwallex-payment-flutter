@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('GooglePayOptions', () {
-    test('toMap returns correct map with all values set', () {
+    test('toJson returns correct JSON with all values set', () {
       final billingParams = BillingAddressParameters(
         format: Format.full,
         phoneNumberRequired: true,
@@ -33,31 +33,31 @@ void main() {
         skipReadinessCheck: false,
       );
 
-      final map = options.toMap();
+      final json = options.toJson();
 
-      expect(map['allowedCardAuthMethods'], ['PAN_ONLY', 'CRYPTOGRAM_3DS']);
-      expect(map['merchantName'], 'Example Merchant');
-      expect(map['allowPrepaidCards'], true);
-      expect(map['allowCreditCards'], true);
-      expect(map['assuranceDetailsRequired'], false);
-      expect(map['billingAddressRequired'], true);
-      expect(map['billingAddressParameters'], billingParams.toMap());
-      expect(map['transactionId'], 'T12345');
-      expect(map['totalPriceLabel'], 'Total');
-      expect(map['checkoutOption'], 'ACTIVE');
-      expect(map['emailRequired'], false);
-      expect(map['shippingAddressRequired'], true);
-      expect(map['shippingAddressParameters'], shippingParams.toMap());
-      expect(map['allowedCardNetworks'], ['AMEX', 'DISCOVER', 'JCB', 'MASTERCARD', 'VISA']);
-      expect(map['skipReadinessCheck'], false);
+      expect(json['allowedCardAuthMethods'], ['PAN_ONLY', 'CRYPTOGRAM_3DS']);
+      expect(json['merchantName'], 'Example Merchant');
+      expect(json['allowPrepaidCards'], true);
+      expect(json['allowCreditCards'], true);
+      expect(json['assuranceDetailsRequired'], false);
+      expect(json['billingAddressRequired'], true);
+      expect(json['billingAddressParameters'], billingParams.toJson());
+      expect(json['transactionId'], 'T12345');
+      expect(json['totalPriceLabel'], 'Total');
+      expect(json['checkoutOption'], 'ACTIVE');
+      expect(json['emailRequired'], false);
+      expect(json['shippingAddressRequired'], true);
+      expect(json['shippingAddressParameters'], shippingParams.toJson());
+      expect(json['allowedCardNetworks'], ['AMEX', 'DISCOVER', 'JCB', 'MASTERCARD', 'VISA']);
+      expect(json['skipReadinessCheck'], false);
     });
 
-    test('toMap uses default allowedCardNetworks if not provided', () {
+    test('toJson uses default allowedCardNetworks if not provided', () {
       final options = GooglePayOptions();
 
-      final map = options.toMap();
+      final json = options.toJson();
 
-      expect(map['allowedCardNetworks'], ['AMEX', 'DISCOVER', 'JCB', 'MASTERCARD', 'VISA']);
+      expect(json['allowedCardNetworks'], ['AMEX', 'DISCOVER', 'JCB', 'MASTERCARD', 'VISA']);
     });
   });
 }

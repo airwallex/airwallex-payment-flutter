@@ -5,14 +5,19 @@ import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   MethodChannelAirwallexPaymentFlutter platform =
-      MethodChannelAirwallexPaymentFlutter();
-  const MethodChannel channel =
-      MethodChannel('samples.flutter.dev/airwallex_payment');
+  MethodChannelAirwallexPaymentFlutter();
 
+  const MethodChannel channel =
+  MethodChannel('airwallex_payment_flutter', JSONMethodCodec());
+
+  // Mock session creation function
   OneOffSession createMockSession() {
     return OneOffSession(
       paymentIntentId: 'mockPaymentIntentId',
@@ -22,13 +27,13 @@ void main() {
       isBillingRequired: true,
       isEmailRequired: false,
       countryCode: 'HK',
-      returnUrl:
-          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       autoCapture: true,
       hidePaymentConsents: false,
     );
   }
 
+  // Mock card creation function
   Card createMockCard() {
     return Card(
       number: '4111111111111111',
@@ -43,7 +48,8 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
       channel,
-      (MethodCall methodCall) async {
+          (MethodCall methodCall) async {
+        // Mocking different responses based on method name
         switch (methodCall.method) {
           case 'initialize':
             return 'initialized_value';
@@ -68,8 +74,7 @@ void main() {
 
   group('MethodChannelAirwallexPaymentFlutter', () {
 
-    test('presentEntirePaymentFlow should return PaymentSuccessResult',
-        () async {
+    test('presentEntirePaymentFlow should return PaymentSuccessResult', () async {
       final session = createMockSession();
       final result = await platform.presentEntirePaymentFlow(session);
 
@@ -85,26 +90,24 @@ void main() {
       expect((result as PaymentSuccessResult).paymentConsentId, '123');
     });
 
-    test('payWithCardDetails should return PaymentSuccessResult',
-        () async {
+    test('payWithCardDetails should return PaymentSuccessResult', () async {
       final session = createMockSession();
       final card = createMockCard();
       final result = await platform.payWithCardDetails(session, card, true);
 
       expect(result, isA<PaymentSuccessResult>());
-      expect((result as PaymentSuccessResult).paymentConsentId,
-          'pay_with_card_123');
+      expect((result as PaymentSuccessResult).paymentConsentId, 'pay_with_card_123');
     });
 
     test('startGooglePay should return PaymentSuccessResult', () async {
       final session = createMockSession();
       final result = await platform.startGooglePay(session);
       expect(result, isA<PaymentSuccessResult>());
-      expect(
-          (result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
+      expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
     });
 
     test('presentCardPaymentFlow should return PaymentCancelledResult on cancelled status', () async {
+      // Adjust the mock to simulate a 'cancelled' response
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
         channel,
             (MethodCall methodCall) async {

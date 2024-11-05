@@ -20,16 +20,17 @@ import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSe
 import com.example.airwallex_payment_flutter.util.CardConverter
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import org.json.JSONObject
 
 class AirwallexPaymentSdkModule {
     private lateinit var airwallex: Airwallex
 
     fun initialize(application: Application, call: MethodCall, result: MethodChannel.Result) {
-        val argumentsMap = call.arguments<Map<String, Any?>>()
+        val arguments = call.arguments<JSONObject>()
             ?: throw IllegalArgumentException("Arguments data is required")
-        val environment = getEnvironment(argumentsMap["environment"] as? String)
-        val enableLogging = argumentsMap["enableLogging"] as? Boolean ?: true
-        val saveLogToLocal = argumentsMap["saveLogToLocal"] as? Boolean ?: false
+        val environment = getEnvironment(arguments.optString("environment"))
+        val enableLogging = arguments.optBoolean("enableLogging", true)
+        val saveLogToLocal = arguments.optBoolean("saveLogToLocal", false)
         AirwallexLogger.info("AirwallexPaymentSdkModule: initialize, environment = $environment, enableLogging = $enableLogging, saveLogToLocal = $saveLogToLocal")
         AirwallexStarter.initialize(
             application,
@@ -111,9 +112,7 @@ class AirwallexPaymentSdkModule {
     ) = runWithAirwallex(activity) {
         val session = parseSessionFromCall(call)
         val card = CardConverter.fromMethodCall(call)
-        val argumentsMap = call.arguments<Map<String, Any?>>()
-            ?: throw IllegalArgumentException("Arguments data is required")
-        val saveCard = argumentsMap["saveCard"] as? Boolean
+        val saveCard = call.arguments<JSONObject>()?.optBoolean("saveCard")
             ?: throw IllegalArgumentException("saveCard is required")
 
         airwallex.confirmPaymentIntent(
@@ -173,32 +172,33 @@ class AirwallexPaymentSdkModule {
     }
 
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
-        val argumentsMap = call.arguments<Map<String, Any?>>()
+        val argumentsObject = call.arguments<JSONObject>()
             ?: throw IllegalArgumentException("Arguments data is required")
 
-        val sessionMap = argumentsMap["session"] as? Map<String, Any?>
+        val sessionObject = argumentsObject.optJSONObject("session")
             ?: throw IllegalArgumentException("session is required")
 
-        val clientSecret = sessionMap["clientSecret"] as? String
+        val clientSecret = sessionObject.optString("clientSecret")
             ?: throw IllegalArgumentException("clientSecret is required")
-        val type = sessionMap["type"] as? String
+
+        val type = sessionObject.optString("type")
             ?: throw IllegalArgumentException("type is required")
 
         return when (type) {
             "OneOff" -> {
-                AirwallexPaymentSessionConverter.fromMap(sessionMap, clientSecret)
+                AirwallexPaymentSessionConverter.fromJsonObject(sessionObject, clientSecret)
             }
 
             "Recurring" -> {
-                AirwallexRecurringSessionConverter.fromMapToRecurringSession(
-                    sessionMap,
+                AirwallexRecurringSessionConverter.fromJsonObject(
+                    sessionObject,
                     clientSecret
                 )
             }
 
             "RecurringWithIntent" -> {
-                AirwallexRecurringWithIntentSessionConverter.fromMapToRecurringWithIntentSession(
-                    sessionMap,
+                AirwallexRecurringWithIntentSessionConverter.fromJsonObject(
+                    sessionObject,
                     clientSecret
                 )
             }

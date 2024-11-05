@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:airwallex_payment_flutter_example/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,7 +60,7 @@ Future<void> testPresentEntirePaymentFlow(WidgetTester tester) async {
       reason: 'Dialog should not be shown for valid parameters.');
 }
 
-const platform = MethodChannel('samples.flutter.dev/airwallex_payment');
+const platform = MethodChannel('airwallex_payment_flutter',  JSONMethodCodec());
 
 Future<void> closeNativeScreenAndSettle(WidgetTester tester) async {
   await closeNativeScreen();

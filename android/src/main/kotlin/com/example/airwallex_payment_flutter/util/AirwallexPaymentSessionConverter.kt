@@ -9,31 +9,30 @@ import com.airwallex.android.core.model.Address
 import com.airwallex.android.core.model.PaymentIntent
 import com.airwallex.android.core.model.PurchaseOrder
 import com.airwallex.android.core.model.Shipping
+import org.json.JSONObject
 import java.math.BigDecimal
 
-@Suppress("UNCHECKED_CAST")
 object AirwallexPaymentSessionConverter {
 
-    fun fromMap(sessionMap: Map<String, Any?>, clientSecret: String): AirwallexPaymentSession {
-        val googlePayOptions =
-            (sessionMap["googlePayOptions"] as? Map<String, Any?>)?.toGooglePayOptions()
-        val customerId = sessionMap["customerId"] as? String
-        val returnUrl = sessionMap["returnUrl"] as? String
-        val paymentMethods = sessionMap["paymentMethods"] as? List<String>
-        val autoCapture = sessionMap["autoCapture"] as? Boolean ?: true
-        val hidePaymentConsents = sessionMap["hidePaymentConsents"] as? Boolean ?: false
-        val isBillingRequired = sessionMap["isBillingRequired"] as? Boolean ?: true
-        val isEmailRequired = sessionMap["isEmailRequired"] as? Boolean ?: false
+    fun fromJsonObject(sessionObject: JSONObject, clientSecret: String): AirwallexPaymentSession {
+        val googlePayOptions = sessionObject.optJSONObject("googlePayOptions")?.toGooglePayOptions()
+        val customerId = sessionObject.optNullableString("customerId")
+        val returnUrl = sessionObject.optNullableString("returnUrl")
+        val paymentMethods = sessionObject.optJSONArray("paymentMethods")?.let { jsonArray ->
+            List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
+        }
+        val autoCapture = sessionObject.optBoolean("autoCapture", true)
+        val hidePaymentConsents = sessionObject.optBoolean("hidePaymentConsents", false)
+        val isBillingRequired = sessionObject.optBoolean("isBillingRequired", true)
+        val isEmailRequired = sessionObject.optBoolean("isEmailRequired", false)
 
-        val shipping = (sessionMap["shipping"] as? Map<String, Any?>)?.toShipping()
-        val amount = BigDecimal((sessionMap["amount"] as? Double)?.toString() ?: "0")
-        val currency = sessionMap["currency"] as? String
-            ?: throw IllegalArgumentException("currency is required")
-        val countryCode = sessionMap["countryCode"] as? String
-            ?: throw IllegalArgumentException("countryCode is required")
+        val shipping = sessionObject.optJSONObject("shipping")?.toShipping()
+        val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
+            ?.toString() ?: throw IllegalArgumentException("amount is required"))
+        val currency = sessionObject.getNullableStringOrThrow("currency")
+        val countryCode = sessionObject.getNullableStringOrThrow("countryCode")
 
-        val paymentIntentId = sessionMap["paymentIntentId"] as? String
-            ?: throw IllegalArgumentException("paymentIntentId is required")
+        val paymentIntentId = sessionObject.getNullableStringOrThrow("paymentIntentId")
 
         if (customerId == "") {
             throw IllegalArgumentException("customerId must not be empty")
@@ -67,35 +66,37 @@ object AirwallexPaymentSessionConverter {
             .build()
     }
 
-    private fun Map<String, Any?>.toGooglePayOptions(): GooglePayOptions {
-        val billingAddressParametersMap = this["billingAddressParameters"] as? Map<String, Any?>
-        val shippingAddressParametersMap = this["shippingAddressParameters"] as? Map<String, Any?>
-
-        val billingAddressParameters = billingAddressParametersMap?.toBillingAddressParameters()
-        val shippingAddressParameters = shippingAddressParametersMap?.toShippingAddressParameters()
+    private fun JSONObject.toGooglePayOptions(): GooglePayOptions {
+        val billingAddressParameters =
+            this.optJSONObject("billingAddressParameters")?.toBillingAddressParameters()
+        val shippingAddressParameters =
+            this.optJSONObject("shippingAddressParameters")?.toShippingAddressParameters()
 
         return GooglePayOptions(
-            allowedCardAuthMethods = this["allowedCardAuthMethods"] as? List<String>,
-            merchantName = this["merchantName"] as? String,
-            allowPrepaidCards = this["allowPrepaidCards"] as? Boolean,
-            allowCreditCards = this["allowCreditCards"] as? Boolean,
-            assuranceDetailsRequired = this["assuranceDetailsRequired"] as? Boolean,
-            billingAddressRequired = this["billingAddressRequired"] as? Boolean,
+            allowedCardAuthMethods = this.optJSONArray("allowedCardAuthMethods")?.let { jsonArray ->
+                List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
+            },
+            merchantName = this.optNullableString("merchantName"),
+            allowPrepaidCards = this.optNullableBoolean("allowPrepaidCards"),
+            allowCreditCards = this.optNullableBoolean("allowCreditCards"),
+            assuranceDetailsRequired = this.optNullableBoolean("assuranceDetailsRequired"),
+            billingAddressRequired = this.optNullableBoolean("billingAddressRequired"),
             billingAddressParameters = billingAddressParameters,
-            transactionId = this["transactionId"] as? String,
-            totalPriceLabel = this["totalPriceLabel"] as? String,
-            checkoutOption = this["checkoutOption"] as? String,
-            emailRequired = this["emailRequired"] as? Boolean,
-            shippingAddressRequired = this["shippingAddressRequired"] as? Boolean,
+            transactionId = this.optNullableString("transactionId"),
+            totalPriceLabel = this.optNullableString("totalPriceLabel"),
+            checkoutOption = this.optNullableString("checkoutOption"),
+            emailRequired = this.optNullableBoolean("emailRequired"),
+            shippingAddressRequired = this.optNullableBoolean("shippingAddressRequired"),
             shippingAddressParameters = shippingAddressParameters,
-            allowedCardNetworks = this["allowedCardNetworks"] as? List<String>
-                ?: googlePaySupportedNetworks(),
-            skipReadinessCheck = this["skipReadinessCheck"] as? Boolean ?: false
+            allowedCardNetworks = this.optJSONArray("allowedCardNetworks")?.let { jsonArray ->
+                List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
+            } ?: googlePaySupportedNetworks(),
+            skipReadinessCheck = this.optBoolean("skipReadinessCheck", false)
         )
     }
 
-    private fun Map<String, Any?>.toBillingAddressParameters(): BillingAddressParameters {
-        val formatStr = this["format"] as? String
+    private fun JSONObject.toBillingAddressParameters(): BillingAddressParameters {
+        val formatStr = this.optNullableString("format")
         val format = when (formatStr?.lowercase()) {
             "min" -> BillingAddressParameters.Format.MIN
             "full" -> BillingAddressParameters.Format.FULL
@@ -103,32 +104,38 @@ object AirwallexPaymentSessionConverter {
         }
         return BillingAddressParameters(
             format = format,
-            phoneNumberRequired = this["phoneNumberRequired"] as? Boolean
+            phoneNumberRequired = this.optBoolean("phoneNumberRequired")
         )
     }
 
-    private fun Map<String, Any?>.toShippingAddressParameters(): ShippingAddressParameters {
+    private fun JSONObject.toShippingAddressParameters(): ShippingAddressParameters {
+        val allowedCountryCodes = this.optJSONArray("allowedCountryCodes")?.let { jsonArray ->
+            List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
+        }
         return ShippingAddressParameters(
-            allowedCountryCodes = this["allowedCountryCodes"] as? List<String>,
-            phoneNumberRequired = this["phoneNumberRequired"] as? Boolean
+            allowedCountryCodes = allowedCountryCodes,
+            phoneNumberRequired = this.optBoolean("phoneNumberRequired")
         )
     }
 
-    fun Map<String, Any?>.toShipping(): Shipping? {
-        val firstName = this["firstName"] as? String
-        val lastName = this["lastName"] as? String
-        val phone = this["phoneNumber"] as? String
-        val email = this["email"] as? String
-        val shippingMethod = this["shippingMethod"] as? String
-        val address = (this["address"] as? Map<String, Any?>)?.toAddress()
+    fun JSONObject.toShipping(): Shipping? {
+        val firstName = this.optNullableString("firstName")
+        val lastName = this.optNullableString("lastName")
+        val phoneNumber = this.optNullableString("phoneNumber")
+        val email = this.optNullableString("email")
+        val shippingMethod = this.optNullableString("shippingMethod")
+        val address = this.optJSONObject("address")?.toAddress()
 
-        return if (firstName == null && lastName == null && phone == null && email == null && shippingMethod == null && address == null) {
+        return if (firstName.isNullOrEmpty() && lastName.isNullOrEmpty() &&
+            phoneNumber.isNullOrEmpty() && email.isNullOrEmpty() &&
+            shippingMethod.isNullOrEmpty() && address == null
+        ) {
             null
         } else {
             Shipping.Builder().apply {
                 setFirstName(firstName)
                 setLastName(lastName)
-                setPhone(phone)
+                setPhone(phoneNumber)
                 setEmail(email)
                 setShippingMethod(shippingMethod)
                 setAddress(address)
@@ -136,14 +143,16 @@ object AirwallexPaymentSessionConverter {
         }
     }
 
-    private fun Map<String, Any?>.toAddress(): Address? {
-        val countryCode = this["countryCode"] as? String
-        val state = this["state"] as? String
-        val city = this["city"] as? String
-        val street = this["street"] as? String
-        val postcode = this["postcode"] as? String
+    fun JSONObject.toAddress(): Address? {
+        val countryCode = this.optNullableString("countryCode")
+        val state = this.optNullableString("state")
+        val city = this.optNullableString("city")
+        val street = this.optNullableString("street")
+        val postcode = this.optNullableString("postcode")
 
-        return if (countryCode == null && state == null && city == null && street == null && postcode == null) {
+        return if (countryCode.isNullOrEmpty() && state.isNullOrEmpty() &&
+            city.isNullOrEmpty() && street.isNullOrEmpty() && postcode.isNullOrEmpty()
+        ) {
             null
         } else {
             Address.Builder().apply {

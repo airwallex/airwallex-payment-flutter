@@ -13,7 +13,7 @@ class MethodChannelAirwallexPaymentFlutter
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel =
-      const MethodChannel('samples.flutter.dev/airwallex_payment', JSONMethodCodec());
+      const MethodChannel('airwallex_payment_flutter', JSONMethodCodec());
 
   @override
   Future<void> initialize(
