@@ -38,5 +38,7 @@ class Card {
     this.cardType,
   });
 
+  factory Card.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
+
   Map<String, dynamic> toJson() => _$CardToJson(this);
 }
