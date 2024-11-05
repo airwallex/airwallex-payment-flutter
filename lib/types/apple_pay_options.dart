@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'apple_pay_options.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class ApplePayOptions {
   String merchantIdentifier;
   List<ApplePaySupportedNetwork>? supportedNetworks;
@@ -17,17 +22,9 @@ class ApplePayOptions {
     this.totalPriceLabel,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'merchantIdentifier': merchantIdentifier,
-      'supportedNetworks': supportedNetworks?.map((e) => e.toMap()).toList(),
-      'additionalPaymentSummaryItems': additionalPaymentSummaryItems?.map((e) => e.toMap()).toList(),
-      'merchantCapabilities': merchantCapabilities?.map((e) => e.toMap()).toList(),
-      'requiredBillingContactFields': requiredBillingContactFields?.map((e) => e.toMap()).toList(),
-      'supportedCountries': supportedCountries,
-      'totalPriceLabel': totalPriceLabel,
-    };
-  }
+  factory ApplePayOptions.fromJson(Map<String, dynamic> json) => _$ApplePayOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ApplePayOptionsToJson(this);
 }
 
 enum ApplePaySupportedNetwork {
@@ -40,47 +37,11 @@ enum ApplePaySupportedNetwork {
   maestro
 }
 
-extension ApplePaySupportedNetworkExtension on ApplePaySupportedNetwork {
-  String toMap() {
-    switch (this) {
-      case ApplePaySupportedNetwork.visa:
-        return 'visa';
-      case ApplePaySupportedNetwork.masterCard:
-        return 'masterCard';
-      case ApplePaySupportedNetwork.unionPay:
-        return 'unionPay';
-      case ApplePaySupportedNetwork.amex:
-        return 'amex';
-      case ApplePaySupportedNetwork.discover:
-        return 'discover';
-      case ApplePaySupportedNetwork.jcb:
-        return 'jcb';
-      case ApplePaySupportedNetwork.maestro:
-        return 'maestro';
-    }
-  }
-}
-
 enum ApplePayMerchantCapability {
   supports3DS,
   supportsCredit,
   supportsDebit,
   supportsEMV,
-}
-
-extension ApplePayMerchantCapabilityExtension on ApplePayMerchantCapability {
-  String toMap() {
-    switch (this) {
-      case ApplePayMerchantCapability.supports3DS:
-        return 'supports3DS';
-      case ApplePayMerchantCapability.supportsCredit:
-        return 'supportsCredit';
-      case ApplePayMerchantCapability.supportsDebit:
-        return 'supportsDebit';
-      case ApplePayMerchantCapability.supportsEMV:
-        return 'supportsEMV';
-    }
-  }
 }
 
 enum ContactField {
@@ -91,23 +52,7 @@ enum ContactField {
   postalAddress,
 }
 
-extension ContactFieldExtension on ContactField {
-  String toMap() {
-    switch (this) {
-      case ContactField.emailAddress:
-        return 'emailAddress';
-      case ContactField.name:
-        return 'name';
-      case ContactField.phoneNumber:
-        return 'phoneNumber';
-      case ContactField.phoneticName:
-        return 'phoneticName';
-      case ContactField.postalAddress:
-        return 'postalAddress';
-    }
-  }
-}
-
+@JsonSerializable()
 class CartSummaryItem {
   String label;
   double amount;
@@ -119,27 +64,12 @@ class CartSummaryItem {
     this.type,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'label': label,
-      'amount': amount,
-      'type': type?.toMap(),
-    };
-  }
+  factory CartSummaryItem.fromJson(Map<String, dynamic> json) => _$CartSummaryItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CartSummaryItemToJson(this);
 }
 
 enum CartSummaryItemType {
   finalType,
   pendingType,
-}
-
-extension CartSummaryItemTypeExtension on CartSummaryItemType {
-  String toMap() {
-    switch (this) {
-      case CartSummaryItemType.finalType:
-        return 'final';
-      case CartSummaryItemType.pendingType:
-        return 'pending';
-    }
-  }
 }
