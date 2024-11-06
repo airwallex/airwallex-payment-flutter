@@ -28,14 +28,14 @@ object AirwallexPaymentSessionConverter {
 
         val shipping = sessionObject.optJSONObject("shipping")?.toShipping()
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
-            ?.toString() ?: throw IllegalArgumentException("amount is required"))
+            ?.toString() ?: error("amount is required"))
         val currency = sessionObject.getNullableStringOrThrow("currency")
         val countryCode = sessionObject.getNullableStringOrThrow("countryCode")
 
         val paymentIntentId = sessionObject.getNullableStringOrThrow("paymentIntentId")
 
         if (customerId == "") {
-            throw IllegalArgumentException("customerId must not be empty")
+            error("customerId must not be empty")
         }
 
         val order = shipping?.let {
@@ -100,7 +100,7 @@ object AirwallexPaymentSessionConverter {
         val format = when (formatStr?.lowercase()) {
             "min" -> BillingAddressParameters.Format.MIN
             "full" -> BillingAddressParameters.Format.FULL
-            else -> throw IllegalArgumentException("Unknown format: $formatStr")
+            else -> error("Unknown format: $formatStr")
         }
         return BillingAddressParameters(
             format = format,

@@ -18,6 +18,7 @@ import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionConvert
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionConverter
 import com.example.airwallex_payment_flutter.util.CardConverter
+import com.example.airwallex_payment_flutter.util.optNullableString
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -26,8 +27,7 @@ class AirwallexPaymentSdkModule {
     private lateinit var airwallex: Airwallex
 
     fun initialize(application: Application, call: MethodCall, result: MethodChannel.Result) {
-        val arguments = call.arguments<JSONObject>()
-            ?: throw IllegalArgumentException("Arguments data is required")
+        val arguments = call.arguments<JSONObject>() ?: error("Arguments data is required")
         val environment = getEnvironment(arguments.optString("environment"))
         val enableLogging = arguments.optBoolean("enableLogging", true)
         val saveLogToLocal = arguments.optBoolean("saveLogToLocal", false)
@@ -113,7 +113,7 @@ class AirwallexPaymentSdkModule {
         val session = parseSessionFromCall(call)
         val card = CardConverter.fromMethodCall(call)
         val saveCard = call.arguments<JSONObject>()?.optBoolean("saveCard")
-            ?: throw IllegalArgumentException("saveCard is required")
+            ?: error("saveCard is required")
 
         airwallex.confirmPaymentIntent(
             session = session,
@@ -172,17 +172,14 @@ class AirwallexPaymentSdkModule {
     }
 
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
-        val argumentsObject = call.arguments<JSONObject>()
-            ?: throw IllegalArgumentException("Arguments data is required")
+        val argumentsObject = call.arguments<JSONObject>() ?: error("Arguments data is required")
 
-        val sessionObject = argumentsObject.optJSONObject("session")
-            ?: throw IllegalArgumentException("session is required")
+        val sessionObject = argumentsObject.optJSONObject("session") ?: error("session is required")
 
-        val clientSecret = sessionObject.optString("clientSecret")
-            ?: throw IllegalArgumentException("clientSecret is required")
+        val clientSecret =
+            sessionObject.optNullableString("clientSecret") ?: error("clientSecret is required")
 
-        val type = sessionObject.optString("type")
-            ?: throw IllegalArgumentException("type is required")
+        val type = sessionObject.optNullableString("type") ?: error("type is required")
 
         return when (type) {
             "OneOff" -> {
@@ -204,7 +201,7 @@ class AirwallexPaymentSdkModule {
             }
 
             else -> {
-                throw IllegalArgumentException("Unsupported session type: $type")
+                error("Unsupported session type: $type")
             }
         }
     }

@@ -17,21 +17,21 @@ object AirwallexRecurringWithIntentSessionConverter {
         val paymentIntentId = sessionObject.getNullableStringOrThrow("paymentIntentId")
 
         val nextTriggerBy = sessionObject.optNullableString("nextTriggeredBy")?.let {
-            toNextTriggeredBy(it) ?: throw IllegalArgumentException("Invalid NextTriggeredBy value")
-        } ?: throw IllegalArgumentException("nextTriggeredBy is required")
+            toNextTriggeredBy(it) ?: error("Invalid NextTriggeredBy value")
+        } ?: error("nextTriggeredBy is required")
 
         val currency = sessionObject.getNullableStringOrThrow("currency")
         val countryCode = sessionObject.getNullableStringOrThrow("countryCode")
 
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
-            ?.toString() ?: throw IllegalArgumentException("amount is required"))
+            ?.toString() ?: error("amount is required"))
 
         val customerId = sessionObject.getNullableStringOrThrow("customerId")
 
         val returnUrl = sessionObject.optNullableString("returnUrl")
         val requiresCVC = sessionObject.optBoolean("requiresCVC", false)
         val merchantTriggerReason = sessionObject.optNullableString("merchantTriggerReason")?.let {
-            toMerchantTriggerReason(it) ?: throw IllegalArgumentException("Invalid MerchantTriggerReason value")
+            toMerchantTriggerReason(it) ?: error("Invalid MerchantTriggerReason value")
         } ?: PaymentConsent.MerchantTriggerReason.UNSCHEDULED
 
         val paymentMethods = sessionObject.optJSONArray("paymentMethods")?.let { jsonArray ->
