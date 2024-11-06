@@ -74,6 +74,21 @@ class AirwallexSdk: NSObject {
         }
         self.cardProvider = cardProvider
     }
+    
+    func payWithConsent(clientSecret: String, session: NSDictionary, consent: NSDictionary, result: @escaping FlutterResult) {
+        self.result = result
+        
+        AWXAPIClientConfiguration.shared().clientSecret = clientSecret
+        
+        let session = buildAirwallexSession(from: session)
+        let consent = AWXPaymentConsent(params: consent)
+        
+        let cardProvider = AWXCardProvider(delegate: self, session: session)
+        DispatchQueue.main.async {
+            cardProvider.confirmPaymentIntent(with: consent)
+        }
+        self.cardProvider = cardProvider
+    }
 }
 
 extension AirwallexSdk: AWXPaymentResultDelegate {
@@ -94,6 +109,7 @@ extension AirwallexSdk: AWXPaymentResultDelegate {
                 self.result?(["status": "cancelled"])
             }
             self.result = nil
+            self.paymentConsentID = nil
         }
     }
     
@@ -125,7 +141,11 @@ extension AirwallexSdk: AWXProviderDelegate {
     func provider(_ provider: AWXDefaultProvider, didCompleteWith status: AirwallexPaymentStatus, error: (any Error)?) {
         switch status {
         case .success:
-            result?(["status": "success"])
+            var successDict = ["status": "success"]
+            if let consentID = self.paymentConsentID {
+                successDict["paymentConsentId"] = consentID
+            }
+            result?(successDict)
         case .inProgress:
             result?(["status": "inProgress"])
         case .failure:
@@ -134,7 +154,13 @@ extension AirwallexSdk: AWXProviderDelegate {
             result?(["status": "cancelled"])
         }
         result = nil
+        paymentConsentID = nil
         applePayProvider = nil
+        cardProvider = nil
+    }
+    
+    func provider(_ provider: AWXDefaultProvider, didCompleteWithPaymentConsentId paymentConsentId: String) {
+        self.paymentConsentID = paymentConsentId
     }
 }
 
