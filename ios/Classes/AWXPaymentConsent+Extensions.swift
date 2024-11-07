@@ -31,7 +31,7 @@ extension AWXPaymentConsent {
         if let merchantTriggerReason = params["merchantTriggerReason"] as? String {
             self.merchantTriggerReason = merchantTriggerReason
         }
-        self.requiresCVC = params["requiresCVC"] as! Bool
+        self.requiresCVC = params["requiresCvc"] as! Bool
         if let createdAt = params["createdAt"] as? String {
             self.createdAt = createdAt
         }

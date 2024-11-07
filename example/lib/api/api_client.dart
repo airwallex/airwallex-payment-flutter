@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiClient {
-  late String baseUrl;
+  late String checkoutDemoBaseUrl;
   final String apiKey;
   final String clientId;
   final String environment;
@@ -11,10 +11,10 @@ class ApiClient {
       {required this.environment,
       required this.apiKey,
       required this.clientId}) {
-    baseUrl = _getBaseUrlForEnvironment(environment);
+    checkoutDemoBaseUrl = _getCheckoutDemoBaseUrlForEnvironment(environment);
   }
 
-  String _getBaseUrlForEnvironment(String environment) {
+  String _getCheckoutDemoBaseUrlForEnvironment(String environment) {
     switch (environment) {
       case 'demo':
         return 'https://demo-pacheckoutdemo.airwallex.com';
@@ -30,7 +30,7 @@ class ApiClient {
     print('Creating payment intent with params: $params');
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/api/v1/pa/payment_intents/create'),
+        Uri.parse('$checkoutDemoBaseUrl/api/v1/pa/payment_intents/create'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -55,7 +55,7 @@ class ApiClient {
     print('Creating customer with params: $params');
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/api/v1/pa/customers/create'),
+        Uri.parse('$checkoutDemoBaseUrl/api/v1/pa/customers/create'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -81,7 +81,7 @@ class ApiClient {
     try {
       final response = await http.get(
         Uri.parse(
-            '$baseUrl/api/v1/pa/customers/$customerId/generate_client_secret?apiKey=$apiKey&clientId=$clientId'),
+            '$checkoutDemoBaseUrl/api/v1/pa/customers/$customerId/generate_client_secret?apiKey=$apiKey&clientId=$clientId'),
       );
       print('HTTP Response Status Code: ${response.statusCode}');
       print('HTTP Response Body: ${response.body}');
@@ -93,6 +93,26 @@ class ApiClient {
       }
     } catch (e) {
       print('Error occurred while generating client secret: $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getPaymentConsents(String customerId) async {
+    print('Fetching payment consents');
+    try {
+      final response = await http.get(
+        Uri.parse('$checkoutDemoBaseUrl/api/v1/pa/payment_consents?customer_id=$customerId')
+      );
+      print('HTTP Response Status Code: ${response.statusCode}');
+      print('HTTP Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to fetch payment consents: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred while fetching payment consents: $e');
       rethrow;
     }
   }

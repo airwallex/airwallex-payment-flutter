@@ -41,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   final airwallexPaymentFlutter = AirwallexPaymentFlutter();
-  late PaymentRepository paymentIntentRepository;
+  late PaymentRepository paymentRepository;
   late List<String> environmentOptions;
 
   String _environment = 'demo';
@@ -51,6 +51,7 @@ class MyHomePageState extends State<MyHomePage> {
   // if you don't, We will use the default value
   String apiKey = '';
   String clientId = '';
+  String? customerId;
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class MyHomePageState extends State<MyHomePage> {
       final apiClient = ApiClient(
           environment: _environment, apiKey: apiKey, clientId: clientId);
       setState(() {
-        paymentIntentRepository = PaymentRepository(apiClient: apiClient);
+        paymentRepository = PaymentRepository(apiClient: apiClient);
       });
     } on PlatformException catch (e) {
       _showDialog('Error', 'Unable to initialize: ${e.message}');
@@ -95,20 +96,22 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<BaseSession> _createSession() async {
+  Future<BaseSession> _createSession({String? customerId}) async {
     switch (_selectedOption) {
       case 'one off':
-        final paymentIntent = await paymentIntentRepository
-            .getPaymentIntentFromServer(false, null);
+        final paymentIntent = await paymentRepository
+            .getPaymentIntentFromServer(false, customerId);
         return SessionCreator.createOneOffSession(paymentIntent);
       case 'recurring':
-        final customerId = await paymentIntentRepository.getCustomerId();
+        final customerId = await paymentRepository.getCustomerId();
+        this.customerId = customerId;
         final clientSecret =
-            await paymentIntentRepository.getClientSecret(customerId);
+            await paymentRepository.getClientSecret(customerId);
         return SessionCreator.createRecurringSession(clientSecret, customerId);
       default: //'recurring and payment':
-        final customerId = await paymentIntentRepository.getCustomerId();
-        final paymentIntent = await paymentIntentRepository
+        final customerId = await paymentRepository.getCustomerId();
+        this.customerId = customerId;
+        final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
         return SessionCreator.createRecurringWithIntentSession(
             paymentIntent, customerId);
@@ -234,6 +237,16 @@ class MyHomePageState extends State<MyHomePage> {
                             .startApplePay(await _createSession())),
                     child: const Text('startApplePay'),
                   )
+                ],
+                if (_selectedOption == 'one off' && customerId != null) ...[
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => _handleSubmit(() async {
+                        return airwallexPaymentFlutter.payWithConsent(await _createSession(customerId: customerId), await paymentRepository
+                            .getPaymentConsents(customerId!).then((consents) => consents.first));
+                    }),
+                    child: const Text('payWithConsent'),
+                  ),
                 ],
               ],
             ),

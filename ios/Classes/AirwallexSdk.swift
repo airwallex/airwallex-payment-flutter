@@ -89,6 +89,16 @@ class AirwallexSdk: NSObject {
         }
         self.cardProvider = cardProvider
     }
+    
+    private func getViewController() -> UIViewController {
+        var presentingViewController = UIApplication.shared.delegate?.window??.rootViewController
+        
+        while let presented = presentingViewController?.presentedViewController {
+            presentingViewController = presented
+        }
+
+        return presentingViewController ?? UIViewController()
+    }
 }
 
 extension AirwallexSdk: AWXPaymentResultDelegate {
@@ -115,16 +125,6 @@ extension AirwallexSdk: AWXPaymentResultDelegate {
     
     func paymentViewController(_ controller: UIViewController, didCompleteWithPaymentConsentId paymentConsentId: String) {
         self.paymentConsentID = paymentConsentId
-    }
-    
-    private func getViewController() -> UIViewController {
-        var presentingViewController = UIApplication.shared.delegate?.window??.rootViewController
-        
-        while let presented = presentingViewController?.presentedViewController {
-            presentingViewController = presented
-        }
-
-        return presentingViewController ?? UIViewController()
     }
 }
 
@@ -161,6 +161,10 @@ extension AirwallexSdk: AWXProviderDelegate {
     
     func provider(_ provider: AWXDefaultProvider, didCompleteWithPaymentConsentId paymentConsentId: String) {
         self.paymentConsentID = paymentConsentId
+    }
+    
+    func hostViewController() -> UIViewController {
+        return getViewController()
     }
 }
 

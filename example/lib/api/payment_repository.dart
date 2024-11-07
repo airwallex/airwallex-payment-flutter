@@ -1,3 +1,4 @@
+import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'api_client.dart';
@@ -23,7 +24,8 @@ class PaymentRepository {
       'descriptor': 'Airwallex - T-shirt',
       'metadata': {'id': 1},
       'email': 'yimadangxian@airwallex.com',
-      'return_url': 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      'return_url':
+          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
     };
 
     if (force3DS == true) {
@@ -48,14 +50,14 @@ class PaymentRepository {
       'merchant_customer_id': UniqueKey().toString(),
       'first_name': 'John',
       'last_name': 'Doe',
-      'email' : 'john.doe@airwallex.com',
-      'phone_number' : '13800000000',
-      'additional_info' : {
-          'registered_via_social_media' : false,
-          'registration_date' : '2019-09-18',
-          'first_successful_order_date' : '2019-09-18'
+      'email': 'john.doe@airwallex.com',
+      'phone_number': '13800000000',
+      'additional_info': {
+        'registered_via_social_media': false,
+        'registration_date': '2019-09-18',
+        'first_successful_order_date': '2019-09-18'
       },
-      'metadata' : {'id' : 1}
+      'metadata': {'id': 1}
     };
     final response = await apiClient.createCustomer(body);
     return response['id'];
@@ -64,5 +66,12 @@ class PaymentRepository {
   Future<String> getClientSecret(String customerId) async {
     final response = await apiClient.createClientSecretWithQuery(customerId);
     return response['client_secret'];
+  }
+
+  Future<List<PaymentConsent>> getPaymentConsents(String customerId) async {
+    final response = await apiClient.getPaymentConsents(customerId);
+    return response['items']
+        .map<PaymentConsent>((item) => PaymentConsent.fromJson(item))
+        .toList();
   }
 }

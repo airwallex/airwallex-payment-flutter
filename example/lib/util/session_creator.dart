@@ -63,7 +63,7 @@ class SessionCreator {
       countryCode: 'HK',
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
-      nextTriggeredBy: NextTriggeredBy.merchant,
+      nextTriggeredBy: NextTriggeredBy.customer,
       merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
   }
