@@ -6,6 +6,7 @@ class AirwallexSdk: NSObject {
     private var paymentConsentID: String?
     private var applePayProvider: AWXApplePayProvider?
     private var cardProvider: AWXCardProvider?
+    private var hostVC: UIViewController?
     
     func initialize(environment: String) {
         if let mode = AirwallexSDKMode.from(environment) {
@@ -69,6 +70,7 @@ class AirwallexSdk: NSObject {
         let card = AWXCard(params: card)
         
         let cardProvider = AWXCardProvider(delegate: self, session: session)
+        hostVC = getViewController()
         DispatchQueue.main.async {
             cardProvider.confirmPaymentIntent(with: card, billing: nil, saveCard: saveCard)
         }
@@ -84,6 +86,7 @@ class AirwallexSdk: NSObject {
         let consent = AWXPaymentConsent(params: consent)
         
         let cardProvider = AWXCardProvider(delegate: self, session: session)
+        hostVC = getViewController()
         DispatchQueue.main.async {
             cardProvider.confirmPaymentIntent(with: consent)
         }
@@ -157,6 +160,7 @@ extension AirwallexSdk: AWXProviderDelegate {
         paymentConsentID = nil
         applePayProvider = nil
         cardProvider = nil
+        hostVC = nil
     }
     
     func provider(_ provider: AWXDefaultProvider, didCompleteWithPaymentConsentId paymentConsentId: String) {
@@ -164,7 +168,7 @@ extension AirwallexSdk: AWXProviderDelegate {
     }
     
     func hostViewController() -> UIViewController {
-        return getViewController()
+        hostVC ?? getViewController()
     }
 }
 

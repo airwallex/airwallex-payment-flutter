@@ -8,8 +8,8 @@ part of 'card.dart';
 
 Card _$CardFromJson(Map<String, dynamic> json) => Card(
       cvc: json['cvc'] as String?,
-      expiryMonth: json['expiryMonth'] as String?,
-      expiryYear: json['expiryYear'] as String?,
+      expiryMonth: json['expiry_month'] as String?,
+      expiryYear: json['expiry_year'] as String?,
       name: json['name'] as String?,
       number: json['number'] as String?,
       bin: json['bin'] as String?,
@@ -18,10 +18,10 @@ Card _$CardFromJson(Map<String, dynamic> json) => Card(
       country: json['country'] as String?,
       funding: json['funding'] as String?,
       fingerprint: json['fingerprint'] as String?,
-      cvcCheck: json['cvcCheck'] as String?,
-      avsCheck: json['avsCheck'] as String?,
-      issuerCountryCode: json['issuerCountryCode'] as String?,
-      cardType: json['cardType'] as String?,
+      cvcCheck: json['cvc_check'] as String?,
+      avsCheck: json['avs_check'] as String?,
+      issuerCountryCode: json['issuer_country_code'] as String?,
+      numberType: json['number_type'] as String?,
     );
 
 Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
@@ -39,5 +39,5 @@ Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
       'cvcCheck': instance.cvcCheck,
       'avsCheck': instance.avsCheck,
       'issuerCountryCode': instance.issuerCountryCode,
-      'cardType': instance.cardType,
+      'numberType': instance.numberType,
     };
