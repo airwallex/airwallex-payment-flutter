@@ -45,6 +45,7 @@ class MyHomePageState extends State<MyHomePage> {
   late List<String> environmentOptions;
 
   String _environment = 'demo';
+  bool _saveCard = false;
   bool _isLoading = false;
   String _selectedOption = 'one off';
   //for demo or staging environment, you can set your own api key and client id,
@@ -201,25 +202,50 @@ class MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter
-                          .presentEntirePaymentFlow(await _createSession())),
+                      airwallexPaymentFlutter.presentEntirePaymentFlow(
+                          await _createSession(customerId: customerId))),
                   child: const Text('presentEntirePaymentFlow'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter
-                          .presentCardPaymentFlow(await _createSession())),
+                      airwallexPaymentFlutter.presentCardPaymentFlow(
+                          await _createSession(customerId: customerId))),
                   child: const Text('presentCardPaymentFlow'),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter.payWithCardDetails(
-                          await _createSession(),
-                          CardCreator.createDemoCard(_environment),
-                          false)),
-                  child: const Text('payWithCardDetails'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => _handleSubmit(() async {
+                        if (_saveCard && customerId == null) {
+                          customerId = await paymentRepository.getCustomerId();
+                        }
+                        return airwallexPaymentFlutter.payWithCardDetails(
+                            await _createSession(customerId: customerId),
+                            CardCreator.createDemoCard(_environment),
+                            _saveCard);
+                      }),
+                      child: const Text('payWithCardDetails'),
+                    ),
+                    if (_selectedOption == 'one off') ...[
+                      const SizedBox(width: 5),
+                      SizedBox(
+                          height: 24.0,
+                          width: 24.0,
+                          child: Checkbox(
+                            value: _saveCard,
+                            onChanged: (value) {
+                              setState(() {
+                                _saveCard = value!;
+                              });
+                            },
+                          )),
+                      const Text('save'),
+                    ]
+                  ],
                 ),
                 const SizedBox(height: 20),
                 if (_selectedOption == 'one off' && Platform.isAndroid) ...[
@@ -241,10 +267,12 @@ class MyHomePageState extends State<MyHomePage> {
                 if (_selectedOption == 'one off' && customerId != null) ...[
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => _handleSubmit(() async {
-                        return airwallexPaymentFlutter.payWithConsent(await _createSession(customerId: customerId), await paymentRepository
-                            .getPaymentConsents(customerId!).then((consents) => consents.first));
-                    }),
+                    onPressed: () => _handleSubmit(() async =>
+                        airwallexPaymentFlutter.payWithConsent(
+                            await _createSession(customerId: customerId),
+                            await paymentRepository
+                                .getPaymentConsents(customerId!)
+                                .then((consents) => consents.first))),
                     child: const Text('payWithConsent'),
                   ),
                 ],
