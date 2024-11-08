@@ -30,6 +30,6 @@ extension AWXCard {
         cvcCheck = params["cvcCheck"] as? String
         avsCheck = params["avsCheck"] as? String
         country = params["issuerCountryCode"] as? String
-        numberType = params["cardType"] as? String
+        numberType = params["numberType"] as? String
     }
 }

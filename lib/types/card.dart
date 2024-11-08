@@ -18,7 +18,7 @@ class Card {
   String? cvcCheck;
   String? avsCheck;
   String? issuerCountryCode;
-  String? cardType;
+  String? numberType;
 
   Card({
     this.cvc,
@@ -35,8 +35,10 @@ class Card {
     this.cvcCheck,
     this.avsCheck,
     this.issuerCountryCode,
-    this.cardType,
+    this.numberType,
   });
+
+  factory Card.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardToJson(this);
 }

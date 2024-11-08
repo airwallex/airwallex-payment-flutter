@@ -37,6 +37,11 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             let card = arguments["card"] as! NSDictionary
             let saveCard = arguments["saveCard"] as! Bool
             sdk?.payWithCardDetails(clientSecret: session["clientSecret"] as! String, session: session, card: card, saveCard: saveCard, result: result)
+        case "payWithConsent":
+            let arguments = call.arguments as! NSDictionary
+            let session = arguments["session"] as! NSDictionary
+            let consent = arguments["consent"] as! NSDictionary
+            sdk?.payWithConsent(clientSecret: session["clientSecret"] as! String, session: session, consent: consent, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }

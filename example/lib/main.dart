@@ -41,16 +41,18 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   final airwallexPaymentFlutter = AirwallexPaymentFlutter();
-  late PaymentRepository paymentIntentRepository;
+  late PaymentRepository paymentRepository;
   late List<String> environmentOptions;
 
   String _environment = 'demo';
+  bool _saveCard = false;
   bool _isLoading = false;
   String _selectedOption = 'one off';
   //for demo or staging environment, you can set your own api key and client id,
   // if you don't, We will use the default value
   String apiKey = '';
   String clientId = '';
+  String? customerId;
 
   @override
   void initState() {
@@ -69,7 +71,7 @@ class MyHomePageState extends State<MyHomePage> {
       final apiClient = ApiClient(
           environment: _environment, apiKey: apiKey, clientId: clientId);
       setState(() {
-        paymentIntentRepository = PaymentRepository(apiClient: apiClient);
+        paymentRepository = PaymentRepository(apiClient: apiClient);
       });
     } on PlatformException catch (e) {
       _showDialog('Error', 'Unable to initialize: ${e.message}');
@@ -95,20 +97,22 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<BaseSession> _createSession() async {
+  Future<BaseSession> _createSession({String? customerId}) async {
     switch (_selectedOption) {
       case 'one off':
-        final paymentIntent = await paymentIntentRepository
-            .getPaymentIntentFromServer(false, null);
+        final paymentIntent = await paymentRepository
+            .getPaymentIntentFromServer(false, customerId);
         return SessionCreator.createOneOffSession(paymentIntent);
       case 'recurring':
-        final customerId = await paymentIntentRepository.getCustomerId();
+        final customerId = await paymentRepository.getCustomerId();
+        this.customerId = customerId;
         final clientSecret =
-            await paymentIntentRepository.getClientSecret(customerId);
+            await paymentRepository.getClientSecret(customerId);
         return SessionCreator.createRecurringSession(clientSecret, customerId);
       default: //'recurring and payment':
-        final customerId = await paymentIntentRepository.getCustomerId();
-        final paymentIntent = await paymentIntentRepository
+        final customerId = await paymentRepository.getCustomerId();
+        this.customerId = customerId;
+        final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
         return SessionCreator.createRecurringWithIntentSession(
             paymentIntent, customerId);
@@ -198,25 +202,50 @@ class MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter
-                          .presentEntirePaymentFlow(await _createSession())),
+                      airwallexPaymentFlutter.presentEntirePaymentFlow(
+                          await _createSession(customerId: customerId))),
                   child: const Text('presentEntirePaymentFlow'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter
-                          .presentCardPaymentFlow(await _createSession())),
+                      airwallexPaymentFlutter.presentCardPaymentFlow(
+                          await _createSession(customerId: customerId))),
                   child: const Text('presentCardPaymentFlow'),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter.payWithCardDetails(
-                          await _createSession(),
-                          CardCreator.createDemoCard(_environment),
-                          false)),
-                  child: const Text('payWithCardDetails'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => _handleSubmit(() async {
+                        if (_saveCard && customerId == null) {
+                          customerId = await paymentRepository.getCustomerId();
+                        }
+                        return airwallexPaymentFlutter.payWithCardDetails(
+                            await _createSession(customerId: customerId),
+                            CardCreator.createDemoCard(_environment),
+                            _saveCard);
+                      }),
+                      child: const Text('payWithCardDetails'),
+                    ),
+                    if (_selectedOption == 'one off') ...[
+                      const SizedBox(width: 5),
+                      SizedBox(
+                          height: 24.0,
+                          width: 24.0,
+                          child: Checkbox(
+                            value: _saveCard,
+                            onChanged: (value) {
+                              setState(() {
+                                _saveCard = value!;
+                              });
+                            },
+                          )),
+                      const Text('save'),
+                    ]
+                  ],
                 ),
                 const SizedBox(height: 20),
                 if (_selectedOption == 'one off' && Platform.isAndroid) ...[
@@ -234,6 +263,18 @@ class MyHomePageState extends State<MyHomePage> {
                             .startApplePay(await _createSession())),
                     child: const Text('startApplePay'),
                   )
+                ],
+                if (_selectedOption == 'one off' && customerId != null) ...[
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => _handleSubmit(() async =>
+                        airwallexPaymentFlutter.payWithConsent(
+                            await _createSession(customerId: customerId),
+                            await paymentRepository
+                                .getPaymentConsents(customerId!)
+                                .then((consents) => consents.first))),
+                    child: const Text('payWithConsent'),
+                  ),
                 ],
               ],
             ),

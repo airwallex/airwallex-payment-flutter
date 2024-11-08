@@ -12,6 +12,7 @@ class SessionCreator {
     final amountValue = paymentIntent['amount'];
     final double amount = (amountValue is int) ? amountValue.toDouble() : amountValue as double;
     final String currency = paymentIntent['currency'];
+    final String? customerId = paymentIntent['customer_id'];
 
     print('paymentIntentId: $paymentIntentId\n'
         'clientSecret: $clientSecret\n'
@@ -19,6 +20,7 @@ class SessionCreator {
         'currency: $currency');
 
     return OneOffSession(
+      customerId: customerId,
       paymentIntentId: paymentIntentId,
       clientSecret: clientSecret,
       amount: amount,
@@ -63,7 +65,7 @@ class SessionCreator {
       countryCode: 'HK',
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
-      nextTriggeredBy: NextTriggeredBy.merchant,
+      nextTriggeredBy: NextTriggeredBy.customer,
       merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
   }

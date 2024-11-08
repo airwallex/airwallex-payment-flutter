@@ -52,9 +52,12 @@ class MethodChannelAirwallexPaymentFlutter
 
   @override
   Future<PaymentResult> payWithConsent(
-      BaseSession session, PaymentConsent consent) {
-    // TODO: implement payWithConsent
-    return super.payWithConsent(session, consent);
+      BaseSession session, PaymentConsent consent) async {
+    final result = await methodChannel.invokeMethod('payWithConsent', {
+      'session': session.toJson(),
+      'consent': consent.toJson(),
+    });
+    return parsePaymentResult(result);
   }
 
   @override

@@ -44,7 +44,7 @@ extension AirwallexSdk {
         session.setAmount(NSDecimalNumber(decimal: (params["amount"] as! NSNumber).decimalValue))
         session.setCurrency(params["currency"] as! String)
         session.setCustomerId(params["customerId"] as? String)
-        if let nextTriggerBy = AirwallexNextTriggerByType.from(params["NextTriggeredBy"] as! String) {
+        if let nextTriggerBy = AirwallexNextTriggerByType.from(params["nextTriggeredBy"] as! String) {
             session.nextTriggerByType = nextTriggerBy
         }
         if let merchantTriggerReason = AirwallexMerchantTriggerReason.from(params["merchantTriggerReason"] as! String) {
@@ -63,7 +63,7 @@ extension AirwallexSdk {
         if let autoCapture = params["autoCapture"] as? Bool {
             session.autoCapture = autoCapture
         }
-        if let nextTriggerBy = AirwallexNextTriggerByType.from(params["NextTriggeredBy"] as! String) {
+        if let nextTriggerBy = AirwallexNextTriggerByType.from(params["nextTriggeredBy"] as! String) {
             session.nextTriggerByType = nextTriggerBy
         }
         if let merchantTriggerReason = AirwallexMerchantTriggerReason.from(params["merchantTriggerReason"] as! String) {
