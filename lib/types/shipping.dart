@@ -10,7 +10,7 @@ class Shipping {
   String? shippingMethod;
   String? email;
   String? dateOfBirth;
-  Address? address;
+  ShippingAddress? address;
 
   Shipping({
     this.firstName,
@@ -28,16 +28,16 @@ class Shipping {
 }
 
 @JsonSerializable()
-class Address {
+class ShippingAddress {
   String? city;
   String? countryCode;
   String? street;
   String? postcode;
   String? state;
 
-  Address({this.city, this.countryCode, this.street, this.postcode, this.state});
+  ShippingAddress({this.city, this.countryCode, this.street, this.postcode, this.state});
   
-  factory Address.fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
+  factory ShippingAddress.fromJson(Map<String, dynamic> json) => _$ShippingAddressFromJson(json);
 
-  Map<String, dynamic> toJson() => _$AddressToJson(this);
+  Map<String, dynamic> toJson() => _$ShippingAddressToJson(this);
 }

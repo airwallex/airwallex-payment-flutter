@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'card.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Card {
   String? cvc;
   String? expiryMonth;
