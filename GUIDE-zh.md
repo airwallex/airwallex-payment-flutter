@@ -1,15 +1,12 @@
 # Airwallex Flutter Plugin
-Airwallex Flutter Plugin是一种灵活的工具，可让您将付款方式集成到您的Flutter应用中。 它还包括一个预构建的UI，使您可以灵活地选择使用其中的任何部分，同时用自己的UI替换其余部分。
+Airwallex Flutter Plugin是一种灵活的工具，可让您将支付功能集成到您的Flutter应用中。它还包括一个预构建的UI，使您可以灵活地选择使用其中的任何部分，同时用自己的UI替换其余部分。
 
-本节将指导您完成集成Airwallex Flutter Plugin的过程。 我们假设您是一名Flutter开发人员，并且熟悉Flutter插件的集成和使用。
+本节将指导您完成集成Airwallex Flutter Plugin的过程。我们假设您是一名Flutter开发人员，并且熟悉Flutter插件的集成和使用。
 
-我们的Demo开源在 [Github](https://github.com/airwallex/airwallex-payment-flutter)，可以帮助你更好地了解如何在你的Flutter项目中集成Airwallex Flutter Plugin。
+我们的示例代码开源在[Github](https://github.com/airwallex/airwallex-payment-flutter/tree/main/example)，可以帮助你更好地了解如何在你的Flutter项目中集成Airwallex Flutter Plugin。
 
-## Contents
-* [Overview](#Overview)
-    * [Airwallex API](#airwallex-api)
-    * [Airwallex Native UI](#airwallex-native-ui)
-* [集成](#集成)
+## 内容
+* [安装](#安装)
 * [初始化](#初始化)
 * [创建PaymentIntent](#创建PaymentIntent)
 * [创建PaymentSession](#创建PaymentSession)
@@ -27,19 +24,7 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将付款方式集�
 * [测试卡号](#测试卡号)
 * [贡献](#贡献)
 
-## Overview
-### Airwallex API
-
-Airwallex Flutter Plugin是一种灵活的工具，可让您将付款方式集成到您的Flutter中。
-
-支持的付款方式：
-- Cards: [`Visa, Mastercard`](#cards). If you want to integrate Airwallex API without our Native UI for card payments, then your website is required to be PCI-DSS compliant. 
-- E-Wallets: [`Alipay`](#alipay), [`AlipayHK`](#alipayhk), [`DANA`](#dana), [`GCash`](#gcash), [`Kakao Pay`](#kakao-pay), [`Touch ‘n Go`](#touch-n-go), [`WeChat Pay`](#wechat-pay)
-
-### Airwallex Native UI
-Airwallex Native UI 是一个预构建的UI，可让您自定义UI颜色并适合您的App主题。 您可以单独使用这些组件，也可以将我们的预构建UI打包到一个流程中以显示您的付款。
-
-## 集成
+## 安装
 在 `pubspec.yaml`中添加以下依赖
 ```yaml
 dependencies:
@@ -67,7 +52,7 @@ android.enableR8.fullMode=false
 -keep class org.xmlpull.v1.XmlPullParser { *; }
 -keep interface org.xmlpull.v1.XmlPullParser { *; }
 ```
-当然您也可以关注flutter官方的相关issue，以获取最佳的解决方案[issues/146266](https://github.com/flutter/flutter/issues/146266)
+当然您也可以关注flutter官方的相关issue，以获取最佳的解决方案：[issues/146266](https://github.com/flutter/flutter/issues/146266)
 
 
 ## 初始化
@@ -101,7 +86,7 @@ airwallexPaymentFlutter.initialize('demo', true, false);
 无论您选择调用我们的预构建UI组件还是使用低层API，您都需要在调用之前创建一个`PaymentSession`对象。 该对象包含有关付款的所有必要信息。
 
 ### 创建一个OneOffSession对象
-GooglePayOptions 和 Shipping 都是可选的， 您可以根据自己的需要选择是否传递这些参数。
+GooglePayOptions和Shipping都是可选的，您可以根据自己的需要选择是否传递这些参数。
 ```dart
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
@@ -149,7 +134,7 @@ final googlePayOptions = GooglePayOptions(
 
 #### 配置returnUrl
 注意，如果您希望使用重定向调用第三方支付，则必须提供returnUrl来决定支付结束后跳转的页面
-#####Android：
+##### Android：
 ```
     <intent-filter>
         ...
@@ -159,6 +144,7 @@ final googlePayOptions = GooglePayOptions(
     </intent-filter>
 ```
 ##### iOS：
+您需要配置[custom url scheme](https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app)。
 
 ### 创建一个RecurringSession对象
 

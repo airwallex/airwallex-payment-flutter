@@ -6,8 +6,13 @@
 
 [EN](./README.md) | 中文
 
-Airwallex Flutter Plugin 可以很方便得在你的Flutter应用中添加支付功能。
+Airwallex Flutter Plugin可以很方便地在你的Flutter应用中添加支付功能。
 目前，Airwallex Flutter Plugin已支持Android和iOS两个平台。
+支持的付款方式：
+- 卡：`Visa`, `Mastercard`, `Amex`, `Dinners Club`, `JCB`, `Discover`, `Union Pay`. 如果你想通过Airwallex API集成而不使用我们的原生UI，那么你的应用必须符合PCI-DSS 规范。 
+- 电子钱包：`Alipay`, `AlipayHK`, `DANA`, `GCash`, `Kakao Pay`, `Touch ‘n Go`, `WeChat Pay`等.
+- Apple Pay
+- Google Pay
 
 ## 添加依赖
 已经上传到[pub.dev](https://pub.dev/packages/airwallex_payment_flutter), 你只需要添加Plugin依赖项。
