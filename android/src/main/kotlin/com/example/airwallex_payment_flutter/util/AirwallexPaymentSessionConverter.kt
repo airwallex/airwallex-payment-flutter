@@ -16,8 +16,8 @@ object AirwallexPaymentSessionConverter {
 
     fun fromJsonObject(sessionObject: JSONObject, clientSecret: String): AirwallexPaymentSession {
         val googlePayOptions = sessionObject.optJSONObject("googlePayOptions")?.toGooglePayOptions()
-        val customerId = sessionObject.optNullableString("customerId")
-        val returnUrl = sessionObject.optNullableString("returnUrl")
+        val customerId = sessionObject.getNullableString("customerId")
+        val returnUrl = sessionObject.getNullableString("returnUrl")
         val paymentMethods = sessionObject.optJSONArray("paymentMethods")?.let { jsonArray ->
             List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
         }
@@ -29,10 +29,10 @@ object AirwallexPaymentSessionConverter {
         val shipping = sessionObject.optJSONObject("shipping")?.toShipping()
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
             ?.toString() ?: error("amount is required"))
-        val currency = sessionObject.getNullableStringOrThrow("currency")
-        val countryCode = sessionObject.getNullableStringOrThrow("countryCode")
+        val currency = sessionObject.getStringOrThrow("currency")
+        val countryCode = sessionObject.getStringOrThrow("countryCode")
 
-        val paymentIntentId = sessionObject.getNullableStringOrThrow("paymentIntentId")
+        val paymentIntentId = sessionObject.getStringOrThrow("paymentIntentId")
 
         if (customerId == "") {
             error("customerId must not be empty")
@@ -76,17 +76,17 @@ object AirwallexPaymentSessionConverter {
             allowedCardAuthMethods = this.optJSONArray("allowedCardAuthMethods")?.let { jsonArray ->
                 List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
             },
-            merchantName = this.optNullableString("merchantName"),
-            allowPrepaidCards = this.optNullableBoolean("allowPrepaidCards"),
-            allowCreditCards = this.optNullableBoolean("allowCreditCards"),
-            assuranceDetailsRequired = this.optNullableBoolean("assuranceDetailsRequired"),
-            billingAddressRequired = this.optNullableBoolean("billingAddressRequired"),
+            merchantName = this.getNullableString("merchantName"),
+            allowPrepaidCards = this.getNullableBoolean("allowPrepaidCards"),
+            allowCreditCards = this.getNullableBoolean("allowCreditCards"),
+            assuranceDetailsRequired = this.getNullableBoolean("assuranceDetailsRequired"),
+            billingAddressRequired = this.getNullableBoolean("billingAddressRequired"),
             billingAddressParameters = billingAddressParameters,
-            transactionId = this.optNullableString("transactionId"),
-            totalPriceLabel = this.optNullableString("totalPriceLabel"),
-            checkoutOption = this.optNullableString("checkoutOption"),
-            emailRequired = this.optNullableBoolean("emailRequired"),
-            shippingAddressRequired = this.optNullableBoolean("shippingAddressRequired"),
+            transactionId = this.getNullableString("transactionId"),
+            totalPriceLabel = this.getNullableString("totalPriceLabel"),
+            checkoutOption = this.getNullableString("checkoutOption"),
+            emailRequired = this.getNullableBoolean("emailRequired"),
+            shippingAddressRequired = this.getNullableBoolean("shippingAddressRequired"),
             shippingAddressParameters = shippingAddressParameters,
             allowedCardNetworks = this.optJSONArray("allowedCardNetworks")?.let { jsonArray ->
                 List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
@@ -96,7 +96,7 @@ object AirwallexPaymentSessionConverter {
     }
 
     private fun JSONObject.toBillingAddressParameters(): BillingAddressParameters {
-        val formatStr = this.optNullableString("format")
+        val formatStr = this.getNullableString("format")
         val format = when (formatStr?.lowercase()) {
             "min" -> BillingAddressParameters.Format.MIN
             "full" -> BillingAddressParameters.Format.FULL
@@ -119,11 +119,11 @@ object AirwallexPaymentSessionConverter {
     }
 
     fun JSONObject.toShipping(): Shipping? {
-        val firstName = this.optNullableString("firstName")
-        val lastName = this.optNullableString("lastName")
-        val phoneNumber = this.optNullableString("phoneNumber")
-        val email = this.optNullableString("email")
-        val shippingMethod = this.optNullableString("shippingMethod")
+        val firstName = this.getNullableString("firstName")
+        val lastName = this.getNullableString("lastName")
+        val phoneNumber = this.getNullableString("phoneNumber")
+        val email = this.getNullableString("email")
+        val shippingMethod = this.getNullableString("shippingMethod")
         val address = this.optJSONObject("address")?.toAddress()
 
         return if (firstName.isNullOrEmpty() && lastName.isNullOrEmpty() &&
@@ -144,11 +144,11 @@ object AirwallexPaymentSessionConverter {
     }
 
     fun JSONObject.toAddress(): Address? {
-        val countryCode = this.optNullableString("countryCode")
-        val state = this.optNullableString("state")
-        val city = this.optNullableString("city")
-        val street = this.optNullableString("street")
-        val postcode = this.optNullableString("postcode")
+        val countryCode = this.getNullableString("countryCode")
+        val state = this.getNullableString("state")
+        val city = this.getNullableString("city")
+        val street = this.getNullableString("street")
+        val postcode = this.getNullableString("postcode")
 
         return if (countryCode.isNullOrEmpty() && state.isNullOrEmpty() &&
             city.isNullOrEmpty() && street.isNullOrEmpty() && postcode.isNullOrEmpty()

@@ -119,6 +119,24 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<PaymentResult> _payWithConsent() async {
+    return airwallexPaymentFlutter.payWithConsent(
+        await _createSession(customerId: customerId),
+        await paymentRepository
+            .getPaymentConsents(customerId!)
+            .then((consents) => consents.first));
+  }
+
+  Future<PaymentResult> _payWithCardDetails() async {
+    if (_saveCard && customerId == null) {
+      customerId = await paymentRepository.getCustomerId();
+    }
+    return airwallexPaymentFlutter.payWithCardDetails(
+        await _createSession(customerId: customerId),
+        CardCreator.createDemoCard(_environment),
+        _saveCard);
+  }
+
   void _showDialog(String title, String message) {
     showDialog(
       context: context,
@@ -219,15 +237,8 @@ class MyHomePageState extends State<MyHomePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ElevatedButton(
-                      onPressed: () => _handleSubmit(() async {
-                        if (_saveCard && customerId == null) {
-                          customerId = await paymentRepository.getCustomerId();
-                        }
-                        return airwallexPaymentFlutter.payWithCardDetails(
-                            await _createSession(customerId: customerId),
-                            CardCreator.createDemoCard(_environment),
-                            _saveCard);
-                      }),
+                      onPressed: () =>
+                          _handleSubmit(() async => _payWithCardDetails()),
                       child: const Text('payWithCardDetails'),
                     ),
                     if (_selectedOption == 'one off') ...[
@@ -267,12 +278,8 @@ class MyHomePageState extends State<MyHomePage> {
                 if (_selectedOption == 'one off' && customerId != null) ...[
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => _handleSubmit(() async =>
-                        airwallexPaymentFlutter.payWithConsent(
-                            await _createSession(customerId: customerId),
-                            await paymentRepository
-                                .getPaymentConsents(customerId!)
-                                .then((consents) => consents.first))),
+                    onPressed: () =>
+                        _handleSubmit(() async => _payWithConsent()),
                     child: const Text('payWithConsent'),
                   ),
                 ],
