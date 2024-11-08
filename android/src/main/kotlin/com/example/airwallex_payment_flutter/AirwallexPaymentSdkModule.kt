@@ -11,13 +11,16 @@ import com.airwallex.android.core.AirwallexPaymentStatus
 import com.airwallex.android.core.AirwallexSession
 import com.airwallex.android.core.Environment
 import com.airwallex.android.core.log.AirwallexLogger
+import com.airwallex.android.core.model.PaymentConsent
+import com.airwallex.android.core.model.PaymentMethod
 import com.airwallex.android.googlepay.GooglePayComponent
 import com.airwallex.android.redirect.RedirectComponent
 import com.airwallex.android.wechat.WeChatComponent
 import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionConverter
-import com.example.airwallex_payment_flutter.util.CardConverter
+import com.example.airwallex_payment_flutter.util.AirwallexCardConverter
+import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentConverter
 import com.example.airwallex_payment_flutter.util.getNullableString
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -111,7 +114,7 @@ class AirwallexPaymentSdkModule {
         result: MethodChannel.Result
     ) = runWithAirwallex(activity) {
         val session = parseSessionFromCall(call)
-        val card = CardConverter.fromMethodCall(call)
+        val card = parseCardFromCall(call)
         val saveCard = call.arguments<JSONObject>()?.optBoolean("saveCard")
             ?: error("saveCard is required")
 
@@ -123,6 +126,34 @@ class AirwallexPaymentSdkModule {
             listener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
                     AirwallexLogger.info("AirwallexPaymentSdkModule: payWithCardDetails, status = $status")
+                    when (status) {
+                        is AirwallexPaymentStatus.Failure -> {
+                            result.error("payment_failure", status.exception.localizedMessage, null)
+                        }
+
+                        else -> {
+                            val resultData = mapAirwallexPaymentStatusToResult(status)
+                            result.success(resultData)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    fun payWithConsent(
+        activity: ComponentActivity,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) = runWithAirwallex(activity) {
+        val session = parseSessionFromCall(call)
+        val paymentConsent = parsePaymentConsentFromCall(call)
+        airwallex.confirmPaymentIntent(
+            session = session as AirwallexPaymentSession,
+            paymentConsent = paymentConsent,
+            listener = object : Airwallex.PaymentResultListener {
+                override fun onCompleted(status: AirwallexPaymentStatus) {
+                    AirwallexLogger.info("AirwallexPaymentSdkModule: payWithConsent, status = $status")
                     when (status) {
                         is AirwallexPaymentStatus.Failure -> {
                             result.error("payment_failure", status.exception.localizedMessage, null)
@@ -171,10 +202,25 @@ class AirwallexPaymentSdkModule {
         block()
     }
 
-    private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
-        val argumentsObject = call.arguments<JSONObject>() ?: error("Arguments data is required")
+    private fun parsePaymentConsentFromCall(call: MethodCall): PaymentConsent {
+        val argumentsObject = call.arguments<JSONObject>()
+        val consentObject =
+            argumentsObject?.optJSONObject("consent") ?: error("consent is required")
+        return AirwallexPaymentConsentConverter.fromJsonObject(consentObject)
+    }
 
-        val sessionObject = argumentsObject.optJSONObject("session") ?: error("session is required")
+    private fun parseCardFromCall(call: MethodCall): PaymentMethod.Card {
+        val argumentsObject = call.arguments<JSONObject>()
+        val cardJson = argumentsObject?.optJSONObject("card")
+            ?: throw IllegalArgumentException("card is required")
+        return AirwallexCardConverter.fromJsonObject(cardJson)
+    }
+
+    private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
+        val argumentsObject = call.arguments<JSONObject>()
+
+        val sessionObject =
+            argumentsObject?.optJSONObject("session") ?: error("session is required")
 
         val clientSecret =
             sessionObject.getNullableString("clientSecret") ?: error("clientSecret is required")

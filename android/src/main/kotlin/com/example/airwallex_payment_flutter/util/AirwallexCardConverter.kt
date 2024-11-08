@@ -1,14 +1,11 @@
 package com.example.airwallex_payment_flutter.util
 
 import com.airwallex.android.core.model.PaymentMethod
-import io.flutter.plugin.common.MethodCall
 import org.json.JSONObject
 
-object CardConverter {
+object AirwallexCardConverter {
 
-    fun fromMethodCall(call: MethodCall): PaymentMethod.Card {
-        val argumentsObject = call.arguments<JSONObject>()
-        val cardJson = argumentsObject?.optJSONObject("card") ?: throw IllegalArgumentException("card is required")
+    fun fromJsonObject(cardJson: JSONObject): PaymentMethod.Card {
         val builder = PaymentMethod.Card.Builder()
         cardJson.let {
             builder.setCvc(it.getNullableString("cvc"))
@@ -26,22 +23,9 @@ object CardConverter {
                 .setAvsCheck(it.getNullableString("avsCheck"))
                 .setIssuerCountryCode(it.getNullableString("issuerCountryCode"))
                 .setCardType(it.getNullableString("cardType"))
-
-            // val numberTypeStr = it.optNullableString("numberType")
-            // val numberType = mapStringToNumberType(numberTypeStr)
-            // builder.setNumberType(numberType)
+                .setNumberType(it.toNumberType())
         }
-
         return builder.build()
-    }
-
-    private fun mapStringToNumberType(value: String?): PaymentMethod.Card.NumberType? {
-        return when (value?.lowercase()) {
-            "pan" -> PaymentMethod.Card.NumberType.PAN
-            "external_network_token" -> PaymentMethod.Card.NumberType.EXTERNAL_NETWORK_TOKEN
-            "airwallex_network_token" -> PaymentMethod.Card.NumberType.AIRWALLEX_NETWORK_TOKEN
-            else -> null
-        }
     }
 }
 

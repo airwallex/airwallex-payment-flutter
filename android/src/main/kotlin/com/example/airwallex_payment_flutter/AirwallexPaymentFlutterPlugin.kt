@@ -46,6 +46,7 @@ class AirwallexPaymentFlutterPlugin : FlutterPlugin, MethodCallHandler, Activity
                 //low-level
                 "payWithCardDetails" -> sdkModule.payWithCardDetails(it, call, result)
                 "startGooglePay" -> sdkModule.startGooglePay(it, call, result)
+                "payWithConsent" -> sdkModule.payWithConsent(it, call, result)
                 "closeNativeScreen" -> {
                     activityManager?.getCurrentActivity()?.finish()
                     result.success(null)
