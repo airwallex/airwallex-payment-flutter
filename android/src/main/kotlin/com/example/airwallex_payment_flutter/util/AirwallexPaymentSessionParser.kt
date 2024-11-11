@@ -26,10 +26,10 @@ object AirwallexPaymentSessionParser {
         val shipping = sessionObject.optJSONObject("shipping")?.toShipping()
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
             ?.toString() ?: error("amount is required"))
-        val currency = sessionObject.getStringOrThrow("currency")
-        val countryCode = sessionObject.getStringOrThrow("countryCode")
+        val currency = sessionObject.optString("currency")
+        val countryCode = sessionObject.optString("countryCode")
 
-        val paymentIntentId = sessionObject.getStringOrThrow("paymentIntentId")
+        val paymentIntentId = sessionObject.optString("paymentIntentId")
 
         if (customerId == "") {
             error("customerId must not be empty")

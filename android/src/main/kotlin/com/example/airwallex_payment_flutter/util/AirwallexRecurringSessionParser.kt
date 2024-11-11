@@ -17,11 +17,11 @@ object AirwallexRecurringSessionParser {
 
         val merchantTriggerReason = sessionObject.toMerchantTriggerReason()
 
-        val currency = sessionObject.getStringOrThrow("currency")
-        val countryCode = sessionObject.getStringOrThrow("countryCode")
+        val currency = sessionObject.optString("currency")
+        val countryCode = sessionObject.optString("countryCode")
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
             ?.toString() ?: error("amount is required"))
-        val customerId = sessionObject.getStringOrThrow("customerId")
+        val customerId = sessionObject.optString("customerId")
 
         val returnUrl = sessionObject.getNullableString("returnUrl")
         val shipping = sessionObject.optJSONObject("shipping")?.toShipping()

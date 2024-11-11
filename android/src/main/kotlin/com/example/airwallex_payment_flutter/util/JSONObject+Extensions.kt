@@ -6,11 +6,6 @@ import com.airwallex.android.core.model.PaymentConsent
 import com.airwallex.android.core.model.Shipping
 import org.json.JSONObject
 
-
-fun JSONObject.getStringOrThrow(key: String): String {
-    return getNullableString(key) ?: throw IllegalArgumentException("$key is required")
-}
-
 fun JSONObject.getNullableString(key: String): String? {
     return if (has(key) && !isNull(key)) getString(key) else null
 }

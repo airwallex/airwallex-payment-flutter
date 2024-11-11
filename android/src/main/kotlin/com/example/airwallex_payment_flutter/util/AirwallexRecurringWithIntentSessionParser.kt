@@ -12,18 +12,18 @@ object AirwallexRecurringWithIntentSessionParser {
         sessionObject: JSONObject,
         clientSecret: String
     ): AirwallexRecurringWithIntentSession {
-        val paymentIntentId = sessionObject.getStringOrThrow("paymentIntentId")
+        val paymentIntentId = sessionObject.optString("paymentIntentId")
 
         val nextTriggerBy =
             sessionObject.toNextTriggeredBy() ?: error("nextTriggeredBy is error")
 
-        val currency = sessionObject.getStringOrThrow("currency")
-        val countryCode = sessionObject.getStringOrThrow("countryCode")
+        val currency = sessionObject.optString("currency")
+        val countryCode = sessionObject.optString("countryCode")
 
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
             ?.toString() ?: error("amount is required"))
 
-        val customerId = sessionObject.getStringOrThrow("customerId")
+        val customerId = sessionObject.optString("customerId")
 
         val returnUrl = sessionObject.getNullableString("returnUrl")
         val requiresCVC = sessionObject.optBoolean("requiresCVC", false)

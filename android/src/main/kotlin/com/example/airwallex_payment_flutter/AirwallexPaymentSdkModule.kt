@@ -16,12 +16,11 @@ import com.airwallex.android.core.model.PaymentMethod
 import com.airwallex.android.googlepay.GooglePayComponent
 import com.airwallex.android.redirect.RedirectComponent
 import com.airwallex.android.wechat.WeChatComponent
+import com.example.airwallex_payment_flutter.util.AirwallexCardParser
+import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentParser
 import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionParser
-import com.example.airwallex_payment_flutter.util.AirwallexCardParser
-import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentParser
-import com.example.airwallex_payment_flutter.util.getNullableString
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -30,7 +29,7 @@ class AirwallexPaymentSdkModule {
     private lateinit var airwallex: Airwallex
 
     fun initialize(application: Application, call: MethodCall, result: MethodChannel.Result) {
-        val arguments = call.arguments<JSONObject>() ?: error("Arguments data is required")
+        val arguments = call.arguments<JSONObject>() ?: error("arguments data is required")
         val environment = getEnvironment(arguments.optString("environment"))
         val enableLogging = arguments.optBoolean("enableLogging", true)
         val saveLogToLocal = arguments.optBoolean("saveLogToLocal", false)
@@ -113,10 +112,10 @@ class AirwallexPaymentSdkModule {
         call: MethodCall,
         result: MethodChannel.Result
     ) = runWithAirwallex(activity) {
+        val arguments = call.arguments<JSONObject>() ?: error("arguments is required")
+        val saveCard = arguments.getBoolean("saveCard")
         val session = parseSessionFromCall(call)
         val card = parseCardFromCall(call)
-        val saveCard = call.arguments<JSONObject>()?.optBoolean("saveCard")
-            ?: error("saveCard is required")
 
         airwallex.confirmPaymentIntent(
             session = session,
@@ -203,29 +202,22 @@ class AirwallexPaymentSdkModule {
     }
 
     private fun parsePaymentConsentFromCall(call: MethodCall): PaymentConsent {
-        val argumentsObject = call.arguments<JSONObject>()
-        val consentObject =
-            argumentsObject?.optJSONObject("consent") ?: error("consent is required")
+        val argumentsObject = call.arguments<JSONObject>() ?: error("arguments is required")
+        val consentObject = argumentsObject.getJSONObject("consent")
         return AirwallexPaymentConsentParser.parse(consentObject)
     }
 
     private fun parseCardFromCall(call: MethodCall): PaymentMethod.Card {
-        val argumentsObject = call.arguments<JSONObject>()
-        val cardJson = argumentsObject?.optJSONObject("card")
-            ?: throw IllegalArgumentException("card is required")
+        val argumentsObject = call.arguments<JSONObject>() ?: error("arguments is required")
+        val cardJson = argumentsObject.getJSONObject("card")
         return AirwallexCardParser.parse(cardJson)
     }
 
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
-        val argumentsObject = call.arguments<JSONObject>()
-
-        val sessionObject =
-            argumentsObject?.optJSONObject("session") ?: error("session is required")
-
-        val clientSecret =
-            sessionObject.getNullableString("clientSecret") ?: error("clientSecret is required")
-
-        val type = sessionObject.getNullableString("type") ?: error("type is required")
+        val argumentsObject = call.arguments<JSONObject>() ?: error("arguments is required")
+        val sessionObject = argumentsObject.getJSONObject("session")
+        val clientSecret = sessionObject.getString("clientSecret")
+        val type = sessionObject.getString("type")
 
         return when (type) {
             "OneOff" -> {
