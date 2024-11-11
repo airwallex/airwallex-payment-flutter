@@ -16,11 +16,11 @@ import com.airwallex.android.core.model.PaymentMethod
 import com.airwallex.android.googlepay.GooglePayComponent
 import com.airwallex.android.redirect.RedirectComponent
 import com.airwallex.android.wechat.WeChatComponent
-import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionConverter
-import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionConverter
-import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionConverter
-import com.example.airwallex_payment_flutter.util.AirwallexCardConverter
-import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentConverter
+import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionParser
+import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionParser
+import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionParser
+import com.example.airwallex_payment_flutter.util.AirwallexCardParser
+import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentParser
 import com.example.airwallex_payment_flutter.util.getNullableString
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -206,14 +206,14 @@ class AirwallexPaymentSdkModule {
         val argumentsObject = call.arguments<JSONObject>()
         val consentObject =
             argumentsObject?.optJSONObject("consent") ?: error("consent is required")
-        return AirwallexPaymentConsentConverter.fromJsonObject(consentObject)
+        return AirwallexPaymentConsentParser.parse(consentObject)
     }
 
     private fun parseCardFromCall(call: MethodCall): PaymentMethod.Card {
         val argumentsObject = call.arguments<JSONObject>()
         val cardJson = argumentsObject?.optJSONObject("card")
             ?: throw IllegalArgumentException("card is required")
-        return AirwallexCardConverter.fromJsonObject(cardJson)
+        return AirwallexCardParser.parse(cardJson)
     }
 
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
@@ -229,18 +229,18 @@ class AirwallexPaymentSdkModule {
 
         return when (type) {
             "OneOff" -> {
-                AirwallexPaymentSessionConverter.fromJsonObject(sessionObject, clientSecret)
+                AirwallexPaymentSessionParser.parse(sessionObject, clientSecret)
             }
 
             "Recurring" -> {
-                AirwallexRecurringSessionConverter.fromJsonObject(
+                AirwallexRecurringSessionParser.parse(
                     sessionObject,
                     clientSecret
                 )
             }
 
             "RecurringWithIntent" -> {
-                AirwallexRecurringWithIntentSessionConverter.fromJsonObject(
+                AirwallexRecurringWithIntentSessionParser.parse(
                     sessionObject,
                     clientSecret
                 )

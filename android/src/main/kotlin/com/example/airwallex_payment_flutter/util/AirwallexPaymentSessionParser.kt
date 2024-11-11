@@ -9,9 +9,9 @@ import com.airwallex.android.core.model.PurchaseOrder
 import org.json.JSONObject
 import java.math.BigDecimal
 
-object AirwallexPaymentSessionConverter {
+object AirwallexPaymentSessionParser {
 
-    fun fromJsonObject(sessionObject: JSONObject, clientSecret: String): AirwallexPaymentSession {
+    fun parse(sessionObject: JSONObject, clientSecret: String): AirwallexPaymentSession {
         val googlePayOptions = sessionObject.optJSONObject("googlePayOptions")?.toGooglePayOptions()
         val customerId = sessionObject.getNullableString("customerId")
         val returnUrl = sessionObject.getNullableString("returnUrl")

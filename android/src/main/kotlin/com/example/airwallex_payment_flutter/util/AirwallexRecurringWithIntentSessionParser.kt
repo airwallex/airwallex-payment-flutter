@@ -6,9 +6,9 @@ import com.airwallex.android.core.model.PurchaseOrder
 import org.json.JSONObject
 import java.math.BigDecimal
 
-object AirwallexRecurringWithIntentSessionConverter {
+object AirwallexRecurringWithIntentSessionParser {
 
-    fun fromJsonObject(
+    fun parse(
         sessionObject: JSONObject,
         clientSecret: String
     ): AirwallexRecurringWithIntentSession {

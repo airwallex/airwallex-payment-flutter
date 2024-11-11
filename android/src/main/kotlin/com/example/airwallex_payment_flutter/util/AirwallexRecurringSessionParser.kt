@@ -4,9 +4,9 @@ import com.airwallex.android.core.AirwallexRecurringSession
 import org.json.JSONObject
 import java.math.BigDecimal
 
-object AirwallexRecurringSessionConverter {
+object AirwallexRecurringSessionParser {
 
-    fun fromJsonObject(
+    fun parse(
         sessionObject: JSONObject,
         clientSecret: String
     ): AirwallexRecurringSession {
