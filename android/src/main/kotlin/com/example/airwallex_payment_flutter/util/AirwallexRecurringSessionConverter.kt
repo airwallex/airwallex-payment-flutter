@@ -12,24 +12,24 @@ object AirwallexRecurringSessionConverter {
         sessionObject: JSONObject,
         clientSecret: String
     ): AirwallexRecurringSession {
-        val nextTriggerBy = sessionObject.optNullableString("nextTriggeredBy")?.let {
+        val nextTriggerBy = sessionObject.getNullableString("nextTriggeredBy")?.let {
             toNextTriggeredBy(it) ?: error("Invalid NextTriggeredBy value")
         } ?: error("nextTriggeredBy is required")
 
         val requiresCVC = sessionObject.optBoolean("requiresCVC", false)
 
-        val merchantTriggerReason = sessionObject.optNullableString("merchantTriggerReason")?.let {
+        val merchantTriggerReason = sessionObject.getNullableString("merchantTriggerReason")?.let {
             toMerchantTriggerReason(it)
                 ?: error("Invalid MerchantTriggerReason value")
         } ?: PaymentConsent.MerchantTriggerReason.UNSCHEDULED
 
-        val currency = sessionObject.getNullableStringOrThrow("currency")
-        val countryCode = sessionObject.getNullableStringOrThrow("countryCode")
+        val currency = sessionObject.getStringOrThrow("currency")
+        val countryCode = sessionObject.getStringOrThrow("countryCode")
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
             ?.toString() ?: error("amount is required"))
-        val customerId = sessionObject.getNullableStringOrThrow("customerId")
+        val customerId = sessionObject.getStringOrThrow("customerId")
 
-        val returnUrl = sessionObject.optNullableString("returnUrl")
+        val returnUrl = sessionObject.getNullableString("returnUrl")
         val shipping = sessionObject.optJSONObject("shipping")?.toShipping()
         val isBillingRequired = sessionObject.optBoolean("isBillingRequired", true)
         val paymentMethods = sessionObject.optJSONArray("paymentMethods")?.let { jsonArray ->

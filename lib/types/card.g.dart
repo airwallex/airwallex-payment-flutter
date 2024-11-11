@@ -26,8 +26,8 @@ Card _$CardFromJson(Map<String, dynamic> json) => Card(
 
 Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
       'cvc': instance.cvc,
-      'expiryMonth': instance.expiryMonth,
-      'expiryYear': instance.expiryYear,
+      'expiry_month': instance.expiryMonth,
+      'expiry_year': instance.expiryYear,
       'name': instance.name,
       'number': instance.number,
       'bin': instance.bin,
@@ -36,8 +36,8 @@ Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
       'country': instance.country,
       'funding': instance.funding,
       'fingerprint': instance.fingerprint,
-      'cvcCheck': instance.cvcCheck,
-      'avsCheck': instance.avsCheck,
-      'issuerCountryCode': instance.issuerCountryCode,
-      'numberType': instance.numberType,
+      'cvc_check': instance.cvcCheck,
+      'avs_check': instance.avsCheck,
+      'issuer_country_code': instance.issuerCountryCode,
+      'number_type': instance.numberType,
     };

@@ -20,7 +20,7 @@ PaymentConsent _$PaymentConsentFromJson(Map<String, dynamic> json) =>
           _$NextTriggeredByEnumMap, json['next_triggered_by']),
       merchantTriggerReason: $enumDecodeNullable(
           _$MerchantTriggerReasonEnumMap, json['merchant_trigger_reason']),
-      requiresCvc: json['requiresCvc'] as bool? ?? false,
+      requiresCvc: json['requires_cvc'] as bool? ?? false,
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -33,17 +33,17 @@ PaymentConsent _$PaymentConsentFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PaymentConsentToJson(PaymentConsent instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'requestId': instance.requestId,
-      'customerId': instance.customerId,
-      'paymentMethod': instance.paymentMethod?.toJson(),
+      'request_id': instance.requestId,
+      'customer_id': instance.customerId,
+      'payment_method': instance.paymentMethod?.toJson(),
       'status': instance.status,
-      'nextTriggeredBy': _$NextTriggeredByEnumMap[instance.nextTriggeredBy],
-      'merchantTriggerReason':
+      'next_triggered_by': _$NextTriggeredByEnumMap[instance.nextTriggeredBy],
+      'merchant_trigger_reason':
           _$MerchantTriggerReasonEnumMap[instance.merchantTriggerReason],
-      'requiresCvc': instance.requiresCvc,
-      'createdAt': instance.createdAt?.toIso8601String(),
-      'updatedAt': instance.updatedAt?.toIso8601String(),
-      'clientSecret': instance.clientSecret,
+      'requires_cvc': instance.requiresCvc,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
+      'client_secret': instance.clientSecret,
     };
 
 const _$NextTriggeredByEnumMap = {
@@ -66,7 +66,7 @@ PaymentMethod _$PaymentMethodFromJson(Map<String, dynamic> json) =>
       billing: json['billing'] == null
           ? null
           : Shipping.fromJson(json['billing'] as Map<String, dynamic>),
-      customerId: json['customerId'] as String?,
+      customerId: json['customer_id'] as String?,
     );
 
 Map<String, dynamic> _$PaymentMethodToJson(PaymentMethod instance) =>
@@ -75,5 +75,5 @@ Map<String, dynamic> _$PaymentMethodToJson(PaymentMethod instance) =>
       'type': instance.type,
       'card': instance.card?.toJson(),
       'billing': instance.billing?.toJson(),
-      'customerId': instance.customerId,
+      'customer_id': instance.customerId,
     };

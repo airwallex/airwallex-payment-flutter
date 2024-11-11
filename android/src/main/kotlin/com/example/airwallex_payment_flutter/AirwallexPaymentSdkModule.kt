@@ -18,7 +18,7 @@ import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionConvert
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionConverter
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionConverter
 import com.example.airwallex_payment_flutter.util.CardConverter
-import com.example.airwallex_payment_flutter.util.optNullableString
+import com.example.airwallex_payment_flutter.util.getNullableString
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -177,9 +177,9 @@ class AirwallexPaymentSdkModule {
         val sessionObject = argumentsObject.optJSONObject("session") ?: error("session is required")
 
         val clientSecret =
-            sessionObject.optNullableString("clientSecret") ?: error("clientSecret is required")
+            sessionObject.getNullableString("clientSecret") ?: error("clientSecret is required")
 
-        val type = sessionObject.optNullableString("type") ?: error("type is required")
+        val type = sessionObject.getNullableString("type") ?: error("type is required")
 
         return when (type) {
             "OneOff" -> {

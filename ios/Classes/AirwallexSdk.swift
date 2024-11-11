@@ -67,7 +67,7 @@ class AirwallexSdk: NSObject {
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
         
         let session = buildAirwallexSession(from: session)
-        let card = AWXCard(params: card)
+        let card = AWXCard.decode(fromJSON: card.removingNSNullValues() as? [AnyHashable : Any]) as! AWXCard
         
         let cardProvider = AWXCardProvider(delegate: self, session: session)
         hostVC = getViewController()
@@ -83,7 +83,7 @@ class AirwallexSdk: NSObject {
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
         
         let session = buildAirwallexSession(from: session)
-        let consent = AWXPaymentConsent(params: consent)
+        let consent = AWXPaymentConsent.decode(fromJSON: consent.removingNSNullValues() as? [AnyHashable : Any]) as! AWXPaymentConsent
         
         let cardProvider = AWXCardProvider(delegate: self, session: session)
         hostVC = getViewController()

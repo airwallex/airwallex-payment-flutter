@@ -1,14 +1,11 @@
 # Airwallex Flutter Plugin
-The Airwallex Flutter Plugin is a flexible tool that allows you to integrate payment methods into your Flutter application. It also includes a pre-built UI, giving you the flexibility to use any part of it while replacing the rest with your own UI.
+The Airwallex Flutter Plugin is a flexible tool that allows you to integrate payment functions into your Flutter application. It also includes a pre-built UI, giving you the flexibility to use any part of it while replacing the rest with your own UI.
 
 This section will guide you through the process of integrating the Airwallex Flutter Plugin. We assume that you are a Flutter developer familiar with the integration and use of Flutter plugins.
 
-Our demo is open source on [Github](https://github.com/airwallex/airwallex-payment-flutter),which can help you better understand how to integrate the Airwallex Flutter Plugin into your Flutter project.
+Our sample app is open source on [Github](https://github.com/airwallex/airwallex-payment-flutter/tree/main/example), which can help you better understand how to integrate the Airwallex Flutter Plugin into your Flutter project.
 
 ## Contents
-* [Overview](#Overview)
-    * [Airwallex API](#airwallex-api)
-    * [Airwallex Native UI](#airwallex-native-ui)
 * [Installation](#Installation)
 * [Initialization](#Initialization)
 * [Create Payment Intent](#create-payment-intent)
@@ -27,20 +24,8 @@ Our demo is open source on [Github](https://github.com/airwallex/airwallex-payme
 * [Test Card Numbers](#test-card-numbers)
 * [Contributing](#Contributing)
 
-## Overview
-### Airwallex API
-
-Airwallex Flutter Plugin is a flexible tool that enables you to integrate payment methods into your Flutter application.
-
-Payment methods supported:
-- Cards: [`Visa, Mastercard`](#cards). If you want to integrate Airwallex API without our Native UI for card payments, then your website is required to be PCI-DSS compliant. 
-- E-Wallets: [`Alipay`](#alipay), [`AlipayHK`](#alipayhk), [`DANA`](#dana), [`GCash`](#gcash), [`Kakao Pay`](#kakao-pay), [`Touch ‘n Go`](#touch-n-go), [`WeChat Pay`](#wechat-pay)
-
-### Airwallex Native UI
-Airwallex Native UI is a prebuilt UI which enables you to customize the UI color and fit your App theme. You can use these components separately, or pack our prebuilt UI into one flow to present your payment.
-
 ## Installation
-To install the Plugin, in your `bpubspec.yaml`, add the following:
+To install the Plugin, in your `pubspec.yaml`, add the following:
 ```yaml
 dependencies:
   airwallex_payment_flutter: 0.0.1
@@ -148,7 +133,7 @@ final googlePayOptions = GooglePayOptions(
 
 #### Set up returnUrl
 Note that if you wish to use redirection to invoke third-party payments, you must provide a returnUrl to determine the page to redirect to after the payment is completed.
-#####Android：
+##### Android：
 ```
     <intent-filter>
         ...
@@ -157,7 +142,8 @@ Note that if you wish to use redirection to invoke third-party payments, you mus
             android:scheme="airwallexcheckout" />
     </intent-filter>
 ```
-#####iOS：
+##### iOS：
+You need to configure your [custom url scheme](https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app).
 
 ### Create Recurring Session
 

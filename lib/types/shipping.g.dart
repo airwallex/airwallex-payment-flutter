@@ -15,7 +15,7 @@ Shipping _$ShippingFromJson(Map<String, dynamic> json) => Shipping(
       dateOfBirth: json['dateOfBirth'] as String?,
       address: json['address'] == null
           ? null
-          : Address.fromJson(json['address'] as Map<String, dynamic>),
+          : ShippingAddress.fromJson(json['address'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ShippingToJson(Shipping instance) => <String, dynamic>{
@@ -28,7 +28,8 @@ Map<String, dynamic> _$ShippingToJson(Shipping instance) => <String, dynamic>{
       'address': instance.address?.toJson(),
     };
 
-Address _$AddressFromJson(Map<String, dynamic> json) => Address(
+ShippingAddress _$ShippingAddressFromJson(Map<String, dynamic> json) =>
+    ShippingAddress(
       city: json['city'] as String?,
       countryCode: json['countryCode'] as String?,
       street: json['street'] as String?,
@@ -36,7 +37,8 @@ Address _$AddressFromJson(Map<String, dynamic> json) => Address(
       state: json['state'] as String?,
     );
 
-Map<String, dynamic> _$AddressToJson(Address instance) => <String, dynamic>{
+Map<String, dynamic> _$ShippingAddressToJson(ShippingAddress instance) =>
+    <String, dynamic>{
       'city': instance.city,
       'countryCode': instance.countryCode,
       'street': instance.street,
