@@ -21,12 +21,8 @@ PaymentConsent _$PaymentConsentFromJson(Map<String, dynamic> json) =>
       merchantTriggerReason: $enumDecodeNullable(
           _$MerchantTriggerReasonEnumMap, json['merchant_trigger_reason']),
       requiresCvc: json['requires_cvc'] as bool? ?? false,
-      createdAt: json['created_at'] == null
-          ? null
-          : DateTime.parse(json['created_at'] as String),
-      updatedAt: json['updated_at'] == null
-          ? null
-          : DateTime.parse(json['updated_at'] as String),
+      createdAt: json['created_at'] as String?,
+      updatedAt: json['updated_at'] as String?,
       clientSecret: json['client_secret'] as String?,
     );
 
@@ -41,8 +37,8 @@ Map<String, dynamic> _$PaymentConsentToJson(PaymentConsent instance) =>
       'merchant_trigger_reason':
           _$MerchantTriggerReasonEnumMap[instance.merchantTriggerReason],
       'requires_cvc': instance.requiresCvc,
-      'created_at': instance.createdAt?.toIso8601String(),
-      'updated_at': instance.updatedAt?.toIso8601String(),
+      'created_at': instance.createdAt,
+      'updated_at': instance.updatedAt,
       'client_secret': instance.clientSecret,
     };
 

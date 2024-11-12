@@ -11,14 +11,16 @@ import com.airwallex.android.core.AirwallexPaymentStatus
 import com.airwallex.android.core.AirwallexSession
 import com.airwallex.android.core.Environment
 import com.airwallex.android.core.log.AirwallexLogger
+import com.airwallex.android.core.model.PaymentConsent
+import com.airwallex.android.core.model.PaymentMethod
 import com.airwallex.android.googlepay.GooglePayComponent
 import com.airwallex.android.redirect.RedirectComponent
 import com.airwallex.android.wechat.WeChatComponent
-import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionConverter
-import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionConverter
-import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionConverter
-import com.example.airwallex_payment_flutter.util.CardConverter
-import com.example.airwallex_payment_flutter.util.getNullableString
+import com.example.airwallex_payment_flutter.util.AirwallexCardParser
+import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentParser
+import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionParser
+import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionParser
+import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionParser
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -27,7 +29,7 @@ class AirwallexPaymentSdkModule {
     private lateinit var airwallex: Airwallex
 
     fun initialize(application: Application, call: MethodCall, result: MethodChannel.Result) {
-        val arguments = call.arguments<JSONObject>() ?: error("Arguments data is required")
+        val arguments = call.arguments<JSONObject>() ?: error("arguments data is required")
         val environment = getEnvironment(arguments.optString("environment"))
         val enableLogging = arguments.optBoolean("enableLogging", true)
         val saveLogToLocal = arguments.optBoolean("saveLogToLocal", false)
@@ -110,10 +112,10 @@ class AirwallexPaymentSdkModule {
         call: MethodCall,
         result: MethodChannel.Result
     ) = runWithAirwallex(activity) {
+        val arguments = call.arguments<JSONObject>() ?: error("arguments is required")
+        val saveCard = arguments.getBoolean("saveCard")
         val session = parseSessionFromCall(call)
-        val card = CardConverter.fromMethodCall(call)
-        val saveCard = call.arguments<JSONObject>()?.optBoolean("saveCard")
-            ?: error("saveCard is required")
+        val card = parseCardFromCall(call)
 
         airwallex.confirmPaymentIntent(
             session = session,
@@ -123,6 +125,34 @@ class AirwallexPaymentSdkModule {
             listener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
                     AirwallexLogger.info("AirwallexPaymentSdkModule: payWithCardDetails, status = $status")
+                    when (status) {
+                        is AirwallexPaymentStatus.Failure -> {
+                            result.error("payment_failure", status.exception.localizedMessage, null)
+                        }
+
+                        else -> {
+                            val resultData = mapAirwallexPaymentStatusToResult(status)
+                            result.success(resultData)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    fun payWithConsent(
+        activity: ComponentActivity,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) = runWithAirwallex(activity) {
+        val session = parseSessionFromCall(call)
+        val paymentConsent = parsePaymentConsentFromCall(call)
+        airwallex.confirmPaymentIntent(
+            session = session as AirwallexPaymentSession,
+            paymentConsent = paymentConsent,
+            listener = object : Airwallex.PaymentResultListener {
+                override fun onCompleted(status: AirwallexPaymentStatus) {
+                    AirwallexLogger.info("AirwallexPaymentSdkModule: payWithConsent, status = $status")
                     when (status) {
                         is AirwallexPaymentStatus.Failure -> {
                             result.error("payment_failure", status.exception.localizedMessage, null)
@@ -171,30 +201,38 @@ class AirwallexPaymentSdkModule {
         block()
     }
 
+    private fun parsePaymentConsentFromCall(call: MethodCall): PaymentConsent {
+        val argumentsObject = call.arguments<JSONObject>() ?: error("arguments is required")
+        val consentObject = argumentsObject.getJSONObject("consent")
+        return AirwallexPaymentConsentParser.parse(consentObject)
+    }
+
+    private fun parseCardFromCall(call: MethodCall): PaymentMethod.Card {
+        val argumentsObject = call.arguments<JSONObject>() ?: error("arguments is required")
+        val cardJson = argumentsObject.getJSONObject("card")
+        return AirwallexCardParser.parse(cardJson)
+    }
+
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
-        val argumentsObject = call.arguments<JSONObject>() ?: error("Arguments data is required")
-
-        val sessionObject = argumentsObject.optJSONObject("session") ?: error("session is required")
-
-        val clientSecret =
-            sessionObject.getNullableString("clientSecret") ?: error("clientSecret is required")
-
-        val type = sessionObject.getNullableString("type") ?: error("type is required")
+        val argumentsObject = call.arguments<JSONObject>() ?: error("arguments is required")
+        val sessionObject = argumentsObject.getJSONObject("session")
+        val clientSecret = sessionObject.getString("clientSecret")
+        val type = sessionObject.getString("type")
 
         return when (type) {
             "OneOff" -> {
-                AirwallexPaymentSessionConverter.fromJsonObject(sessionObject, clientSecret)
+                AirwallexPaymentSessionParser.parse(sessionObject, clientSecret)
             }
 
             "Recurring" -> {
-                AirwallexRecurringSessionConverter.fromJsonObject(
+                AirwallexRecurringSessionParser.parse(
                     sessionObject,
                     clientSecret
                 )
             }
 
             "RecurringWithIntent" -> {
-                AirwallexRecurringWithIntentSessionConverter.fromJsonObject(
+                AirwallexRecurringWithIntentSessionParser.parse(
                     sessionObject,
                     clientSecret
                 )

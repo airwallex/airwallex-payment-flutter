@@ -16,8 +16,8 @@ class PaymentConsent {
   NextTriggeredBy? nextTriggeredBy;
   MerchantTriggerReason? merchantTriggerReason;
   bool requiresCvc;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String? createdAt;
+  String? updatedAt;
   String? clientSecret;
 
   PaymentConsent({

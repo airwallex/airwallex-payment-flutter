@@ -1,20 +1,17 @@
 package com.example.airwallex_payment_flutter.util
 
 import com.airwallex.android.core.AirwallexPaymentSession
-import com.airwallex.android.core.BillingAddressParameters
 import com.airwallex.android.core.GooglePayOptions
 import com.airwallex.android.core.ShippingAddressParameters
 import com.airwallex.android.core.googlePaySupportedNetworks
-import com.airwallex.android.core.model.Address
 import com.airwallex.android.core.model.PaymentIntent
 import com.airwallex.android.core.model.PurchaseOrder
-import com.airwallex.android.core.model.Shipping
 import org.json.JSONObject
 import java.math.BigDecimal
 
-object AirwallexPaymentSessionConverter {
+object AirwallexPaymentSessionParser {
 
-    fun fromJsonObject(sessionObject: JSONObject, clientSecret: String): AirwallexPaymentSession {
+    fun parse(sessionObject: JSONObject, clientSecret: String): AirwallexPaymentSession {
         val googlePayOptions = sessionObject.optJSONObject("googlePayOptions")?.toGooglePayOptions()
         val customerId = sessionObject.getNullableString("customerId")
         val returnUrl = sessionObject.getNullableString("returnUrl")
@@ -29,10 +26,10 @@ object AirwallexPaymentSessionConverter {
         val shipping = sessionObject.optJSONObject("shipping")?.toShipping()
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
             ?.toString() ?: error("amount is required"))
-        val currency = sessionObject.getStringOrThrow("currency")
-        val countryCode = sessionObject.getStringOrThrow("countryCode")
+        val currency = sessionObject.optString("currency")
+        val countryCode = sessionObject.optString("countryCode")
 
-        val paymentIntentId = sessionObject.getStringOrThrow("paymentIntentId")
+        val paymentIntentId = sessionObject.optString("paymentIntentId")
 
         if (customerId == "") {
             error("customerId must not be empty")
@@ -95,19 +92,6 @@ object AirwallexPaymentSessionConverter {
         )
     }
 
-    private fun JSONObject.toBillingAddressParameters(): BillingAddressParameters {
-        val formatStr = this.getNullableString("format")
-        val format = when (formatStr?.lowercase()) {
-            "min" -> BillingAddressParameters.Format.MIN
-            "full" -> BillingAddressParameters.Format.FULL
-            else -> error("Unknown format: $formatStr")
-        }
-        return BillingAddressParameters(
-            format = format,
-            phoneNumberRequired = this.optBoolean("phoneNumberRequired")
-        )
-    }
-
     private fun JSONObject.toShippingAddressParameters(): ShippingAddressParameters {
         val allowedCountryCodes = this.optJSONArray("allowedCountryCodes")?.let { jsonArray ->
             List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
@@ -116,52 +100,5 @@ object AirwallexPaymentSessionConverter {
             allowedCountryCodes = allowedCountryCodes,
             phoneNumberRequired = this.optBoolean("phoneNumberRequired")
         )
-    }
-
-    fun JSONObject.toShipping(): Shipping? {
-        val firstName = this.getNullableString("firstName")
-        val lastName = this.getNullableString("lastName")
-        val phoneNumber = this.getNullableString("phoneNumber")
-        val email = this.getNullableString("email")
-        val shippingMethod = this.getNullableString("shippingMethod")
-        val address = this.optJSONObject("address")?.toAddress()
-
-        return if (firstName.isNullOrEmpty() && lastName.isNullOrEmpty() &&
-            phoneNumber.isNullOrEmpty() && email.isNullOrEmpty() &&
-            shippingMethod.isNullOrEmpty() && address == null
-        ) {
-            null
-        } else {
-            Shipping.Builder().apply {
-                setFirstName(firstName)
-                setLastName(lastName)
-                setPhone(phoneNumber)
-                setEmail(email)
-                setShippingMethod(shippingMethod)
-                setAddress(address)
-            }.build()
-        }
-    }
-
-    fun JSONObject.toAddress(): Address? {
-        val countryCode = this.getNullableString("countryCode")
-        val state = this.getNullableString("state")
-        val city = this.getNullableString("city")
-        val street = this.getNullableString("street")
-        val postcode = this.getNullableString("postcode")
-
-        return if (countryCode.isNullOrEmpty() && state.isNullOrEmpty() &&
-            city.isNullOrEmpty() && street.isNullOrEmpty() && postcode.isNullOrEmpty()
-        ) {
-            null
-        } else {
-            Address.Builder().apply {
-                setCountryCode(countryCode)
-                setState(state)
-                setCity(city)
-                setStreet(street)
-                setPostcode(postcode)
-            }.build()
-        }
     }
 }
