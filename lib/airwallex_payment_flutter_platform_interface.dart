@@ -1,3 +1,4 @@
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:flutter/services.dart';
 
@@ -29,10 +30,9 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> initialize(
-      String environment, bool enableLogging, bool saveLogToLocal) {
-    throw UnimplementedError(
-        'presentEntirePaymentFlow() has not been implemented.');
+  void initialize(
+      Environment environment, bool enableLogging, bool saveLogToLocal) {
+    throw UnimplementedError('initialize() has not been implemented.');
   }
 
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {

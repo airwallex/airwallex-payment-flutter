@@ -60,8 +60,7 @@ Call the initialize method of the Airwallex Flutter Plugin to initialize the plu
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
 ```
 ```dart
-final airwallexPaymentFlutter = AirwallexPaymentFlutter();
-airwallexPaymentFlutter.initialize('demo', true, false);
+Airwallex.initialize(environment: 'demo');
 ```
 parameter `environment` specifies the environment options for the Airwallex Flutter Plugin, which include `staging`, `demo`, and `production`. 
 If you are in the testing phase, it is recommended to set the environment to `staging` or `demo` for feature debugging. 
@@ -118,18 +117,29 @@ static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
     );
 }
 ```
-#### Set up GooglePayOptions
-The Airwallex Flutter Plugin allows merchants to provide Google Pay as a payment method to their customers by the following steps:
-- Make sure Google Pay is enabled on your Airwallex account.
-- You can customize the Google Pay options to restrict as well as provide extra context. For more information, please refer to `GooglePayOptions` class.
+#### Set up GooglePayOptions/ApplePayOptions
+The Airwallex Flutter Plugin allows merchants to provide Google Pay and Apple Pay as a payment method to their customers by the following steps:
+- Make sure Apple Pay is set up correctly in the app. For more information, refer to Apple's official [doc](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay).
+- Make sure Google/Apple Pay is enabled on your Airwallex account.
+- You can customize the Google/Apple Pay options to restrict as well as provide extra context. For more information, please refer to `GooglePayOptions`/`ApplePayOptions` class.
 ```dart
 final googlePayOptions = GooglePayOptions(
   billingAddressRequired: true,
   billingAddressParameters: BillingAddressParameters(format: Format.FULL),
 )
+
+final applePayOptions = ApplePayOptions(
+  merchantIdentifier: 'merchant.com.airwallex.paymentacceptance',
+  supportedNetworks: [ApplePaySupportedNetwork.visa, ApplePaySupportedNetwork.masterCard, ApplePaySupportedNetwork.unionPay],
+  additionalPaymentSummaryItems: [CartSummaryItem(label: "goods", amount: 2, type: CartSummaryItemType.pendingType), CartSummaryItem(label: "tax", amount: 1)],
+  merchantCapabilities: [ApplePayMerchantCapability.supports3DS, ApplePayMerchantCapability.supportsCredit, ApplePayMerchantCapability.supportsDebit],
+  requiredBillingContactFields: [ContactField.name, ContactField.postalAddress, ContactField.emailAddress],
+  supportedCountries: ['HK', 'US', 'AU'],
+  totalPriceLabel: "COMPANY, INC."
+)
 ```
-- We currently only support AMEX, DISCOVER, JCB, Visa, and MasterCard for Google Pay, customers will only be able to select the cards of these payment networks during Google Pay.
-> Please note that our Google Pay module only supports `OneOffSession` at the moment. We'll add support for recurring payment sessions in the future.
+- We currently only support AMEX, DISCOVER, JCB, Visa, and MasterCard (plus UnionPay, Maestro for Apple Pay) for Google/Apple Pay, customers will only be able to select the cards of these payment networks during Google/Apple Pay.
+> Please note that our Google/Apple Pay module only supports `OneOffSession` at the moment. We'll add support for recurring payment sessions in the future.
 
 #### Set up returnUrl
 Note that if you wish to use redirection to invoke third-party payments, you must provide a returnUrl to determine the page to redirect to after the payment is completed.
@@ -206,12 +216,12 @@ static BaseSession createRecurringWithIntentSession(
 ### Launch payment list page
 - Use `presentEntirePaymentFlow` to launch the payment list page and complete the entire payment process
 ```dart
-  final result = await airwallexPaymentFlutter.presentEntirePaymentFlow(paymentSession);
+  final result = await airwallex.presentEntirePaymentFlow(paymentSession);
 ```
 ### Launch card payment page
 - Use `presentCardPaymentFlow` to launch the card payment page and complete the entire payment process.
 ```kotlin
-   final result = await airwallexPaymentFlutter.presentCardPaymentFlow(paymentSession);
+   final result = await airwallex.presentCardPaymentFlow(paymentSession);
 ```
 ### Custom Theme
 #### Android：
@@ -221,6 +231,9 @@ Add the following color values in res/values/colors.xml.
     <color name="airwallex_tint_color">@color/airwallex_color_red</color>
 ```
 #### iOS：
+```
+  Airwallex.setTintColor(Colors.red);
+```
 
 ## Low-level API Integration
 ### Confirm payment with card details
@@ -228,23 +241,23 @@ Create a Card, and then call the `payWithCardDetails` method to complete the pay
 ```dart
 import 'package:airwallex_payment_flutter/types/card.dart';
 
-static Card createDemoCard() {
-    // this card number is for demo environment only
-    return Card(
-      number: "4012000300001003",
-      name: "John Citizen",
-      expiryMonth: "12",
-      expiryYear: "2029",
-      cvc: "737"
-    );
-  }
-```
-```dart
-final result = await airwallexPaymentFlutter.payWithCardDetails(paymentSession, card);
+// this card number is for demo environment only
+final card = Card(
+  number: "4012000300001003",
+  name: "John Citizen",
+  expiryMonth: "12",
+  expiryYear: "2029",
+  cvc: "737"
+);
+final result = await airwallex.payWithCardDetails(paymentSession, card);
 ```
 ### Google Pay
 ```dart
-final result = await airwallexPaymentFlutter.startGooglePay(paymentSession);
+final result = await airwallex.startGooglePay(paymentSession);
+```
+### Apple Pay
+```dart
+final result = await airwallex.startApplePay(paymentSession);
 ```
 
 ## Plugin Example

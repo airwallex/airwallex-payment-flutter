@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -18,10 +19,10 @@ class MethodChannelAirwallexPaymentFlutter
       const MethodChannel('airwallex_payment_flutter', JSONMethodCodec());
 
   @override
-  Future<void> initialize(
-      String environment, bool enableLogging, bool saveLogToLocal) async {
-    await methodChannel.invokeMethod('initialize', {
-      'environment': environment,
+  void initialize(
+      Environment environment, bool enableLogging, bool saveLogToLocal) {
+    methodChannel.invokeMethod('initialize', {
+      'environment': environment.name,
       'enableLogging': enableLogging,
       'saveLogToLocal': saveLogToLocal,
     });

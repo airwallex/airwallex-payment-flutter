@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
+import 'package:airwallex_payment_flutter/airwallex.dart';
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  final airwallexPaymentFlutter = AirwallexPaymentFlutter();
+  final airwallex = Airwallex();
   late PaymentRepository paymentRepository;
   late List<String> environmentOptions;
 
@@ -67,7 +68,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initialize() async {
     try {
-      airwallexPaymentFlutter.initialize(_environment, true, false);
+      Airwallex.initialize(environment: Environment.values.firstWhere((e) => e.name == _environment));
       final apiClient = ApiClient(
           environment: _environment, apiKey: apiKey, clientId: clientId);
       setState(() {
@@ -120,7 +121,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<PaymentResult> _payWithConsent() async {
-    return airwallexPaymentFlutter.payWithConsent(
+    return airwallex.payWithConsent(
         await _createSession(customerId: customerId),
         await paymentRepository
             .getPaymentConsents(customerId!)
@@ -131,7 +132,7 @@ class MyHomePageState extends State<MyHomePage> {
     if (_saveCard && customerId == null) {
       customerId = await paymentRepository.getCustomerId();
     }
-    return airwallexPaymentFlutter.payWithCardDetails(
+    return airwallex.payWithCardDetails(
         await _createSession(customerId: customerId),
         CardCreator.createDemoCard(_environment),
         _saveCard);
@@ -220,14 +221,14 @@ class MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter.presentEntirePaymentFlow(
+                      airwallex.presentEntirePaymentFlow(
                           await _createSession(customerId: customerId))),
                   child: const Text('presentEntirePaymentFlow'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
-                      airwallexPaymentFlutter.presentCardPaymentFlow(
+                      airwallex.presentCardPaymentFlow(
                           await _createSession(customerId: customerId))),
                   child: const Text('presentCardPaymentFlow'),
                 ),
@@ -262,7 +263,7 @@ class MyHomePageState extends State<MyHomePage> {
                 if (_selectedOption == 'one off' && Platform.isAndroid) ...[
                   ElevatedButton(
                     onPressed: () => _handleSubmit(() async =>
-                        airwallexPaymentFlutter
+                        airwallex
                             .startGooglePay(await _createSession())),
                     child: const Text('startGooglePay'),
                   )
@@ -270,7 +271,7 @@ class MyHomePageState extends State<MyHomePage> {
                 if (_selectedOption == 'one off' && Platform.isIOS) ...[
                   ElevatedButton(
                     onPressed: () => _handleSubmit(() async =>
-                        airwallexPaymentFlutter
+                        airwallex
                             .startApplePay(await _createSession())),
                     child: const Text('startApplePay'),
                   )
