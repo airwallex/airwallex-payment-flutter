@@ -1,4 +1,5 @@
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
+import 'package:flutter/services.dart';
 
 import '/types/card.dart';
 import '/types/payment_result.dart';
@@ -56,5 +57,9 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
 
   Future<PaymentResult> startApplePay(BaseSession session) {
     throw UnimplementedError('startApplePay() has not been implemented.');
+  }
+
+  void setTintColor(Color color) {
+    throw UnimplementedError('setTintColor() has not been implemented.');
   }
 }

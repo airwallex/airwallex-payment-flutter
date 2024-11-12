@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 
 import '/types/card.dart';
@@ -39,5 +41,9 @@ class AirwallexPaymentFlutter {
 
   Future<PaymentResult> startApplePay(BaseSession session) {
     return AirwallexPaymentFlutterPlatform.instance.startApplePay(session);
+  }
+
+  void setTintColor(Color color) {
+    return AirwallexPaymentFlutterPlatform.instance.setTintColor(color);
   }
 }

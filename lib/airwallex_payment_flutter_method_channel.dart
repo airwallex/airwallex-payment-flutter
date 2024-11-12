@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -27,8 +29,8 @@ class MethodChannelAirwallexPaymentFlutter
 
   @override
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) async {
-    final result = await methodChannel
-        .invokeMethod('presentEntirePaymentFlow', {'session': session.toJson()});
+    final result = await methodChannel.invokeMethod(
+        'presentEntirePaymentFlow', {'session': session.toJson()});
     return parsePaymentResult(result);
   }
 
@@ -72,6 +74,18 @@ class MethodChannelAirwallexPaymentFlutter
     final result = await methodChannel
         .invokeMethod('startApplePay', {'session': session.toJson()});
     return parsePaymentResult(result);
+  }
+
+  @override
+  void setTintColor(Color color) {
+    if (Platform.isIOS) {
+      methodChannel.invokeMethod('setTintColor', {
+        'red': color.red,
+        'green': color.green,
+        'blue': color.blue,
+        'alpha': color.alpha,
+      });
+    }
   }
 
   PaymentResult parsePaymentResult(result) {

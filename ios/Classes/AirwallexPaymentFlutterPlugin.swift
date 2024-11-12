@@ -1,3 +1,4 @@
+import Airwallex
 import Flutter
 import UIKit
 
@@ -42,6 +43,10 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             let session = arguments["session"] as! NSDictionary
             let consent = arguments["consent"] as! NSDictionary
             sdk?.payWithConsent(clientSecret: session["clientSecret"] as! String, session: session, consent: consent, result: result)
+        case "setTintColor":
+            let arguments = call.arguments as! NSDictionary;
+            let color = UIColor(red: (arguments["red"] as! CGFloat)/255, green: (arguments["green"] as! CGFloat)/255, blue: (arguments["blue"] as! CGFloat)/255, alpha: (arguments["alpha"] as! CGFloat)/255)
+            AWXTheme.shared().tintColor = color
         default:
             result(FlutterMethodNotImplemented)
         }
