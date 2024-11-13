@@ -121,7 +121,7 @@ static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
 #### 配置GooglePayOptions/ApplePayOptions
 Airwallex Flutter Plugin可以通过以下步骤允许商户给顾客提供Google Pay和Apple Pay作为支付方式：
 - 确保 Apple Pay 已在应用中开启并配置。请参考 Apple 的[官方文档](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay).
-- 确认Google Pay/Apple Pay在您的Airwallex账号上已开通
+- 确认Google/Apple Pay在您的Airwallex账号上已开通
 - 您可以自定义Google/Apple Pay选项来限制或提供额外的付款参数。请参考`GooglePayOptions`/`ApplePayOptions`类中的更多信息。
 ```dart
 final googlePayOptions = GooglePayOptions(

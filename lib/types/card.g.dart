@@ -24,20 +24,29 @@ Card _$CardFromJson(Map<String, dynamic> json) => Card(
       numberType: json['number_type'] as String?,
     );
 
-Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
-      'cvc': instance.cvc,
-      'expiry_month': instance.expiryMonth,
-      'expiry_year': instance.expiryYear,
-      'name': instance.name,
-      'number': instance.number,
-      'bin': instance.bin,
-      'last4': instance.last4,
-      'brand': instance.brand,
-      'country': instance.country,
-      'funding': instance.funding,
-      'fingerprint': instance.fingerprint,
-      'cvc_check': instance.cvcCheck,
-      'avs_check': instance.avsCheck,
-      'issuer_country_code': instance.issuerCountryCode,
-      'number_type': instance.numberType,
-    };
+Map<String, dynamic> _$CardToJson(Card instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('cvc', instance.cvc);
+  writeNotNull('expiry_month', instance.expiryMonth);
+  writeNotNull('expiry_year', instance.expiryYear);
+  writeNotNull('name', instance.name);
+  writeNotNull('number', instance.number);
+  writeNotNull('bin', instance.bin);
+  writeNotNull('last4', instance.last4);
+  writeNotNull('brand', instance.brand);
+  writeNotNull('country', instance.country);
+  writeNotNull('funding', instance.funding);
+  writeNotNull('fingerprint', instance.fingerprint);
+  writeNotNull('cvc_check', instance.cvcCheck);
+  writeNotNull('avs_check', instance.avsCheck);
+  writeNotNull('issuer_country_code', instance.issuerCountryCode);
+  writeNotNull('number_type', instance.numberType);
+  return val;
+}

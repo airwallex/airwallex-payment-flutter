@@ -18,15 +18,24 @@ Billing _$BillingFromJson(Map<String, dynamic> json) => Billing(
           : BillingAddress.fromJson(json['address'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$BillingToJson(Billing instance) => <String, dynamic>{
-      'first_name': instance.firstName,
-      'last_name': instance.lastName,
-      'phone_number': instance.phoneNumber,
-      'shipping_method': instance.shippingMethod,
-      'email': instance.email,
-      'date_of_birth': instance.dateOfBirth,
-      'address': instance.address?.toJson(),
-    };
+Map<String, dynamic> _$BillingToJson(Billing instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('first_name', instance.firstName);
+  writeNotNull('last_name', instance.lastName);
+  writeNotNull('phone_number', instance.phoneNumber);
+  writeNotNull('shipping_method', instance.shippingMethod);
+  writeNotNull('email', instance.email);
+  writeNotNull('date_of_birth', instance.dateOfBirth);
+  writeNotNull('address', instance.address?.toJson());
+  return val;
+}
 
 BillingAddress _$BillingAddressFromJson(Map<String, dynamic> json) =>
     BillingAddress(
@@ -37,11 +46,19 @@ BillingAddress _$BillingAddressFromJson(Map<String, dynamic> json) =>
       state: json['state'] as String?,
     );
 
-Map<String, dynamic> _$BillingAddressToJson(BillingAddress instance) =>
-    <String, dynamic>{
-      'city': instance.city,
-      'country_code': instance.countryCode,
-      'street': instance.street,
-      'postcode': instance.postcode,
-      'state': instance.state,
-    };
+Map<String, dynamic> _$BillingAddressToJson(BillingAddress instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('city', instance.city);
+  writeNotNull('country_code', instance.countryCode);
+  writeNotNull('street', instance.street);
+  writeNotNull('postcode', instance.postcode);
+  writeNotNull('state', instance.state);
+  return val;
+}

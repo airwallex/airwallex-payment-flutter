@@ -26,21 +26,30 @@ PaymentConsent _$PaymentConsentFromJson(Map<String, dynamic> json) =>
       clientSecret: json['client_secret'] as String?,
     );
 
-Map<String, dynamic> _$PaymentConsentToJson(PaymentConsent instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'request_id': instance.requestId,
-      'customer_id': instance.customerId,
-      'payment_method': instance.paymentMethod?.toJson(),
-      'status': instance.status,
-      'next_triggered_by': _$NextTriggeredByEnumMap[instance.nextTriggeredBy],
-      'merchant_trigger_reason':
-          _$MerchantTriggerReasonEnumMap[instance.merchantTriggerReason],
-      'requires_cvc': instance.requiresCvc,
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
-      'client_secret': instance.clientSecret,
-    };
+Map<String, dynamic> _$PaymentConsentToJson(PaymentConsent instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('id', instance.id);
+  writeNotNull('request_id', instance.requestId);
+  writeNotNull('customer_id', instance.customerId);
+  writeNotNull('payment_method', instance.paymentMethod?.toJson());
+  writeNotNull('status', instance.status);
+  writeNotNull(
+      'next_triggered_by', _$NextTriggeredByEnumMap[instance.nextTriggeredBy]);
+  writeNotNull('merchant_trigger_reason',
+      _$MerchantTriggerReasonEnumMap[instance.merchantTriggerReason]);
+  val['requires_cvc'] = instance.requiresCvc;
+  writeNotNull('created_at', instance.createdAt);
+  writeNotNull('updated_at', instance.updatedAt);
+  writeNotNull('client_secret', instance.clientSecret);
+  return val;
+}
 
 const _$NextTriggeredByEnumMap = {
   NextTriggeredBy.merchant: 'merchant',
@@ -65,11 +74,19 @@ PaymentMethod _$PaymentMethodFromJson(Map<String, dynamic> json) =>
       customerId: json['customer_id'] as String?,
     );
 
-Map<String, dynamic> _$PaymentMethodToJson(PaymentMethod instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'type': instance.type,
-      'card': instance.card?.toJson(),
-      'billing': instance.billing?.toJson(),
-      'customer_id': instance.customerId,
-    };
+Map<String, dynamic> _$PaymentMethodToJson(PaymentMethod instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('id', instance.id);
+  writeNotNull('type', instance.type);
+  writeNotNull('card', instance.card?.toJson());
+  writeNotNull('billing', instance.billing?.toJson());
+  writeNotNull('customer_id', instance.customerId);
+  return val;
+}

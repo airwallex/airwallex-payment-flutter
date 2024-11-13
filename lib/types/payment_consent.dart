@@ -6,7 +6,7 @@ import 'package:airwallex_payment_flutter/types/shipping.dart';
 
 part 'payment_consent.g.dart';
 
-@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake, includeIfNull: false)
 class PaymentConsent {
   String? id;
   String? requestId;
@@ -39,7 +39,7 @@ class PaymentConsent {
   Map<String, dynamic> toJson() => _$PaymentConsentToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake, includeIfNull: false)
 class PaymentMethod {
   String? id;
   String? type;
