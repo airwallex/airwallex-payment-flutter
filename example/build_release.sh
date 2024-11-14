@@ -3,6 +3,7 @@
 FILE_PATH="lib/api/api_client.dart"
 
 REPLACEMENT_CONTENT=$(cat << 'EOF'
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -10,7 +11,7 @@ class ApiClient {
   late String baseUrl;
   final String apiKey;
   final String clientId;
-  final String environment;
+  final Environment environment;
 
   ApiClient(
       {required this.environment,
@@ -19,11 +20,11 @@ class ApiClient {
     baseUrl = _getBaseUrlForEnvironment(environment);
   }
 
-  String _getBaseUrlForEnvironment(String environment) {
+  String _getBaseUrlForEnvironment(Environment environment) {
     switch (environment) {
-      case 'demo':
+      case Environment.demo:
         return 'https://demo-pacheckoutdemo.airwallex.com';
-      case 'staging':
+      case Environment.staging:
         return 'https://staging-pacheckoutdemo.airwallex.com';
       default:
         return 'https://api.airwallex.com';
@@ -63,7 +64,7 @@ class ApiClient {
         Uri.parse('$baseUrl/api/v1/pa/payment_intents/create'),
         headers: {
           'Content-Type': 'application/json',
-          if (environment == 'production')
+          if (environment == Environment.production)
             'Authorization': 'Bearer ${await authenticate()}',
         },
         body: jsonEncode(params),
@@ -90,7 +91,7 @@ class ApiClient {
         Uri.parse('$baseUrl/api/v1/pa/customers/create'),
         headers: {
           'Content-Type': 'application/json',
-          if (environment == 'production')
+          if (environment == Environment.production)
             'Authorization': 'Bearer ${await authenticate()}',
         },
         body: jsonEncode(params),
@@ -117,7 +118,7 @@ class ApiClient {
         Uri.parse(
             '$baseUrl/api/v1/pa/customers/$customerId/generate_client_secret?apiKey=$apiKey&clientId=$clientId'),
         headers: {
-          if (environment == 'production')
+          if (environment == Environment.production)
             'Authorization': 'Bearer ${await authenticate()}',
         },
       );
@@ -131,6 +132,26 @@ class ApiClient {
       }
     } catch (e) {
       print('Error occurred while generating client secret: $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getPaymentConsents(String customerId) async {
+    print('Fetching payment consents');
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/v1/pa/payment_consents?customer_id=$customerId')
+      );
+      print('HTTP Response Status Code: ${response.statusCode}');
+      print('HTTP Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to fetch payment consents: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred while fetching payment consents: $e');
       rethrow;
     }
   }
