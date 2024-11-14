@@ -45,7 +45,7 @@ class MyHomePageState extends State<MyHomePage> {
   late PaymentRepository paymentRepository;
   late List<String> environmentOptions;
 
-  String _environment = 'demo';
+  Environment _environment = Environment.demo;
   bool _saveCard = false;
   bool _isLoading = false;
   String _selectedOption = 'one off';
@@ -68,7 +68,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initialize() async {
     try {
-      Airwallex.initialize(environment: Environment.values.firstWhere((e) => e.name == _environment));
+      Airwallex.initialize(environment: _environment);
       final apiClient = ApiClient(
           environment: _environment, apiKey: apiKey, clientId: clientId);
       setState(() {
@@ -164,13 +164,14 @@ class MyHomePageState extends State<MyHomePage> {
         title: const Text('Airwallex Example'),
         actions: [
           DropdownButton<String>(
-            value: _environment,
+            value: _environment.name,
             onChanged: (String? newValue) {
               if (newValue != null) {
                 setState(() {
-                  _environment = newValue;
+                  _environment = Environment.values
+                      .firstWhere((element) => element.name == newValue);
                 });
-                if (_environment == 'production') {
+                if (_environment == Environment.production) {
                   showCredentialsDialog(context,
                       (String apiKeyValue, String clientIdValue) {
                     setState(() {
@@ -263,16 +264,14 @@ class MyHomePageState extends State<MyHomePage> {
                 if (_selectedOption == 'one off' && Platform.isAndroid) ...[
                   ElevatedButton(
                     onPressed: () => _handleSubmit(() async =>
-                        airwallex
-                            .startGooglePay(await _createSession())),
+                        airwallex.startGooglePay(await _createSession())),
                     child: const Text('startGooglePay'),
                   )
                 ],
                 if (_selectedOption == 'one off' && Platform.isIOS) ...[
                   ElevatedButton(
                     onPressed: () => _handleSubmit(() async =>
-                        airwallex
-                            .startApplePay(await _createSession())),
+                        airwallex.startApplePay(await _createSession())),
                     child: const Text('startApplePay'),
                   )
                 ],
