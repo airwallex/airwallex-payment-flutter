@@ -7,6 +7,8 @@ import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tuple/tuple.dart';
 
 import 'api/api_client.dart';
 import 'api/payment_repository.dart';
@@ -45,10 +47,10 @@ class MyHomePageState extends State<MyHomePage> {
   late PaymentRepository paymentRepository;
   late List<String> environmentOptions;
 
-  Environment _environment = Environment.demo;
-  bool _saveCard = false;
-  bool _isLoading = false;
-  String _selectedOption = 'one off';
+  Environment environment = Environment.demo;
+  bool saveCard = false;
+  bool isLoading = false;
+  String selectedOption = 'one off';
   //for demo or staging environment, you can set your own api key and client id,
   // if you don't, We will use the default value
   String apiKey = '';
@@ -68,9 +70,13 @@ class MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initialize() async {
     try {
-      Airwallex.initialize(environment: _environment);
+      final values = await loadEnvironmentAndKeys();
+      environment = values.item1;
+      apiKey = values.item2;
+      clientId = values.item3;
+      Airwallex.initialize(environment: environment);
       final apiClient = ApiClient(
-          environment: _environment, apiKey: apiKey, clientId: clientId);
+          environment: environment, apiKey: apiKey, clientId: clientId);
       setState(() {
         paymentRepository = PaymentRepository(apiClient: apiClient);
       });
@@ -84,7 +90,7 @@ class MyHomePageState extends State<MyHomePage> {
   Future<void> _handleSubmit<T>(
       Future<PaymentResult> Function() paymentFunction) async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     try {
       PaymentResult paymentResult = await paymentFunction();
@@ -93,13 +99,13 @@ class MyHomePageState extends State<MyHomePage> {
       _showDialog('Failed to get response', e.toString());
     } finally {
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }
 
   Future<BaseSession> _createSession({String? customerId}) async {
-    switch (_selectedOption) {
+    switch (selectedOption) {
       case 'one off':
         final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
@@ -129,13 +135,32 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<PaymentResult> _payWithCardDetails() async {
-    if (_saveCard && customerId == null) {
+    if (saveCard && customerId == null) {
       customerId = await paymentRepository.getCustomerId();
     }
     return airwallex.payWithCardDetails(
         await _createSession(customerId: customerId),
-        CardCreator.createDemoCard(_environment),
-        _saveCard);
+        CardCreator.createDemoCard(environment),
+        saveCard);
+  }
+
+  Future<Tuple3<Environment, String, String>> loadEnvironmentAndKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    final envString = prefs.getString('environment');
+    final apiKey = prefs.getString('apiKey');
+    final clientId = prefs.getString('clientId');
+    return Tuple3(Environment.values.firstWhere((e) => e.name == envString, orElse: () => Environment.demo), apiKey ?? '', clientId ?? '');
+  }
+
+  void saveEnvironment(Environment environment) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('environment', environment.name);
+  }
+
+  void saveKeys(String apiKey, String clientId) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('apiKey', apiKey);
+    prefs.setString('clientId', clientId);
   }
 
   void _showDialog(String title, String message) {
@@ -164,19 +189,18 @@ class MyHomePageState extends State<MyHomePage> {
         title: const Text('Airwallex Example'),
         actions: [
           DropdownButton<String>(
-            value: _environment.name,
+            value: environment.name,
             onChanged: (String? newValue) {
               if (newValue != null) {
                 setState(() {
-                  _environment = Environment.values
-                      .firstWhere((element) => element.name == newValue);
+                  saveEnvironment(Environment.values
+                      .firstWhere((element) => element.name == newValue));
                 });
-                if (_environment == Environment.production) {
+                if (newValue == "production") {
                   showCredentialsDialog(context,
                       (String apiKeyValue, String clientIdValue) {
                     setState(() {
-                      apiKey = apiKeyValue;
-                      clientId = clientIdValue;
+                      saveKeys(apiKeyValue, clientIdValue);
                     });
                     _initialize();
                   });
@@ -202,10 +226,10 @@ class MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 DropdownButton<String>(
-                  value: _selectedOption,
+                  value: selectedOption,
                   onChanged: (String? newValue) {
                     setState(() {
-                      _selectedOption = newValue!;
+                      selectedOption = newValue!;
                     });
                   },
                   items: <String>[
@@ -243,16 +267,16 @@ class MyHomePageState extends State<MyHomePage> {
                           _handleSubmit(() async => _payWithCardDetails()),
                       child: const Text('payWithCardDetails'),
                     ),
-                    if (_selectedOption == 'one off') ...[
+                    if (selectedOption == 'one off') ...[
                       const SizedBox(width: 5),
                       SizedBox(
                           height: 24.0,
                           width: 24.0,
                           child: Checkbox(
-                            value: _saveCard,
+                            value: saveCard,
                             onChanged: (value) {
                               setState(() {
-                                _saveCard = value!;
+                                saveCard = value!;
                               });
                             },
                           )),
@@ -261,21 +285,21 @@ class MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                if (_selectedOption == 'one off' && Platform.isAndroid) ...[
+                if (selectedOption == 'one off' && Platform.isAndroid) ...[
                   ElevatedButton(
                     onPressed: () => _handleSubmit(() async =>
                         airwallex.startGooglePay(await _createSession())),
                     child: const Text('startGooglePay'),
                   )
                 ],
-                if (_selectedOption == 'one off' && Platform.isIOS) ...[
+                if (selectedOption == 'one off' && Platform.isIOS) ...[
                   ElevatedButton(
                     onPressed: () => _handleSubmit(() async =>
                         airwallex.startApplePay(await _createSession())),
                     child: const Text('startApplePay'),
                   )
                 ],
-                if (_selectedOption == 'one off' && customerId != null) ...[
+                if (selectedOption == 'one off' && customerId != null) ...[
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () =>
@@ -286,7 +310,7 @@ class MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
-          if (_isLoading) const Center(child: CircularProgressIndicator()),
+          if (isLoading) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );
