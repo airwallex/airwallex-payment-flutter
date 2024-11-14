@@ -1,7 +1,7 @@
 # Airwallex Flutter Plugin
 [![Platform](https://img.shields.io/badge/platform-flutter-darkgreen)](https://flutter.dev/)
 [![Flutter version: 3.24.3](https://img.shields.io/badge/flutter-3.24.3-brightgreen)](https://medium.com/flutter/flutter-3-24-dart-3-5-204b7d20c45d)
-[![GitHub release](https://img.shields.io/badge/release-v0.0.1-blue)](https://github.com/airwallex/airwallex-payment-flutter/releases)
+[![GitHub release](https://img.shields.io/badge/release-v0.0.2-blue)](https://github.com/airwallex/airwallex-payment-flutter/releases)
 [![license: BSD 3-Clause](https://img.shields.io/badge/license-BSD%203--Clause-lightblue)](https://github.com/airwallex/airwallex-payment-flutter/blob/main/LICENSE)
 
 [EN](./README.md) | 中文
@@ -15,7 +15,7 @@ Airwallex Flutter Plugin可以很方便地在你的Flutter应用中添加支付�
 - Google Pay
 
 ## 添加依赖
-已经上传到[pub.dev](https://pub.dev/packages/airwallex_payment_flutter), 你只需要添加Plugin依赖项。
+已经上传到 [pub.dev](https://pub.dev/packages/airwallex_payment_flutter), 你只需要添加Plugin依赖项。
 
 在 `pubspec.yaml`中添加以下依赖
 ```yaml
