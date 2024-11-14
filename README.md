@@ -20,7 +20,7 @@ The Components are available through [pub.dev](https://pub.dev/packages/airwalle
 Add the dependency in`pubspec.yaml`
 ```yaml
 dependencies:
-    airwallex_payment_flutter: 0.0.1
+    airwallex_payment_flutter: 0.0.2
 ```
 
 ## Getting Start

@@ -28,7 +28,7 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将支付功能集�
 在 `pubspec.yaml`中添加以下依赖
 ```yaml
 dependencies:
-  airwallex_payment_flutter: 0.0.1
+  airwallex_payment_flutter: 0.0.2
 ```
 ### Android
 我们发现在某些Gradle版本下，build release包会出现以下混淆问题

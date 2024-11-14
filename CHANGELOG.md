@@ -1,6 +1,7 @@
 ## 0.0.2
 
-* Update details...
+* Support more payment APIs.
+* Support payment APIs for the iOS platform.
 
 ## 0.0.1
 

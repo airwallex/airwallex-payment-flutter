@@ -28,7 +28,7 @@ Our sample app is open source on [Github](https://github.com/airwallex/airwallex
 To install the Plugin, in your `pubspec.yaml`, add the following:
 ```yaml
 dependencies:
-  airwallex_payment_flutter: 0.0.1
+  airwallex_payment_flutter: 0.0.2
 ```
 ### Android
 We've noticed that with some versions of Gradle, building a release package can lead to these obfuscation issues.

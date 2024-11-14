@@ -20,7 +20,7 @@ Airwallex Flutter Plugin可以很方便地在你的Flutter应用中添加支付�
 在 `pubspec.yaml`中添加以下依赖
 ```yaml
 dependencies:
-    airwallex_payment_flutter: 0.0.1
+    airwallex_payment_flutter: 0.0.2
 ```
 
 ## 快速上手
