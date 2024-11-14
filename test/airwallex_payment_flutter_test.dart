@@ -1,9 +1,11 @@
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_method_channel.dart';
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_platform_interface.dart';
 import 'package:airwallex_payment_flutter/types/card.dart';
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -11,8 +13,8 @@ class MockAirwallexPaymentFlutterPlatform
     with MockPlatformInterfaceMixin
     implements AirwallexPaymentFlutterPlatform {
   @override
-  Future<bool> initialize(
-      String environment, bool enableLogging, bool saveLogToLocal) {
+  void initialize(
+      Environment environment, bool enableLogging, bool saveLogToLocal) {
     throw UnimplementedError();
   }
 
@@ -43,7 +45,13 @@ class MockAirwallexPaymentFlutterPlatform
   }
 
   @override
-  Future<PaymentResult> payWithConsent(BaseSession session, PaymentConsent consent) {
+  Future<PaymentResult> payWithConsent(
+      BaseSession session, PaymentConsent consent) {
+    throw UnimplementedError();
+  }
+
+  @override
+  void setTintColor(Color color) {
     throw UnimplementedError();
   }
 }

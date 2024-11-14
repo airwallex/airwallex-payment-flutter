@@ -1,4 +1,6 @@
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
+import 'package:flutter/services.dart';
 
 import '/types/card.dart';
 import '/types/payment_result.dart';
@@ -28,10 +30,9 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> initialize(
-      String environment, bool enableLogging, bool saveLogToLocal) {
-    throw UnimplementedError(
-        'presentEntirePaymentFlow() has not been implemented.');
+  void initialize(
+      Environment environment, bool enableLogging, bool saveLogToLocal) {
+    throw UnimplementedError('initialize() has not been implemented.');
   }
 
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {
@@ -56,5 +57,9 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
 
   Future<PaymentResult> startApplePay(BaseSession session) {
     throw UnimplementedError('startApplePay() has not been implemented.');
+  }
+
+  void setTintColor(Color color) {
+    throw UnimplementedError('setTintColor() has not been implemented.');
   }
 }

@@ -24,7 +24,7 @@ extension AWXApplePayOptions {
             merchantCapabilities = capabilitiesBitmask
         }
         if let contacts = params["requiredBillingContactFields"] as? [String] {
-            requiredBillingContactFields = Set(contacts.map { PKContactField(rawValue: $0) })
+            requiredBillingContactFields = Set(contacts.compactMap { PKContactField.from($0) })
         }
         if let countries = params["supportedCountries"] as? [String] {
             supportedCountries = Set(countries)
@@ -91,6 +91,25 @@ private extension PKPaymentSummaryItemType {
             .final
         case "pendingType":
             .pending
+        default:
+            nil
+        }
+    }
+}
+
+private extension PKContactField {
+    static func from(_ stringValue: String) -> Self? {
+        switch stringValue {
+        case "emailAddress":
+            .emailAddress
+        case "name":
+            .name
+        case "phoneNumber":
+            .phoneNumber
+        case "phoneticName":
+            .phoneticName
+        case "postalAddress":
+            .postalAddress
         default:
             nil
         }

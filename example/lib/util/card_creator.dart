@@ -1,8 +1,9 @@
 import 'package:airwallex_payment_flutter/types/card.dart';
+import 'package:airwallex_payment_flutter/types/environment.dart';
 
 class CardCreator {
-  static Card createDemoCard(String environment) {
-    if (environment == 'demo') {
+  static Card createDemoCard(Environment environment) {
+    if (environment == Environment.demo) {
       return Card(
           number: "4012000300001003",
           name: "John Citizen",

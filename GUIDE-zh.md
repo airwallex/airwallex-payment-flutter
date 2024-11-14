@@ -61,8 +61,7 @@ android.enableR8.fullMode=false
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter.dart';
 ```
 ```dart
-final airwallexPaymentFlutter = AirwallexPaymentFlutter();
-airwallexPaymentFlutter.initialize('demo', true, false);
+Airwallex.initialize(environment: 'demo');
 ```
 参数`environment`是 Airwallex Flutter Plugin的环境选项，包括`staging`, `demo`和`production`。
 如果您处于测试阶段，建议将环境设置为`staging`或`demo`来进行功能调试。如果您处于生产阶段，则必须设置`production`。
@@ -119,14 +118,25 @@ static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
     );
 }
 ```
-#### 配置GooglePayOptions
-Airwallex Flutter Plugin可以通过以下步骤允许商户给顾客提供Google Pay作为支付方式：
-- 确认Google Pay在您的Airwallex账号上已开通
-- 您可以自定义Google Pay选项来限制或提供额外的付款参数。请参考`GooglePayOptions`类中的更多信息。
+#### 配置GooglePayOptions/ApplePayOptions
+Airwallex Flutter Plugin可以通过以下步骤允许商户给顾客提供Google Pay和Apple Pay作为支付方式：
+- 确保 Apple Pay 已在应用中开启并配置。请参考 Apple 的[官方文档](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay).
+- 确认Google/Apple Pay在您的Airwallex账号上已开通
+- 您可以自定义Google/Apple Pay选项来限制或提供额外的付款参数。请参考`GooglePayOptions`/`ApplePayOptions`类中的更多信息。
 ```dart
 final googlePayOptions = GooglePayOptions(
   billingAddressRequired: true,
   billingAddressParameters: BillingAddressParameters(format: Format.FULL),
+)
+
+final applePayOptions = ApplePayOptions(
+  merchantIdentifier: 'merchant.com.airwallex.paymentacceptance',
+  supportedNetworks: [ApplePaySupportedNetwork.visa, ApplePaySupportedNetwork.masterCard, ApplePaySupportedNetwork.unionPay],
+  additionalPaymentSummaryItems: [CartSummaryItem(label: "goods", amount: 2, type: CartSummaryItemType.pendingType), CartSummaryItem(label: "tax", amount: 1)],
+  merchantCapabilities: [ApplePayMerchantCapability.supports3DS, ApplePayMerchantCapability.supportsCredit, ApplePayMerchantCapability.supportsDebit],
+  requiredBillingContactFields: [ContactField.name, ContactField.postalAddress, ContactField.emailAddress],
+  supportedCountries: ['HK', 'US', 'AU'],
+  totalPriceLabel: "COMPANY, INC."
 )
 ```
 - 我们现在暂时只支持AMEX、DISCOVER、JCB、Visa和MasterCard来进行Google Pay支付，用户在通过Google Pay付款时只能选择这几种卡。
@@ -207,12 +217,12 @@ static BaseSession createRecurringWithIntentSession(
 ### 支付列表页面
 - 使用 `presentEntirePaymentFlow` 调起支付列表页面，来完成整个支付流程
 ```dart
-   final result = await airwallexPaymentFlutter.presentEntirePaymentFlow(paymentSession);
+   final result = await airwallex.presentEntirePaymentFlow(paymentSession);
 ```
 ### 卡支付页面
 - 使用 `presentCardPaymentFlow` 调起卡支付页面，来完成整个支付流程
 ```kotlin
-   final result = await airwallexPaymentFlutter.presentCardPaymentFlow(paymentSession);
+   final result = await airwallex.presentCardPaymentFlow(paymentSession);
 ```
 ### 自定义主题
 #### Android：
@@ -222,6 +232,9 @@ static BaseSession createRecurringWithIntentSession(
     <color name="airwallex_tint_color">@color/airwallex_color_red</color>
 ```
 #### iOS：
+```
+  Airwallex.setTintColor(Colors.red);
+```
 
 ## 低层API集成
 ### 用卡和账单详情确认支付
@@ -229,23 +242,23 @@ static BaseSession createRecurringWithIntentSession(
 ```dart
 import 'package:airwallex_payment_flutter/types/card.dart';
 
-static Card createCard() {
-    // this card number is for demo environment only
-    return Card(
-      number: "4012000300001003",
-      name: "John Citizen",
-      expiryMonth: "12",
-      expiryYear: "2029",
-      cvc: "737"
-    );
-  }
-```
-```dart
-final result = await airwallexPaymentFlutter.payWithCardDetails(paymentSession, card);
+// this card number is for demo environment only
+final card = Card(
+  number: "4012000300001003",
+  name: "John Citizen",
+  expiryMonth: "12",
+  expiryYear: "2029",
+  cvc: "737"
+);
+final result = await airwallex.payWithCardDetails(paymentSession, card);
 ```
 ### Google Pay支付
 ```dart
-final result = await airwallexPaymentFlutter.startGooglePay(paymentSession);
+final result = await airwallex.startGooglePay(paymentSession);
+```
+### Apple Pay
+```dart
+final result = await airwallex.startApplePay(paymentSession);
 ```
 
 ## Plugin Example

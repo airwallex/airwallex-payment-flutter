@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 
 import '/types/card.dart';
@@ -6,11 +9,10 @@ import '/types/payment_session.dart';
 
 import 'airwallex_payment_flutter_platform_interface.dart';
 
-class AirwallexPaymentFlutter {
-  Future<void> initialize(
-      String environment, bool enableLogging, bool saveLogToLocal) {
-    return AirwallexPaymentFlutterPlatform.instance
-        .initialize(environment, enableLogging, saveLogToLocal);
+class Airwallex {
+  static void initialize({
+      Environment environment = Environment.production, bool enableLogging = true, bool saveLogToLocal = false}) {
+    AirwallexPaymentFlutterPlatform.instance.initialize(environment, enableLogging, saveLogToLocal);
   }
 
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {
@@ -39,5 +41,9 @@ class AirwallexPaymentFlutter {
 
   Future<PaymentResult> startApplePay(BaseSession session) {
     return AirwallexPaymentFlutterPlatform.instance.startApplePay(session);
+  }
+
+  static void setTintColor(Color color) {
+    AirwallexPaymentFlutterPlatform.instance.setTintColor(color);
   }
 }

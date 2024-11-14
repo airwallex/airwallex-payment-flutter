@@ -1,3 +1,4 @@
+import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -5,7 +6,7 @@ class ApiClient {
   late String checkoutDemoBaseUrl;
   final String apiKey;
   final String clientId;
-  final String environment;
+  final Environment environment;
 
   ApiClient(
       {required this.environment,
@@ -14,11 +15,11 @@ class ApiClient {
     checkoutDemoBaseUrl = _getCheckoutDemoBaseUrlForEnvironment(environment);
   }
 
-  String _getCheckoutDemoBaseUrlForEnvironment(String environment) {
+  String _getCheckoutDemoBaseUrlForEnvironment(Environment environment) {
     switch (environment) {
-      case 'demo':
+      case Environment.demo:
         return 'https://demo-pacheckoutdemo.airwallex.com';
-      case 'staging':
+      case Environment.staging:
         return 'https://staging-pacheckoutdemo.airwallex.com';
       default:
         return '';

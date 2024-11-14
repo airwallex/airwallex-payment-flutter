@@ -38,10 +38,11 @@ class SessionCreator {
       applePayOptions: ApplePayOptions(
         merchantIdentifier: 'merchant.com.airwallex.paymentacceptance',
         supportedNetworks: [ApplePaySupportedNetwork.visa, ApplePaySupportedNetwork.masterCard, ApplePaySupportedNetwork.unionPay],
-        additionalPaymentSummaryItems: [CartSummaryItem(label: "Airwallex item", amount: 1.00, type: CartSummaryItemType.pendingType)],
+        additionalPaymentSummaryItems: [CartSummaryItem(label: "goods", amount: 2, type: CartSummaryItemType.pendingType), CartSummaryItem(label: "tax", amount: 1)],
         merchantCapabilities: [ApplePayMerchantCapability.supports3DS, ApplePayMerchantCapability.supportsCredit, ApplePayMerchantCapability.supportsDebit],
-        requiredBillingContactFields: [ContactField.postalAddress, ContactField.emailAddress],
-        supportedCountries: ['HK', 'US', 'AU']
+        requiredBillingContactFields: [ContactField.name, ContactField.postalAddress, ContactField.emailAddress],
+        supportedCountries: ['HK', 'US', 'AU'],
+        totalPriceLabel: "COMPANY, INC."
       ),
       // paymentMethods: ['card'],
       autoCapture: true,
