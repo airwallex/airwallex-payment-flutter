@@ -22,12 +22,13 @@ class AirwallexSdk: NSObject {
         
         let session = buildAirwallexSession(from: session)
         
-        let context = AWXUIContext.shared()
-        context.delegate = self
-        context.session = session
-        
         DispatchQueue.main.async {
-            context.presentEntirePaymentFlow(from: self.getViewController())
+            AWXUIContext.launchPayment(
+                from: self.getViewController(),
+                session: session,
+                paymentResultDelegate: self,
+                launchStyle: .present
+            )
         }
     }
     
@@ -38,12 +39,13 @@ class AirwallexSdk: NSObject {
         
         let session = buildAirwallexSession(from: session)
         
-        let context = AWXUIContext.shared()
-        context.delegate = self
-        context.session = session
-        
         DispatchQueue.main.async {
-            context.presentCardPaymentFlow(from: self.getViewController())
+            AWXUIContext.launchCardPayment(
+                from: self.getViewController(),
+                session: session,
+                paymentResultDelegate: self,
+                launchStyle: .present
+            )
         }
     }
     
@@ -105,8 +107,8 @@ class AirwallexSdk: NSObject {
 }
 
 extension AirwallexSdk: AWXPaymentResultDelegate {
-    func paymentViewController(_ controller: UIViewController, didCompleteWith status: AirwallexPaymentStatus, error: Error?) {
-        controller.dismiss(animated: true) {
+    func paymentViewController(_ controller: UIViewController?, didCompleteWith status: AirwallexPaymentStatus, error: Error?) {
+        controller?.dismiss(animated: true) {
             switch status {
             case .success:
                 var successDict = ["status": "success"]
@@ -126,7 +128,7 @@ extension AirwallexSdk: AWXPaymentResultDelegate {
         }
     }
     
-    func paymentViewController(_ controller: UIViewController, didCompleteWithPaymentConsentId paymentConsentId: String) {
+    func paymentViewController(_ controller: UIViewController?, didCompleteWithPaymentConsentId paymentConsentId: String) {
         self.paymentConsentID = paymentConsentId
     }
 }

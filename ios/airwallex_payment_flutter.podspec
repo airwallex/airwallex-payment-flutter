@@ -3,25 +3,22 @@
 # Run `pod lib lint airwallex_payment_flutter.podspec` to validate before publishing.
 #
 
-airwallex_version = '~> 5.5.6'
+airwallex_version = '~> 6.1.4'
 
 Pod::Spec.new do |s|
   s.name             = 'airwallex_payment_flutter'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'Airwallex Payment Flutter plugin project.'
   s.description      = <<-DESC
-A new Flutter plugin project.
+Airwallex Payment Flutter plugin project.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://www.airwallex.com'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Airwallex PA Mobile' => 'pa_mobile_sdk@airwallex.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'Airwallex/Core', airwallex_version
-  s.dependency 'Airwallex/Card', airwallex_version
-  s.dependency 'Airwallex/ApplePay', airwallex_version
-  s.dependency 'Airwallex/Redirect', airwallex_version
+  s.dependency 'Airwallex', airwallex_version
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
