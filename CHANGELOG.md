@@ -1,3 +1,7 @@
+## 0.1.0
+
+* Update details...
+
 ## 0.0.2
 
 * Support more payment APIs.
