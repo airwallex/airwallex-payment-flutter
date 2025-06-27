@@ -115,7 +115,9 @@ static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
     ),
     autoCapture: true,
     hidePaymentConsents: false,
-    );
+    // To limit the payment methods displayed on the list screen. Only available ones from your Airwallex account will be applied.
+    paymentMethods: ['card', 'googlepay']
+  );
 }
 ```
 #### 配置GooglePayOptions/ApplePayOptions
