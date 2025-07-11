@@ -1,13 +1,13 @@
 PODS:
-  - Airwallex (6.1.4):
-    - Airwallex/AirwallexPaymentSheet (= 6.1.4)
-  - Airwallex/AirwallexCore (6.1.4)
-  - Airwallex/AirwallexPayment (6.1.4):
+  - Airwallex (6.1.6):
+    - Airwallex/AirwallexPaymentSheet (= 6.1.6)
+  - Airwallex/AirwallexCore (6.1.6)
+  - Airwallex/AirwallexPayment (6.1.6):
     - Airwallex/AirwallexCore
-  - Airwallex/AirwallexPaymentSheet (6.1.4):
+  - Airwallex/AirwallexPaymentSheet (6.1.6):
     - Airwallex/AirwallexPayment
-  - airwallex_payment_flutter (0.1.0):
-    - Airwallex (~> 6.1.4)
+  - airwallex_payment_flutter (0.0.1):
+    - Airwallex (~> 6.1.6)
     - Flutter
   - Flutter (1.0.0)
   - integration_test (0.0.1):
@@ -37,8 +37,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  Airwallex: a27d05d20401ccbbac574ab051f9f1bf905f94a2
-  airwallex_payment_flutter: 52e284a32f09da42a49ba5e0ab93bdb17835a418
+  Airwallex: a8e744ede69e1095905226ec65fde31a76ced05d
+  airwallex_payment_flutter: 58442230a986f88f36246ad2ec7dab2d06e80d16
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
