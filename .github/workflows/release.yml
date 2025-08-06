@@ -7,6 +7,10 @@ on:
         description: 'Next release version. If empty then use semantic release.'
         required: false
         type: string
+      release_notes:
+        description: 'Release notes for the new version.'
+        required: false
+        type: string
 
 jobs:
   build:
@@ -22,17 +26,6 @@ jobs:
           # Bypass protected branch setting by using a service account PAT
           # see more at: https://github.com/community/community/discussions/13836
           token: ${{ secrets.PAT }}
-               
-      - name: Install Flutter
-        uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046 #2.19.0
-        with:
-          flutter-version: '3.24.3'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
 
       - name: Work out the new version via Semantic Release
         uses: cycjimmy/semantic-release-action@8e58d20d0f6c8773181f43eb74d6a05e3099571d #3.4.2
@@ -43,29 +36,53 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
    
-      - name: Apply new version to environment
+      - name: Apply version/release notes to environment
         run: |
           echo "VERSION=${{ inputs.version || steps.semantic.outputs.new_release_version }}" >> $GITHUB_ENV
+          echo "RELEASE_NOTES=${{ inputs.release_notes || steps.semantic.outputs.new_release_notes }}" >> $GITHUB_ENV
 
+      - name: Abort if no version
+        if: ${{ env.VERSION == '' }}
+        run: |
+          echo "No new version to release. Exiting workflow."
+          exit 1
+      
+      - name: Abort if no release notes
+        if: ${{ env.RELEASE_NOTES == '' }}
+        run: |
+          echo "No new release notes to publish. Exiting workflow."
+          exit 1
+         
       - name: Update version
         run: |
           chmod +x ./.github/workflows/update_version.sh
           ./.github/workflows/update_version.sh
         env:
-          RELEASE_NOTES: ${{ steps.semantic.outputs.new_release_notes }}
+          RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
           VERSION: ${{ env.VERSION }}
+       
+      - name: Install Flutter
+        uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046 #2.19.0
+        with:
+          flutter-version: '3.24.3'
 
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+         
       - name: Commit version changes
         uses: stefanzweifel/git-auto-commit-action@3ea6ae190baf489ba007f7c92608f33ce20ef04a #4.16.0
         id: commit
         with:
-          commit_message: "chore: bumped versions to ${{ github.event.inputs.version }}"
+          commit_message: "chore: bumped versions to ${{ env.VERSION }}"
 
       - name: Publish GitHub release
         uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 #1.16.0
         with:
-          body: ${{ steps.semantic.outputs.new_release_notes }}
-          generateReleaseNotes: ${{ steps.semantic.outcome != 'success' }}
+          body: ${{ env.RELEASE_NOTES }}
+          generateReleaseNotes: ${{ env.RELEASE_NOTES == '' }}
           commit: ${{ steps.commit.outputs.commit_hash }}
           tag: ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
