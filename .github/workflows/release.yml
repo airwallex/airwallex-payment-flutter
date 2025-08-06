@@ -47,21 +47,13 @@ jobs:
         run: |
           echo "VERSION=${{ inputs.version || steps.semantic.outputs.new_release_version }}" >> $GITHUB_ENV
 
-      - name: Create Git Tag
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git tag ${{ env.VERSION }}
-          git push origin ${{ env.VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update version based on tag
+      - name: Update version
         run: |
           chmod +x ./.github/workflows/update_version.sh
           ./.github/workflows/update_version.sh
         env:
           RELEASE_NOTES: ${{ steps.semantic.outputs.new_release_notes }}
+          VERSION: ${{ env.VERSION }}
 
       - name: Commit version changes
         uses: stefanzweifel/git-auto-commit-action@3ea6ae190baf489ba007f7c92608f33ce20ef04a #4.16.0
@@ -69,6 +61,15 @@ jobs:
         with:
           commit_message: "chore: bumped versions to ${{ github.event.inputs.version }}"
 
+      - name: Publish GitHub release
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 #1.16.0
+        with:
+          body: ${{ steps.semantic.outputs.new_release_notes }}
+          generateReleaseNotes: ${{ steps.semantic.outcome != 'success' }}
+          commit: ${{ steps.commit.outputs.commit_hash }}
+          tag: ${{ env.VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Setup Pub Credentials
         shell: bash
         env:
@@ -84,13 +85,3 @@ jobs:
 
       - name: Publish Package
         run: flutter pub publish -f
-
-      - name: Publish GitHub release
-        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 #1.16.0
-        with:
-          body: ${{ steps.semantic.outputs.new_release_notes }}
-          generateReleaseNotes: ${{ steps.semantic.outcome != 'success' }}
-          commit: ${{ steps.commit.outputs.commit_hash }}
-          tag: ${{ env.VERSION }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-      
