@@ -1,3 +1,7 @@
+## 0.1.3
+
+1. Update iOS dependency to 6.1.8 2. Update `airwallex_payment_flutter.podspec`, explicitly set `s.static_framework = true`
+
 ## 0.1.0
 
 * Update details...
