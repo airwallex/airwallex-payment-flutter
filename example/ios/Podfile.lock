@@ -1,13 +1,13 @@
 PODS:
-  - Airwallex (6.1.6):
-    - Airwallex/AirwallexPaymentSheet (= 6.1.6)
-  - Airwallex/AirwallexCore (6.1.6)
-  - Airwallex/AirwallexPayment (6.1.6):
+  - Airwallex (6.1.8):
+    - Airwallex/AirwallexPaymentSheet (= 6.1.8)
+  - Airwallex/AirwallexCore (6.1.8)
+  - Airwallex/AirwallexPayment (6.1.8):
     - Airwallex/AirwallexCore
-  - Airwallex/AirwallexPaymentSheet (6.1.6):
+  - Airwallex/AirwallexPaymentSheet (6.1.8):
     - Airwallex/AirwallexPayment
   - airwallex_payment_flutter (0.0.1):
-    - Airwallex (~> 6.1.6)
+    - Airwallex (~> 6.1.8)
     - Flutter
   - Flutter (1.0.0)
   - integration_test (0.0.1):
@@ -37,12 +37,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  Airwallex: a8e744ede69e1095905226ec65fde31a76ced05d
-  airwallex_payment_flutter: 58442230a986f88f36246ad2ec7dab2d06e80d16
+  Airwallex: 693adfbe048b1f1891bd6314f3f9f27134558987
+  airwallex_payment_flutter: c00e70744986ec949c82d08f6959299c07138a86
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
 
-PODFILE CHECKSUM: 61ea3154d7e290f055b2b6397046632b501b5a17
+PODFILE CHECKSUM: b9426617917be37d0ec259e7047532b454e59793
 
 COCOAPODS: 1.16.2
