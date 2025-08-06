@@ -1,4 +1,8 @@
 #!/bin/bash
+# fail if any commands fails
+set -e
+# make pipelines' return status equal the last command to exit with a non-zero status, or zero if all commands exit successfully
+set -o pipefail
 
 # Get the latest Git tag
 TAG=$(git describe --tags --abbrev=0)
@@ -31,14 +35,3 @@ echo -e "## $VERSION\n\n* Update details...\n" | cat - CHANGELOG.md > temp && mv
 # Debugging to confirm update
 echo "Updated CHANGELOG.md:"
 cat CHANGELOG.md
-
-# Set local user identity to github-actions[bot]
-git config user.email "github-actions[bot]@users.noreply.github.com"
-git config user.name "github-actions[bot]"
-
-# Commits and pushes with Github Actions' token
-git add pubspec.yaml CHANGELOG.md
-git commit -m "chore: bumped versions to $VERSION" || exit 0 # Do not fail if no changes
-git push origin HEAD:main
-
-echo "Updated pubspec.yaml and CHANGELOG.md with version $VERSION"

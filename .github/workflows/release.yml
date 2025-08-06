@@ -16,7 +16,12 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 #2.7.0
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # 3.6.0
+        with:
+          fetch-depth: 0
+          # Bypass protected branch setting by using a service account PAT
+          # see more at: https://github.com/community/community/discussions/13836
+          token: ${{ secrets.PAT }}
 
       - name: Install Flutter
         uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046 #2.19.0
@@ -36,12 +41,18 @@ jobs:
         run: |
           chmod +x ./.github/workflows/update_version.sh
           ./.github/workflows/update_version.sh
-
+      
       - name: Install dependencies
         run: flutter pub get
 
       - name: Run tests
         run: flutter test
+
+      - name: Commit version changes
+        uses: stefanzweifel/git-auto-commit-action@3ea6ae190baf489ba007f7c92608f33ce20ef04a #4.16.0
+        id: commit
+        with:
+          commit_message: "chore: bumped versions to ${{ github.event.inputs.version }}"
 
       - name: Setup Pub Credentials
         shell: bash
