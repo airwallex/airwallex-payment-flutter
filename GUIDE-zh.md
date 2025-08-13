@@ -31,6 +31,8 @@ dependencies:
   airwallex_payment_flutter: 0.0.2
 ```
 ### Android
+**在你的项目的 `/android` 目录下，找到 `MainActivity.kt` 文件，并将其类类型从 `FlutterActivity` 修改为 `FlutterFragmentActivity`**，否则你可能会遇到这个[问题](https://github.com/airwallex/airwallex-payment-flutter/issues/17)。
+
 我们发现在某些Gradle版本下，build release包会出现以下混淆问题
 ```
 E/AndroidRuntime(26598): Caused by: java.lang.IncompatibleClassChangeError: Class 'android.content.res.XmlBlock$Parser' does not implement interface 'q7.a' in call to 'int q7.a.next()' (declaration of 'k0.c' appears in /data/app/~~Ed8ejoXekHz3e7T6xxikvA==/com.example.airwallex_payment_flutter_example-bolBxWvE6SI_ArHfsB-Aow==/base.apk)
