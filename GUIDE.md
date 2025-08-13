@@ -31,7 +31,9 @@ dependencies:
   airwallex_payment_flutter: 0.0.2
 ```
 ### Android
-We've noticed that with some versions of Gradle, building a release package can lead to these obfuscation issues.
+**In your project's `/android` directory, find `MainAcitvity.kt` and change its class type from `FlutterActivity` to `FlutterFragmentActivity`**, otherwise you might encounter this [issue](https://github.com/airwallex/airwallex-payment-flutter/issues/17). 
+
+We also noticed that with some versions of Gradle, building a release package can lead to these obfuscation issues.
 ```
 E/AndroidRuntime(26598): Caused by: java.lang.IncompatibleClassChangeError: Class 'android.content.res.XmlBlock$Parser' does not implement interface 'q7.a' in call to 'int q7.a.next()' (declaration of 'k0.c' appears in /data/app/~~Ed8ejoXekHz3e7T6xxikvA==/com.example.airwallex_payment_flutter_example-bolBxWvE6SI_ArHfsB-Aow==/base.apk)
 E/AndroidRuntime(26598): 	at k0.c.a(SourceFile:1)
