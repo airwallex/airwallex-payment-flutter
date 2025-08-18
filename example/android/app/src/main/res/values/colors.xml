@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="airwallex_tint_color">@color/airwallex_color_blue_10</color>
+    <color name="airwallex_tint_color">@color/airwallex_color_ultraviolet_10</color>
 </resources>
