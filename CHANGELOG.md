@@ -1,3 +1,7 @@
+## 0.1.5
+
+Update to iOS 6.1.9, Android 6.2.4
+
 ## 0.1.4
 
 Update android dependency to 6.2.2
