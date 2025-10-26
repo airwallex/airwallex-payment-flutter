@@ -1,6 +1,6 @@
 name: airwallex_payment_flutter
 description: "A payment Flutter plugin project."
-version: 0.1.5
+version: 0.1.6
 homepage: "https://www.airwallex.com/"
 
 environment:
