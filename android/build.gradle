@@ -3,7 +3,7 @@ version = "1.0-SNAPSHOT"
 
 buildscript {
     ext.kotlin_version = "1.8.22"
-    ext.airwallex_version = "6.2.7"
+    ext.airwallex_version = "6.3.1"
     repositories {
         google()
         mavenCentral()
@@ -30,7 +30,7 @@ android {
         namespace = "com.example.airwallex_payment_flutter"
     }
 
-    compileSdk = 34
+    compileSdk = 35
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
