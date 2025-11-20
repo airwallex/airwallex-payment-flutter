@@ -1,3 +1,7 @@
+## 0.1.7
+
+Update to iOS 6.3.0, Android 6.3.1
+
 ## 0.1.6
 
 Update to iOS 6.2.1, Android 6.2.7
