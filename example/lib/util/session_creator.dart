@@ -113,7 +113,7 @@ class SessionCreator {
     return Shipping(
       firstName: "John",
       lastName: "Doe",
-      phoneNumber: "123-456-7890",
+      phoneNumber: "+1234567890",
       shippingMethod: "Standard",
       email: "john.doe@example.com",
       dateOfBirth: "2000-01-01",

@@ -79,7 +79,7 @@ class AirwallexSdk: NSObject {
             paymentResultDelegate: self
         )
         DispatchQueue.main.async {
-            handler.startCardPayment(with: card, billing: nil, saveCard: saveCard)
+            handler.startCardPayment(with: card, billing: session.billing, saveCard: saveCard)
         }
         self.paymentSessionHandler = handler
     }
