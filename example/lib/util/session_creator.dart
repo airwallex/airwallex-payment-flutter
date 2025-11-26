@@ -104,7 +104,7 @@ class SessionCreator {
   static Shipping createShipping() {
     ShippingAddress exampleAddress = ShippingAddress(
       city: "Example City",
-      countryCode: "UK",
+      countryCode: "GB",
       street: "123 Example Street",
       postcode: "12345",
       state: "Example State",
