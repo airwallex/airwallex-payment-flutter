@@ -31,3 +31,5 @@ build/
 example/android/app/local.properties
 example/android/app/.gradle/config.properties
 example/pubspec.lock
+
+CLAUDE.md

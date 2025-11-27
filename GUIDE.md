@@ -108,7 +108,7 @@ static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
     // shipping: createShipping(),
     isBillingRequired: true,
     isEmailRequired: false,
-    countryCode: 'UK',
+    countryCode: 'GB',
     returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
     googlePayOptions: GooglePayOptions(
     billingAddressRequired: true,

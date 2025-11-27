@@ -4,9 +4,7 @@ import Flutter
 class AirwallexSdk: NSObject {
     private var result: FlutterResult?
     private var paymentConsentID: String?
-    private var applePayProvider: AWXApplePayProvider?
-    private var cardProvider: AWXCardProvider?
-    private var hostVC: UIViewController?
+    private var paymentSessionHandler: PaymentSessionHandler?
     
     func initialize(environment: String) {
         if let mode = AirwallexSDKMode.from(environment) {
@@ -51,48 +49,58 @@ class AirwallexSdk: NSObject {
     
     func startApplePay(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
         self.result = result
-        
+
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
-        
+
         let session = buildAirwallexSession(from: session)
-        
-        let applePayProvider = AWXApplePayProvider(delegate: self, session: session)
+
+        let handler = PaymentSessionHandler(
+            session: session,
+            viewController: getViewController(),
+            paymentResultDelegate: self
+        )
         DispatchQueue.main.async {
-            applePayProvider.startPayment()
+            handler.startApplePay()
         }
-        self.applePayProvider = applePayProvider
+        self.paymentSessionHandler = handler
     }
     
     func payWithCardDetails(clientSecret: String, session: NSDictionary, card: NSDictionary, saveCard: Bool, result: @escaping FlutterResult) {
         self.result = result
-        
+
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
-        
+
         let session = buildAirwallexSession(from: session)
         let card = AWXCard.decode(fromJSON: card as? [AnyHashable : Any]) as! AWXCard
-        
-        let cardProvider = AWXCardProvider(delegate: self, session: session)
-        hostVC = getViewController()
+
+        let handler = PaymentSessionHandler(
+            session: session,
+            viewController: getViewController(),
+            paymentResultDelegate: self
+        )
         DispatchQueue.main.async {
-            cardProvider.confirmPaymentIntent(with: card, billing: nil, saveCard: saveCard)
+            handler.startCardPayment(with: card, billing: session.billing, saveCard: saveCard)
         }
-        self.cardProvider = cardProvider
+        self.paymentSessionHandler = handler
     }
     
     func payWithConsent(clientSecret: String, session: NSDictionary, consent: NSDictionary, result: @escaping FlutterResult) {
         self.result = result
-        
+
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
-        
+
         let session = buildAirwallexSession(from: session)
         let consent = AWXPaymentConsent.decode(fromJSON: consent as? [AnyHashable : Any]) as! AWXPaymentConsent
-        
-        let cardProvider = AWXCardProvider(delegate: self, session: session)
-        hostVC = getViewController()
+
+        let handler = PaymentSessionHandler(
+            session: session,
+            viewController: getViewController(),
+            paymentResultDelegate: self
+        )
         DispatchQueue.main.async {
-            cardProvider.confirmPaymentIntent(with: consent)
+            handler.startConsentPayment(with: consent)
         }
-        self.cardProvider = cardProvider
+        self.paymentSessionHandler = handler
     }
     
     private func getViewController() -> UIViewController {
@@ -108,69 +116,27 @@ class AirwallexSdk: NSObject {
 
 extension AirwallexSdk: AWXPaymentResultDelegate {
     func paymentViewController(_ controller: UIViewController?, didCompleteWith status: AirwallexPaymentStatus, error: Error?) {
-        controller?.dismiss(animated: true) {
-            switch status {
-            case .success:
-                var successDict = ["status": "success"]
-                if let consentID = self.paymentConsentID {
-                    successDict["paymentConsentId"] = consentID
-                }
-                self.result?(successDict)
-            case .inProgress:
-                self.result?(["status": "inProgress"])
-            case .failure:
-                self.result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: nil))
-            case .cancel:
-                self.result?(["status": "cancelled"])
-            }
-            self.result = nil
-            self.paymentConsentID = nil
-        }
-    }
-    
-    func paymentViewController(_ controller: UIViewController?, didCompleteWithPaymentConsentId paymentConsentId: String) {
-        self.paymentConsentID = paymentConsentId
-    }
-}
-
-extension AirwallexSdk: AWXProviderDelegate {
-    func providerDidStartRequest(_ provider: AWXDefaultProvider) {
-    }
-    
-    func providerDidEndRequest(_ provider: AWXDefaultProvider) {
-    }
-    
-    func provider(_ provider: AWXDefaultProvider, didInitializePaymentIntentId paymentIntentId: String) {
-    }
-    
-    func provider(_ provider: AWXDefaultProvider, didCompleteWith status: AirwallexPaymentStatus, error: (any Error)?) {
         switch status {
         case .success:
             var successDict = ["status": "success"]
             if let consentID = self.paymentConsentID {
                 successDict["paymentConsentId"] = consentID
             }
-            result?(successDict)
+            self.result?(successDict)
         case .inProgress:
-            result?(["status": "inProgress"])
+            self.result?(["status": "inProgress"])
         case .failure:
-            result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: nil))
+            self.result?(FlutterError(code: String((error as? NSError)?.code ?? -1), message: error?.localizedDescription, details: nil))
         case .cancel:
-            result?(["status": "cancelled"])
+            self.result?(["status": "cancelled"])
         }
-        result = nil
-        paymentConsentID = nil
-        applePayProvider = nil
-        cardProvider = nil
-        hostVC = nil
+        self.result = nil
+        self.paymentConsentID = nil
+        self.paymentSessionHandler = nil
     }
-    
-    func provider(_ provider: AWXDefaultProvider, didCompleteWithPaymentConsentId paymentConsentId: String) {
+
+    func paymentViewController(_ controller: UIViewController?, didCompleteWithPaymentConsentId paymentConsentId: String) {
         self.paymentConsentID = paymentConsentId
-    }
-    
-    func hostViewController() -> UIViewController {
-        hostVC ?? getViewController()
     }
 }
 
