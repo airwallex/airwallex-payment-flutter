@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
-          token: ${{ secrets.SERVICE_ACCOUNT_PAT }}
+          token: ${{ secrets.PAT }}
 
       - name: Extract and validate iOS SDK version
         id: new_version
@@ -89,7 +89,7 @@ jobs:
         if: steps.version_check.outputs.should_update == 'true'
         uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
         with:
-          token: ${{ secrets.SERVICE_ACCOUNT_PAT }}
+          token: ${{ secrets.PAT }}
           commit-message: "chore: update iOS SDK to ${{ steps.new_version.outputs.version }}"
           branch: "update-ios-sdk-${{ steps.new_version.outputs.version }}"
           delete-branch: true
