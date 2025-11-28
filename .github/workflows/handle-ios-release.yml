@@ -31,7 +31,7 @@ jobs:
           fi
 
           # Validate semver format (X.Y.Z)
-          if ! echo "$NEW_VERSION" | grep -qE '^\d+\.\d+\.\d+$'; then
+          if ! echo "$NEW_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "Error: Invalid version format '$NEW_VERSION'. Expected semver format (e.g., 6.4.0)"
             exit 1
           fi
