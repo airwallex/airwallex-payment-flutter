@@ -3,6 +3,12 @@ name: Handle iOS SDK Release
 on:
   repository_dispatch:
     types: [ios_release]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'iOS SDK version (e.g., 6.3.0)'
+        required: true
+        type: string
 
 jobs:
   update-ios-dependency:
@@ -16,8 +22,13 @@ jobs:
       - name: Extract and validate iOS SDK version
         id: new_version
         run: |
-          NEW_VERSION="${{ github.event.client_payload.tag }}"
-          echo "New iOS SDK version from dispatch: $NEW_VERSION"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            NEW_VERSION="${{ inputs.tag }}"
+            echo "New iOS SDK version from manual trigger: $NEW_VERSION"
+          else
+            NEW_VERSION="${{ github.event.client_payload.tag }}"
+            echo "New iOS SDK version from dispatch: $NEW_VERSION"
+          fi
 
           # Validate semver format (X.Y.Z)
           if ! echo "$NEW_VERSION" | grep -qE '^\d+\.\d+\.\d+$'; then
