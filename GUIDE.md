@@ -268,7 +268,7 @@ final result = await airwallex.startApplePay(paymentSession);
 This sample app demonstrates integrating with the  Airwallex Flutter Plugin using its prebuilt UI components to manage the checkout flow, including specifying a shipping address and selecting a Payment Method.
 
 ## Test Card Numbers
-https://cardinaldocs.atlassian.net/wiki/spaces/CCen/pages/903577725/EMV+3DS+Test+Cases
+https://www.airwallex.com/docs/payments/test-and-go-live/test-card-numbers
 
 ## Contributing
 We welcome contributions of any kind including new features, bug fixes, and documentation 
