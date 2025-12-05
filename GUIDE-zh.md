@@ -269,7 +269,7 @@ final result = await airwallex.startApplePay(paymentSession);
 该示例应用程序演示了如何使用其内置的UI组件与 Airwallex Flutter Plugin集成，以管理结帐流程，包括指定送货地址和选择付款方式。
 
 ## 测试卡号
-https://cardinaldocs.atlassian.net/wiki/spaces/CCen/pages/903577725/EMV+3DS+Test+Cases
+https://www.airwallex.com/docs/payments/test-and-go-live/test-card-numbers
 
 ## 贡献
 我们欢迎任何形式的贡献，包括新功能，错误修复和文档改进。最简单的方式就是创建pull request - 我们会尽快回复。 如果你发现任何错误或有任何疑问，也可以提交Issues。
