@@ -59,6 +59,7 @@ class AirwallexSdk: NSObject {
             viewController: getViewController(),
             paymentResultDelegate: self
         )
+        handler.showIndicator = false
         DispatchQueue.main.async {
             handler.startApplePay()
         }
@@ -78,6 +79,7 @@ class AirwallexSdk: NSObject {
             viewController: getViewController(),
             paymentResultDelegate: self
         )
+        handler.showIndicator = false
         DispatchQueue.main.async {
             handler.startCardPayment(with: card, billing: session.billing, saveCard: saveCard)
         }
@@ -97,6 +99,7 @@ class AirwallexSdk: NSObject {
             viewController: getViewController(),
             paymentResultDelegate: self
         )
+        handler.showIndicator = false
         DispatchQueue.main.async {
             handler.startConsentPayment(with: consent)
         }
