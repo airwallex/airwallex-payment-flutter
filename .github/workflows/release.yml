@@ -39,9 +39,7 @@ jobs:
       - name: Apply version/release notes to environment
         run: |
           echo "VERSION=${{ inputs.version || steps.semantic.outputs.new_release_version }}" >> $GITHUB_ENV
-          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-          echo "${{ inputs.release_notes || steps.semantic.outputs.new_release_notes }}" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          echo "RELEASE_NOTES=${{ inputs.release_notes || steps.semantic.outputs.new_release_notes }}" >> $GITHUB_ENV
 
       - name: Abort if no version
         if: ${{ env.VERSION == '' }}
