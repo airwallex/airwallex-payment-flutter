@@ -20,6 +20,7 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将支付功能集�
 * [低层API集成](#低层API集成)
     * [用卡和账单详情确认支付](#用卡和账单详情确认支付)
     * [Google Pay支付](#google-pay支付)
+    * [Apple Pay支付](#apple-pay支付)
 * [Plugin Example](#plugin-example)
 * [测试卡号](#测试卡号)
 * [贡献](#贡献)
@@ -260,7 +261,7 @@ final result = await airwallex.payWithCardDetails(paymentSession, card);
 ```dart
 final result = await airwallex.startGooglePay(paymentSession);
 ```
-### Apple Pay
+### Apple Pay支付
 ```dart
 final result = await airwallex.startApplePay(paymentSession);
 ```
