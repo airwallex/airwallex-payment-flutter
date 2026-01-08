@@ -20,6 +20,7 @@ Our sample app is open source on [Github](https://github.com/airwallex/airwallex
 * [Low-level API Integration](#low-level-api-integration)
     * [Confirm payment with card details](#confirm-payment-with-card-details)
     * [Google Pay](#google-pay)
+    * [Apple Pay](#apple-pay)
 * [Plugin Example](#plugin-example)
 * [Test Card Numbers](#test-card-numbers)
 * [Contributing](#Contributing)
