@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
+import 'package:flutter/foundation.dart';
 
 import '/types/card.dart';
 import '/types/payment_result.dart';
@@ -12,6 +13,9 @@ import 'airwallex_payment_flutter_platform_interface.dart';
 class Airwallex {
   static void initialize({
       Environment environment = Environment.production, bool enableLogging = true, bool saveLogToLocal = false}) {
+    if (enableLogging && kDebugMode) {
+      debugPrint('[AirwallexSdk] Current connected environment: ${environment.name}');
+    }
     AirwallexPaymentFlutterPlatform.instance.initialize(environment, enableLogging, saveLogToLocal);
   }
 
