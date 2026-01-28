@@ -1,3 +1,17 @@
+## 0.1.9
+
+## [0.1.9](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.8...0.1.9) (2026-01-28)
+
+
+### Bug Fixes
+
+* add missing result callbacks for iOS initialize and setTintColor ([18b56af](https://github.com/airwallex/airwallex-payment-flutter/commit/18b56af5dad49e696b7c0c65805c9e4faed0afcf))
+* handle invalid environment with default fallback on iOS ([25b4d19](https://github.com/airwallex/airwallex-payment-flutter/commit/25b4d19d088ee1c1251c52d3ea603527648c85a9))
+
+
+
+
+
 ## 0.1.8
 
 ## [0.1.8](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.7...0.1.8) (2025-12-30)
