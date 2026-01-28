@@ -20,6 +20,7 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             sdk = AirwallexSdk()
             let arguments = call.arguments as! NSDictionary
             sdk?.initialize(environment: arguments["environment"] as! String)
+            result(nil)
         case "presentEntirePaymentFlow":
             let arguments = call.arguments as! NSDictionary
             let session = arguments["session"] as! NSDictionary
@@ -47,6 +48,7 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             let arguments = call.arguments as! NSDictionary;
             let color = UIColor(red: (arguments["red"] as! CGFloat)/255, green: (arguments["green"] as! CGFloat)/255, blue: (arguments["blue"] as! CGFloat)/255, alpha: (arguments["alpha"] as! CGFloat)/255)
             AWXTheme.shared().tintColor = color
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }

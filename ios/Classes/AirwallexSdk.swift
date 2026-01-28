@@ -7,10 +7,9 @@ class AirwallexSdk: NSObject {
     private var paymentSessionHandler: PaymentSessionHandler?
     
     func initialize(environment: String) {
-        if let mode = AirwallexSDKMode.from(environment) {
-            Airwallex.setMode(mode)
-            AWXAPIClientConfiguration.shared()
-        }
+        let mode = AirwallexSDKMode.from(environment)
+        Airwallex.setMode(mode)
+        AWXAPIClientConfiguration.shared()
     }
     
     func presentEntirePaymentFlow(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
@@ -144,7 +143,7 @@ extension AirwallexSdk: AWXPaymentResultDelegate {
 }
 
 private extension AirwallexSDKMode {
-    static func from(_ stringValue: String) -> Self? {
+    static func from(_ stringValue: String) -> Self {
         switch stringValue {
         case "staging":
             .stagingMode
@@ -153,7 +152,13 @@ private extension AirwallexSDKMode {
         case "production":
             .productionMode
         default:
-            nil
+            #if DEBUG
+            let defaultMode = AirwallexSDKMode.demoMode
+            #else
+            let defaultMode = AirwallexSDKMode.productionMode
+            #endif
+            print("[AirwallexSdk] Invalid environment '\(stringValue)', defaulting to \(defaultMode)")
+            return defaultMode
         }
     }
 }
