@@ -36,6 +36,7 @@ object AirwallexRecurringWithIntentSessionParser {
         val isBillingRequired = sessionObject.optBoolean("isBillingRequired", true)
         val isEmailRequired = sessionObject.optBoolean("isEmailRequired", false)
         val autoCapture = sessionObject.optBoolean("autoCapture", true)
+        val googlePayOptions = sessionObject.optJSONObject("googlePayOptions")?.toGooglePayOptions()
 
         val order = shipping?.let {
             PurchaseOrder(
@@ -64,6 +65,7 @@ object AirwallexRecurringWithIntentSessionParser {
             .setRequireEmail(isEmailRequired)
             .setReturnUrl(returnUrl)
             .setAutoCapture(autoCapture)
+            .setGooglePayOptions(googlePayOptions)
         merchantTriggerReason?.let {
             sessionBuilder.setMerchantTriggerReason(merchantTriggerReason)
         }
