@@ -1,10 +1,10 @@
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_method_channel.dart';
 import 'package:airwallex_payment_flutter/types/card.dart';
+import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
+import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
+import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -101,6 +101,45 @@ void main() {
 
     test('startGooglePay should return PaymentSuccessResult', () async {
       final session = createMockSession();
+      final result = await platform.startGooglePay(session);
+      expect(result, isA<PaymentSuccessResult>());
+      expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
+    });
+
+    test('startGooglePay with RecurringSession should return PaymentSuccessResult', () async {
+      final session = RecurringSession(
+        customerId: 'cust123',
+        clientSecret: 'mockClientSecret',
+        currency: 'HKD',
+        countryCode: 'HK',
+        amount: 100.0,
+        nextTriggeredBy: NextTriggeredBy.merchant,
+        merchantTriggerReason: MerchantTriggerReason.scheduled,
+        googlePayOptions: GooglePayOptions(
+          billingAddressRequired: true,
+          billingAddressParameters: BillingAddressParameters(format: Format.full),
+        ),
+      );
+      final result = await platform.startGooglePay(session);
+      expect(result, isA<PaymentSuccessResult>());
+      expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
+    });
+
+    test('startGooglePay with RecurringWithIntentSession should return PaymentSuccessResult', () async {
+      final session = RecurringWithIntentSession(
+        customerId: 'cust123',
+        clientSecret: 'mockClientSecret',
+        currency: 'HKD',
+        countryCode: 'HK',
+        amount: 100.0,
+        paymentIntentId: 'intent123',
+        nextTriggeredBy: NextTriggeredBy.merchant,
+        merchantTriggerReason: MerchantTriggerReason.scheduled,
+        googlePayOptions: GooglePayOptions(
+          billingAddressRequired: true,
+          billingAddressParameters: BillingAddressParameters(format: Format.full),
+        ),
+      );
       final result = await platform.startGooglePay(session);
       expect(result, isA<PaymentSuccessResult>());
       expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');

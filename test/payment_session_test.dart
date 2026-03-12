@@ -1,3 +1,4 @@
+import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
 import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
 import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
@@ -43,6 +44,29 @@ void main() {
       expect(json['merchantTriggerReason'], equals('scheduled'));
       expect(json['type'], equals('Recurring'));
     });
+
+    test('toJson includes googlePayOptions when provided', () {
+      final googlePayOptions = GooglePayOptions(
+        billingAddressRequired: true,
+        billingAddressParameters: BillingAddressParameters(format: Format.full),
+      );
+
+      final session = RecurringSession(
+        customerId: 'cust123',
+        clientSecret: 'testSecret',
+        currency: 'HKD',
+        countryCode: 'HK',
+        amount: 99.99,
+        nextTriggeredBy: NextTriggeredBy.merchant,
+        merchantTriggerReason: MerchantTriggerReason.scheduled,
+        googlePayOptions: googlePayOptions,
+      );
+
+      final json = session.toJson();
+
+      expect(json['googlePayOptions'], isNotNull);
+      expect(json['googlePayOptions']['billingAddressRequired'], isTrue);
+    });
   });
 
   group('RecurringWithIntentSession', () {
@@ -66,6 +90,30 @@ void main() {
       expect(json['nextTriggeredBy'], equals('customer'));
       expect(json['merchantTriggerReason'], equals('unscheduled'));
       expect(json['type'], equals('RecurringWithIntent'));
+    });
+
+    test('toJson includes googlePayOptions when provided', () {
+      final googlePayOptions = GooglePayOptions(
+        billingAddressRequired: true,
+        billingAddressParameters: BillingAddressParameters(format: Format.full),
+      );
+
+      final session = RecurringWithIntentSession(
+        customerId: 'cust123',
+        clientSecret: 'testSecret',
+        currency: 'HKD',
+        countryCode: 'HK',
+        amount: 99.99,
+        paymentIntentId: 'intent123',
+        nextTriggeredBy: NextTriggeredBy.merchant,
+        merchantTriggerReason: MerchantTriggerReason.scheduled,
+        googlePayOptions: googlePayOptions,
+      );
+
+      final json = session.toJson();
+
+      expect(json['googlePayOptions'], isNotNull);
+      expect(json['googlePayOptions']['billingAddressRequired'], isTrue);
     });
   });
 }
