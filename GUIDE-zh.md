@@ -145,7 +145,8 @@ final applePayOptions = ApplePayOptions(
 )
 ```
 - 我们现在暂时只支持AMEX、DISCOVER、JCB、Visa和MasterCard来进行Google Pay支付，用户在通过Google Pay付款时只能选择这几种卡。
-> 请注意我们的Google Pay模块目前只支持`OneOffSession`。我们会在以后添加对recurring payment sessions的支持。
+- Google Pay和Apple Pay支持所有session类型，包括`OneOffSession`、`RecurringSession`和`RecurringWithIntentSession`。
+> 请注意在recurring session中，Google Pay和Apple Pay仅支持`nextTriggeredBy: merchant`。
 
 #### 配置returnUrl
 注意，如果您希望使用重定向调用第三方支付，则必须提供returnUrl来决定支付结束后跳转的页面
@@ -162,10 +163,11 @@ final applePayOptions = ApplePayOptions(
 您需要配置[custom url scheme](https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app)。
 
 ### 创建一个RecurringSession对象
-
+GooglePayOptions对于recurring session是可选的。您可以传递它以启用Google Pay作为付款方式。
 ```dart
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
+import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
 
 //get clientSecret and customerId from your server
 static BaseSession createRecurringSession(
@@ -181,6 +183,10 @@ static BaseSession createRecurringSession(
       countryCode: 'HK',
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      googlePayOptions: GooglePayOptions(
+        billingAddressRequired: true,
+        billingAddressParameters: BillingAddressParameters(format: Format.FULL),
+      ),
       nextTriggeredBy: NextTriggeredBy.Merchant,
       merchantTriggerReason: MerchantTriggerReason.Scheduled,
     );
@@ -192,6 +198,7 @@ static BaseSession createRecurringSession(
 ```dart
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
+import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
 
 //get customerId and paymentIntent from your server
 static BaseSession createRecurringWithIntentSession(
@@ -212,6 +219,10 @@ static BaseSession createRecurringWithIntentSession(
       isBillingRequired: true,
       isEmailRequired: false,
       returnUrl:'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      googlePayOptions: GooglePayOptions(
+        billingAddressRequired: true,
+        billingAddressParameters: BillingAddressParameters(format: Format.FULL),
+      ),
       nextTriggeredBy: NextTriggeredBy.Merchant,
       merchantTriggerReason: MerchantTriggerReason.Scheduled,
     );
