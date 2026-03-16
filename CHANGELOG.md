@@ -1,3 +1,16 @@
+## 0.1.10
+
+# [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.9...0.2.0) (2026-03-16)
+
+
+### Features
+
+* support recurring payment for Google Pay on Android ([5b827b4](https://github.com/airwallex/airwallex-payment-flutter/commit/5b827b40d1d9fe524113fb816a2f7a2b0b67e975))
+
+
+
+
+
 ## 0.1.9
 
 ## [0.1.9](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.8...0.1.9) (2026-01-28)
