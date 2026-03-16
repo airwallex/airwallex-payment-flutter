@@ -35,15 +35,7 @@ class SessionCreator {
         billingAddressRequired: true,
         billingAddressParameters: BillingAddressParameters(format: Format.full),
       ),
-      applePayOptions: ApplePayOptions(
-        merchantIdentifier: 'merchant.com.airwallex.paymentacceptance',
-        supportedNetworks: [ApplePaySupportedNetwork.visa, ApplePaySupportedNetwork.masterCard, ApplePaySupportedNetwork.unionPay],
-        additionalPaymentSummaryItems: [CartSummaryItem(label: "goods", amount: 2, type: CartSummaryItemType.pendingType), CartSummaryItem(label: "tax", amount: 1)],
-        merchantCapabilities: [ApplePayMerchantCapability.supports3DS, ApplePayMerchantCapability.supportsCredit, ApplePayMerchantCapability.supportsDebit],
-        requiredBillingContactFields: [ContactField.name, ContactField.postalAddress, ContactField.emailAddress],
-        supportedCountries: ['HK', 'US', 'AU'],
-        totalPriceLabel: "COMPANY, INC."
-      ),
+      applePayOptions: createApplePayOptions(),
       // paymentMethods: ['card'],
       autoCapture: true,
       hidePaymentConsents: false,
@@ -66,6 +58,11 @@ class SessionCreator {
       countryCode: 'HK',
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      googlePayOptions: GooglePayOptions(
+        billingAddressRequired: true,
+        billingAddressParameters: BillingAddressParameters(format: Format.full),
+      ),
+      applePayOptions: createApplePayOptions(),
       nextTriggeredBy: NextTriggeredBy.customer,
       merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
@@ -96,8 +93,25 @@ class SessionCreator {
       isEmailRequired: false,
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      googlePayOptions: GooglePayOptions(
+        billingAddressRequired: true,
+        billingAddressParameters: BillingAddressParameters(format: Format.full),
+      ),
+      applePayOptions: createApplePayOptions(),
       nextTriggeredBy: NextTriggeredBy.merchant,
       merchantTriggerReason: MerchantTriggerReason.scheduled,
+    );
+  }
+
+  static ApplePayOptions createApplePayOptions() {
+    return ApplePayOptions(
+      merchantIdentifier: 'merchant.com.airwallex.paymentacceptance',
+      supportedNetworks: [ApplePaySupportedNetwork.visa, ApplePaySupportedNetwork.masterCard, ApplePaySupportedNetwork.unionPay],
+      additionalPaymentSummaryItems: [CartSummaryItem(label: "goods", amount: 2, type: CartSummaryItemType.pendingType), CartSummaryItem(label: "tax", amount: 1)],
+      merchantCapabilities: [ApplePayMerchantCapability.supports3DS, ApplePayMerchantCapability.supportsCredit, ApplePayMerchantCapability.supportsDebit],
+      requiredBillingContactFields: [ContactField.name, ContactField.postalAddress, ContactField.emailAddress],
+      supportedCountries: ['HK', 'US', 'AU'],
+      totalPriceLabel: "COMPANY, INC.",
     );
   }
 

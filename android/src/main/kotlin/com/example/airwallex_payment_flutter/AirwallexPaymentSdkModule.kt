@@ -175,7 +175,7 @@ class AirwallexPaymentSdkModule {
     ) = runWithAirwallex(activity) {
         val session = parseSessionFromCall(call)
         airwallex.startGooglePay(
-            session = session as AirwallexPaymentSession,
+            session = session,
             listener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
                     AirwallexLogger.info("AirwallexPaymentSdkModule: startGooglePay, status = $status")

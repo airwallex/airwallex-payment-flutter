@@ -6,24 +6,33 @@ This section will guide you through the process of integrating the Airwallex Flu
 Our sample app is open source on [Github](https://github.com/airwallex/airwallex-payment-flutter/tree/main/example), which can help you better understand how to integrate the Airwallex Flutter Plugin into your Flutter project.
 
 ## Contents
-* [Installation](#Installation)
-* [Initialization](#Initialization)
-* [Create Payment Intent](#create-payment-intent)
-* [Create Payment Session](#create-payment-session)
-    * [Create One Off Session](#create-one-off-session)
-    * [Create Recurring Session](#create-recurring-session)
-    * [Create Recurring With Intent Session](#create-recurring-with-intent-session)
-* [Airwallex Native UI integration](#airwallex-native-ui-integration)
-    * [Launch payment list page](#launch-payment-list-page)
-    * [Launch card payment page](#launch-card-payment-page)
-    * [Custom Theme](#custom-theme)
-* [Low-level API Integration](#low-level-api-integration)
-    * [Confirm payment with card details](#confirm-payment-with-card-details)
-    * [Google Pay](#google-pay)
-    * [Apple Pay](#apple-pay)
-* [Plugin Example](#plugin-example)
-* [Test Card Numbers](#test-card-numbers)
-* [Contributing](#Contributing)
+- [Airwallex Flutter Plugin](#airwallex-flutter-plugin)
+  - [Contents](#contents)
+  - [Installation](#installation)
+    - [Android](#android)
+  - [Initialization](#initialization)
+  - [Create Payment Intent](#create-payment-intent)
+  - [Create Payment Session](#create-payment-session)
+    - [Set up GooglePayOptions/ApplePayOptions](#set-up-googlepayoptionsapplepayoptions)
+    - [Set up returnUrl](#set-up-returnurl)
+      - [Android：](#android-1)
+      - [iOS：](#ios)
+    - [Create One Off Session](#create-one-off-session)
+    - [Create Recurring Session](#create-recurring-session)
+    - [Create Recurring With Intent Session](#create-recurring-with-intent-session)
+  - [Airwallex Native UI integration](#airwallex-native-ui-integration)
+    - [Launch payment list page](#launch-payment-list-page)
+    - [Launch card payment page](#launch-card-payment-page)
+    - [Custom Theme](#custom-theme)
+      - [Android：](#android-2)
+      - [iOS：](#ios-1)
+  - [Low-level API Integration](#low-level-api-integration)
+    - [Confirm payment with card details](#confirm-payment-with-card-details)
+    - [Google Pay](#google-pay)
+    - [Apple Pay](#apple-pay)
+  - [Plugin Example](#plugin-example)
+  - [Test Card Numbers](#test-card-numbers)
+  - [Contributing](#contributing)
 
 ## Installation
 To install the Plugin, in your `pubspec.yaml`, add the following:
@@ -86,43 +95,7 @@ After creating the payment intent, you need to pass some of the data from the Pa
 ## Create Payment Session
 Whether you choose to call our UI components or use the lower-level API, you need to create a `PaymentSession` object before making the call. This object contains all the necessary information about the payment.
 
-### Create One Off Session
-GooglePayOptions and Shipping are optional, and you can choose whether to pass these parameters based on your needs.
-```dart
-import 'package:airwallex_payment_flutter/types/payment_session.dart';
-import 'package:airwallex_payment_flutter/types/shipping.dart';
-import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
-
-static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
-  //get paymentIntent from your server, or you can only get paymentIntentId, clientSecret, amount, currency from your server
-  final String paymentIntentId = paymentIntent['id'];
-  final String clientSecret = paymentIntent['client_secret'];
-  final int amount = paymentIntent['amount'];
-  final String currency = paymentIntent['currency'];
-
-  return OneOffSession(
-    paymentIntentId: paymentIntentId,
-    clientSecret: clientSecret,
-    amount: amount,
-    currency: currency,
-    customerId: '',
-    // shipping: createShipping(),
-    isBillingRequired: true,
-    isEmailRequired: false,
-    countryCode: 'GB',
-    returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
-    googlePayOptions: GooglePayOptions(
-    billingAddressRequired: true,
-    billingAddressParameters: BillingAddressParameters(format: Format.FULL),
-    ),
-    autoCapture: true,
-    hidePaymentConsents: false,
-    // To limit the payment methods displayed on the list screen. Only available ones from your Airwallex account will be applied.
-    paymentMethods: ['card', 'googlepay']
-    );
-}
-```
-#### Set up GooglePayOptions/ApplePayOptions
+### Set up GooglePayOptions/ApplePayOptions
 The Airwallex Flutter Plugin allows merchants to provide Google Pay and Apple Pay as a payment method to their customers by the following steps:
 - Make sure Apple Pay is set up correctly in the app. For more information, refer to Apple's official [doc](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay).
 - Make sure Google/Apple Pay is enabled on your Airwallex account.
@@ -144,11 +117,12 @@ final applePayOptions = ApplePayOptions(
 )
 ```
 - We currently only support AMEX, DISCOVER, JCB, Visa, and MasterCard (plus UnionPay, Maestro for Apple Pay) for Google/Apple Pay, customers will only be able to select the cards of these payment networks during Google/Apple Pay.
-> Please note that our Google/Apple Pay module only supports `OneOffSession` at the moment. We'll add support for recurring payment sessions in the future.
+> `GooglePayOptions` and `ApplePayOptions` are optional for all sessions. 
+> Please note that for `RecurringSession` and `RecurringWithIntentSession`, Google Pay and Apple Pay only support `nextTriggeredBy: merchant`.
 
-#### Set up returnUrl
+### Set up returnUrl
 Note that if you wish to use redirection to invoke third-party payments, you must provide a returnUrl to determine the page to redirect to after the payment is completed.
-##### Android：
+#### Android：
 ```
     <intent-filter>
         ...
@@ -157,11 +131,43 @@ Note that if you wish to use redirection to invoke third-party payments, you mus
             android:scheme="airwallexcheckout" />
     </intent-filter>
 ```
-##### iOS：
+#### iOS：
 You need to configure your [custom url scheme](https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app).
 
-### Create Recurring Session
+### Create One Off Session
+```
+import 'package:airwallex_payment_flutter/types/payment_session.dart';
+import 'package:airwallex_payment_flutter/types/shipping.dart';
 
+static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
+  //get paymentIntent from your server, or you can only get paymentIntentId, clientSecret, amount, currency from your server
+  final String paymentIntentId = paymentIntent['id'];
+  final String clientSecret = paymentIntent['client_secret'];
+  final int amount = paymentIntent['amount'];
+  final String currency = paymentIntent['currency'];
+
+  return OneOffSession(
+    paymentIntentId: paymentIntentId,
+    clientSecret: clientSecret,
+    amount: amount,
+    currency: currency,
+    customerId: '',
+    // shipping: createShipping(),
+    isBillingRequired: true,
+    isEmailRequired: false,
+    countryCode: 'GB',
+    returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+    googlePayOptions: optional,
+    applePayOptions: optional,
+    autoCapture: true,
+    hidePaymentConsents: false,
+    // To limit the payment methods displayed on the list screen. Only available ones from your Airwallex account will be applied.
+    paymentMethods: ['card', 'googlepay']
+    );
+}
+```
+
+### Create Recurring Session
 ```dart
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
@@ -180,6 +186,8 @@ static BaseSession createRecurringSession(
       countryCode: 'HK',
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      googlePayOptions: optional,
+      applePayOptions: optional,,
       nextTriggeredBy: NextTriggeredBy.Merchant,
       merchantTriggerReason: MerchantTriggerReason.Scheduled,
     );
@@ -211,6 +219,8 @@ static BaseSession createRecurringWithIntentSession(
       isBillingRequired: true,
       isEmailRequired: false,
       returnUrl:'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      googlePayOptions: optional,
+      applePayOptions: optional,
       nextTriggeredBy: NextTriggeredBy.Merchant,
       merchantTriggerReason: MerchantTriggerReason.Scheduled,
     );

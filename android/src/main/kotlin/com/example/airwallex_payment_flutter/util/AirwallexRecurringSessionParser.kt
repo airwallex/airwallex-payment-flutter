@@ -30,6 +30,7 @@ object AirwallexRecurringSessionParser {
             List(jsonArray.length()) { i -> jsonArray.optString(i, null) }
         }
         val isEmailRequired = sessionObject.optBoolean("isEmailRequired", false)
+        val googlePayOptions = sessionObject.optJSONObject("googlePayOptions")?.toGooglePayOptions()
 
         val sessionBuilder = AirwallexRecurringSession.Builder(
             customerId = customerId,
@@ -45,6 +46,7 @@ object AirwallexRecurringSessionParser {
             .setReturnUrl(returnUrl)
             .setRequireEmail(isEmailRequired)
             .setPaymentMethods(paymentMethods)
+            .setGooglePayOptions(googlePayOptions)
         merchantTriggerReason?.let {
             sessionBuilder.setMerchantTriggerReason(merchantTriggerReason)
         }
