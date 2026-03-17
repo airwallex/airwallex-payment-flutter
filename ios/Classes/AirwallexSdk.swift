@@ -146,11 +146,11 @@ private extension AirwallexSDKMode {
     static func from(_ stringValue: String) -> Self {
         switch stringValue {
         case "staging":
-            .stagingMode
+            return .stagingMode
         case "demo":
-            .demoMode
+            return .demoMode
         case "production":
-            .productionMode
+            return .productionMode
         default:
             #if DEBUG
             let defaultMode = AirwallexSDKMode.demoMode
