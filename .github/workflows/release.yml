@@ -71,7 +71,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046 #2.19.0
         with:
-          flutter-version: '3.24.3'
+          flutter-version: '3.3.0'
 
       - name: Install dependencies
         run: flutter pub get
