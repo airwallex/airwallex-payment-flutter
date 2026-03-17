@@ -80,11 +80,12 @@ class MethodChannelAirwallexPaymentFlutter
   @override
   void setTintColor(Color color) {
     if (Platform.isIOS) {
+      // ignore: deprecated_member_use
       methodChannel.invokeMethod('setTintColor', {
-        'red': (color.r * 255.0).round() & 0xff,
-        'green': (color.g * 255.0).round() & 0xff,
-        'blue': (color.b * 255.0).round() & 0xff,
-        'alpha': (color.a * 255.0).round() & 0xff,
+        'red': color.red,
+        'green': color.green,
+        'blue': color.blue,
+        'alpha': color.alpha,
       });
     }
   }
