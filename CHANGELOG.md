@@ -1,3 +1,16 @@
+## 0.1.11
+
+## [0.1.11](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.10...0.1.11) (2026-03-17)
+
+
+### Bug Fixes
+
+* implicit return compile error ([0fb90f7](https://github.com/airwallex/airwallex-payment-flutter/commit/0fb90f7f252a362b5e533f58197df2287b9b5625))
+
+
+
+
+
 ## 0.1.10
 
 # [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.9...0.2.0) (2026-03-16)
