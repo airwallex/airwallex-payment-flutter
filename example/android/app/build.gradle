@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.airwallex_payment_flutter_example"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = Math.max(flutter.compileSdkVersion, 36)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
