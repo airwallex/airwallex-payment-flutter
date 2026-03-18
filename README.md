@@ -1,5 +1,4 @@
 # Airwallex Flutter Plugin
-
 [![Platform](https://img.shields.io/badge/platform-flutter-darkgreen)](https://flutter.dev/)
 [![Flutter version: 3.24.3](https://img.shields.io/badge/flutter-3.24.3-brightgreen)](https://medium.com/flutter/flutter-3-24-dart-3-5-204b7d20c45d)
 [![GitHub release](https://img.shields.io/github/v/release/airwallex/airwallex-payment-flutter)](https://github.com/airwallex/airwallex-payment-flutter/releases)

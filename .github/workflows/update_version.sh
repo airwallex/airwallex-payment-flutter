@@ -21,8 +21,10 @@ else
   echo -e "## $VERSION\n\n- No release notes provided\n" | cat - CHANGELOG.md > temp && mv temp CHANGELOG.md
 fi
 
-# Update dependency version in code block in README.md and README-zh.md
+# Update dependency version in code block in README.md, README-zh.md, GUIDE.md and GUIDE-zh.md
 sed -i "s/airwallex_payment_flutter: [0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: $VERSION/" README.md
 sed -i "s/airwallex_payment_flutter: [0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: $VERSION/" README-zh.md
+sed -i "s/airwallex_payment_flutter: \^[0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: ^$VERSION/" GUIDE.md
+sed -i "s/airwallex_payment_flutter: \^[0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: ^$VERSION/" GUIDE-zh.md
 
-echo "Updated dependency version in README.md and README-zh.md"
+echo "Updated dependency version in README.md, README-zh.md, GUIDE.md and GUIDE-zh.md"
