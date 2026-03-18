@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:airwallex_payment_flutter_example/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
