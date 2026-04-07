@@ -106,13 +106,16 @@ class AirwallexSdk: NSObject {
     }
     
     private func getViewController() -> UIViewController {
-        var presentingViewController = UIApplication.shared.delegate?.window??.rootViewController
-        
-        while let presented = presentingViewController?.presentedViewController {
-            presentingViewController = presented
-        }
+        let window = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
 
-        return presentingViewController ?? UIViewController()
+        var vc = window?.rootViewController
+        while let presented = vc?.presentedViewController {
+            vc = presented
+        }
+        return vc ?? UIViewController()
     }
 }
 

@@ -4,7 +4,7 @@ import UIKit
 
 public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
     private var sdk: AirwallexSdk?
-    
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "airwallex_payment_flutter", binaryMessenger: registrar.messenger(), codec: FlutterJSONMethodCodec())
         let plugin = AirwallexPaymentFlutterPlugin()
