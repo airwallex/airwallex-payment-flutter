@@ -82,10 +82,10 @@ class MethodChannelAirwallexPaymentFlutter
     if (Platform.isIOS) {
       // ignore: deprecated_member_use
       methodChannel.invokeMethod('setTintColor', {
-        'red': color.red,
-        'green': color.green,
-        'blue': color.blue,
-        'alpha': color.alpha,
+        'red': color.red, // ignore: deprecated_member_use
+        'green': color.green, // ignore: deprecated_member_use
+        'blue': color.blue, // ignore: deprecated_member_use
+        'alpha': color.alpha, // ignore: deprecated_member_use
       });
     }
   }
