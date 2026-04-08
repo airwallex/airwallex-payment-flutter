@@ -53,16 +53,16 @@ class AirwallexSdk: NSObject {
 
         let session = buildAirwallexSession(from: session)
 
-        let handler = PaymentSessionHandler(
-            session: session,
-            viewController: getViewController(),
-            paymentResultDelegate: self
-        )
-        handler.showIndicator = false
         DispatchQueue.main.async {
+            let handler = PaymentSessionHandler(
+                session: session,
+                viewController: self.getViewController(),
+                paymentResultDelegate: self
+            )
+            handler.showIndicator = false
             handler.startApplePay()
+            self.paymentSessionHandler = handler
         }
-        self.paymentSessionHandler = handler
     }
     
     func payWithCardDetails(clientSecret: String, session: NSDictionary, card: NSDictionary, saveCard: Bool, result: @escaping FlutterResult) {
@@ -73,16 +73,16 @@ class AirwallexSdk: NSObject {
         let session = buildAirwallexSession(from: session)
         let card = AWXCard.decode(fromJSON: card as? [AnyHashable : Any]) as! AWXCard
 
-        let handler = PaymentSessionHandler(
-            session: session,
-            viewController: getViewController(),
-            paymentResultDelegate: self
-        )
-        handler.showIndicator = false
         DispatchQueue.main.async {
+            let handler = PaymentSessionHandler(
+                session: session,
+                viewController: self.getViewController(),
+                paymentResultDelegate: self
+            )
+            handler.showIndicator = false
             handler.startCardPayment(with: card, billing: session.billing, saveCard: saveCard)
+            self.paymentSessionHandler = handler
         }
-        self.paymentSessionHandler = handler
     }
     
     func payWithConsent(clientSecret: String, session: NSDictionary, consent: NSDictionary, result: @escaping FlutterResult) {
@@ -93,26 +93,29 @@ class AirwallexSdk: NSObject {
         let session = buildAirwallexSession(from: session)
         let consent = AWXPaymentConsent.decode(fromJSON: consent as? [AnyHashable : Any]) as! AWXPaymentConsent
 
-        let handler = PaymentSessionHandler(
-            session: session,
-            viewController: getViewController(),
-            paymentResultDelegate: self
-        )
-        handler.showIndicator = false
         DispatchQueue.main.async {
+            let handler = PaymentSessionHandler(
+                session: session,
+                viewController: self.getViewController(),
+                paymentResultDelegate: self
+            )
+            handler.showIndicator = false
             handler.startConsentPayment(with: consent)
+            self.paymentSessionHandler = handler
         }
-        self.paymentSessionHandler = handler
     }
     
     private func getViewController() -> UIViewController {
-        var presentingViewController = UIApplication.shared.delegate?.window??.rootViewController
-        
-        while let presented = presentingViewController?.presentedViewController {
-            presentingViewController = presented
-        }
+        let window = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
 
-        return presentingViewController ?? UIViewController()
+        var vc = window?.rootViewController
+        while let presented = vc?.presentedViewController {
+            vc = presented
+        }
+        return vc ?? UIViewController()
     }
 }
 
