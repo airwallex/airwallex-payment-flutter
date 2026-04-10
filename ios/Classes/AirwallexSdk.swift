@@ -10,6 +10,7 @@ class AirwallexSdk: NSObject {
         let mode = AirwallexSDKMode.from(environment)
         Airwallex.setMode(mode)
         AWXAPIClientConfiguration.shared()
+        AnalyticsLogger.shared().bindExtraCommonData(["framework": "flutter"])
     }
     
     func presentEntirePaymentFlow(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
