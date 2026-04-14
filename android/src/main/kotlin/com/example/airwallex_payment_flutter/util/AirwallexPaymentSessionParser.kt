@@ -28,10 +28,6 @@ object AirwallexPaymentSessionParser {
 
         val paymentIntentId = sessionObject.optString("paymentIntentId")
 
-        if (customerId == "") {
-            error("customerId must not be empty")
-        }
-
         val order = shipping?.let {
             PurchaseOrder(
                 shipping = it
