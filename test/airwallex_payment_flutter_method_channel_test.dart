@@ -12,10 +12,11 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   MethodChannelAirwallexPaymentFlutter platform =
-  MethodChannelAirwallexPaymentFlutter();
+      MethodChannelAirwallexPaymentFlutter();
 
   const MethodChannel channel =
-  MethodChannel('airwallex_payment_flutter', JSONMethodCodec());
+      MethodChannel('airwallex_payment_flutter', JSONMethodCodec());
+  MethodCall? lastMethodCall;
 
   // Mock session creation function
   OneOffSession createMockSession() {
@@ -27,7 +28,8 @@ void main() {
       isBillingRequired: true,
       isEmailRequired: false,
       countryCode: 'HK',
-      returnUrl: 'airwallexcheckout://com.example.airwallex_payment_flutter_example',
+      returnUrl:
+          'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       autoCapture: true,
       hidePaymentConsents: false,
     );
@@ -48,11 +50,14 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
       channel,
-          (MethodCall methodCall) async {
+      (MethodCall methodCall) async {
+        lastMethodCall = methodCall;
         // Mocking different responses based on method name
         switch (methodCall.method) {
           case 'initialize':
             return 'initialized_value';
+          case 'setLocale':
+            return null;
           case 'presentEntirePaymentFlow':
           case 'presentCardPaymentFlow':
             return {'status': 'success', 'consentId': '123'};
@@ -70,11 +75,19 @@ void main() {
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
+    lastMethodCall = null;
   });
 
   group('MethodChannelAirwallexPaymentFlutter', () {
+    test('setLocale should pass languageTag to native layer', () async {
+      await platform.setLocale('zh-Hans');
 
-    test('presentEntirePaymentFlow should return PaymentSuccessResult', () async {
+      expect(lastMethodCall?.method, 'setLocale');
+      expect(lastMethodCall?.arguments, {'languageTag': 'zh-Hans'});
+    });
+
+    test('presentEntirePaymentFlow should return PaymentSuccessResult',
+        () async {
       final session = createMockSession();
       final result = await platform.presentEntirePaymentFlow(session);
 
@@ -96,17 +109,21 @@ void main() {
       final result = await platform.payWithCardDetails(session, card, true);
 
       expect(result, isA<PaymentSuccessResult>());
-      expect((result as PaymentSuccessResult).paymentConsentId, 'pay_with_card_123');
+      expect((result as PaymentSuccessResult).paymentConsentId,
+          'pay_with_card_123');
     });
 
     test('startGooglePay should return PaymentSuccessResult', () async {
       final session = createMockSession();
       final result = await platform.startGooglePay(session);
       expect(result, isA<PaymentSuccessResult>());
-      expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
+      expect(
+          (result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
     });
 
-    test('startGooglePay with RecurringSession should return PaymentSuccessResult', () async {
+    test(
+        'startGooglePay with RecurringSession should return PaymentSuccessResult',
+        () async {
       final session = RecurringSession(
         customerId: 'cust123',
         clientSecret: 'mockClientSecret',
@@ -117,15 +134,19 @@ void main() {
         merchantTriggerReason: MerchantTriggerReason.scheduled,
         googlePayOptions: GooglePayOptions(
           billingAddressRequired: true,
-          billingAddressParameters: BillingAddressParameters(format: Format.full),
+          billingAddressParameters:
+              BillingAddressParameters(format: Format.full),
         ),
       );
       final result = await platform.startGooglePay(session);
       expect(result, isA<PaymentSuccessResult>());
-      expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
+      expect(
+          (result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
     });
 
-    test('startGooglePay with RecurringWithIntentSession should return PaymentSuccessResult', () async {
+    test(
+        'startGooglePay with RecurringWithIntentSession should return PaymentSuccessResult',
+        () async {
       final session = RecurringWithIntentSession(
         customerId: 'cust123',
         clientSecret: 'mockClientSecret',
@@ -137,19 +158,24 @@ void main() {
         merchantTriggerReason: MerchantTriggerReason.scheduled,
         googlePayOptions: GooglePayOptions(
           billingAddressRequired: true,
-          billingAddressParameters: BillingAddressParameters(format: Format.full),
+          billingAddressParameters:
+              BillingAddressParameters(format: Format.full),
         ),
       );
       final result = await platform.startGooglePay(session);
       expect(result, isA<PaymentSuccessResult>());
-      expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
+      expect(
+          (result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
     });
 
-    test('presentCardPaymentFlow should return PaymentCancelledResult on cancelled status', () async {
+    test(
+        'presentCardPaymentFlow should return PaymentCancelledResult on cancelled status',
+        () async {
       // Adjust the mock to simulate a 'cancelled' response
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
         channel,
-            (MethodCall methodCall) async {
+        (MethodCall methodCall) async {
           if (methodCall.method == 'presentCardPaymentFlow') {
             return {'status': 'cancelled'};
           }
@@ -162,6 +188,5 @@ void main() {
 
       expect(result, isA<PaymentCancelledResult>());
     });
-
   });
 }

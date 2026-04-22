@@ -29,6 +29,13 @@ class MethodChannelAirwallexPaymentFlutter
   }
 
   @override
+  Future<void> setLocale(String languageTag) {
+    return methodChannel.invokeMethod<void>('setLocale', {
+      'languageTag': languageTag,
+    });
+  }
+
+  @override
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) async {
     final result = await methodChannel.invokeMethod(
         'presentEntirePaymentFlow', {'session': session.toJson()});

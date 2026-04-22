@@ -15,7 +15,8 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static AirwallexPaymentFlutterPlatform _instance = MethodChannelAirwallexPaymentFlutter();
+  static AirwallexPaymentFlutterPlatform _instance =
+      MethodChannelAirwallexPaymentFlutter();
 
   /// The default instance of [AirwallexPaymentFlutterPlatform] to use.
   ///
@@ -35,19 +36,27 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  Future<void> setLocale(String languageTag) {
+    throw UnimplementedError('setLocale() has not been implemented.');
+  }
+
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {
-    throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
+    throw UnimplementedError(
+        'presentEntirePaymentFlow() has not been implemented.');
   }
 
   Future<PaymentResult> presentCardPaymentFlow(BaseSession session) {
-    throw UnimplementedError('presentCardPaymentFlow() has not been implemented.');
+    throw UnimplementedError(
+        'presentCardPaymentFlow() has not been implemented.');
   }
 
-  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card, bool saveCard) {
+  Future<PaymentResult> payWithCardDetails(
+      BaseSession session, Card card, bool saveCard) {
     throw UnimplementedError('payWithCardDetails() has not been implemented.');
   }
 
-  Future<PaymentResult> payWithConsent(BaseSession session, PaymentConsent consent) {
+  Future<PaymentResult> payWithConsent(
+      BaseSession session, PaymentConsent consent) {
     throw UnimplementedError('payWithConsent() has not been implemented.');
   }
 

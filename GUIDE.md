@@ -78,6 +78,23 @@ parameter `environment` specifies the environment options for the Airwallex Flut
 If you are in the testing phase, it is recommended to set the environment to `staging` or `demo` for feature debugging. 
 If you are in the production phase, it must be set to `production`.
 
+## Locale Synchronization
+If your app manages its own language state, call `Airwallex.setLocale(...)` to sync the current locale to the native Airwallex payment UI.
+
+```dart
+await Airwallex.setLocale('zh-Hans');
+```
+
+Recommended language tags:
+- `en`
+- `zh-Hans`
+- `zh-Hant`
+
+Recommended call timing:
+- Right after `Airwallex.initialize(...)`
+- Whenever the app language changes
+- Again before presenting the payment flow as a safeguard
+
 ## Create Payment Intent
 Before confirming the `PaymentIntent`, You must create a `PaymentIntent` on the server and pass it to the client.
 

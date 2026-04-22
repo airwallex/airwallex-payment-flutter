@@ -1,5 +1,6 @@
 package com.example.airwallex_payment_flutter
 
+import android.app.Activity
 import android.app.Application
 import androidx.activity.ComponentActivity
 import com.airwallex.android.AirwallexStarter
@@ -17,6 +18,7 @@ import com.airwallex.android.googlepay.GooglePayComponent
 import com.airwallex.android.redirect.RedirectComponent
 import com.airwallex.android.wechat.WeChatComponent
 import com.example.airwallex_payment_flutter.util.AirwallexCardParser
+import com.example.airwallex_payment_flutter.util.AirwallexLocaleManager
 import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentParser
 import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionParser
@@ -27,12 +29,14 @@ import org.json.JSONObject
 
 class AirwallexPaymentSdkModule {
     private lateinit var airwallex: Airwallex
+    private var localeManager: AirwallexLocaleManager? = null
 
     fun initialize(application: Application, call: MethodCall, result: MethodChannel.Result) {
         val arguments = call.arguments<JSONObject>() ?: error("arguments data is required")
         val environment = getEnvironment(arguments.optString("environment"))
         val enableLogging = arguments.optBoolean("enableLogging", true)
         val saveLogToLocal = arguments.optBoolean("saveLogToLocal", false)
+        getLocaleManager(application).applyLocale()
         AirwallexLogger.info("AirwallexPaymentSdkModule: initialize, environment = $environment, enableLogging = $enableLogging, saveLogToLocal = $saveLogToLocal")
         AirwallexStarter.initialize(
             application,
@@ -53,11 +57,24 @@ class AirwallexPaymentSdkModule {
         result.success(null)
     }
 
+    fun setLocale(
+        application: Application,
+        activity: Activity?,
+        call: MethodCall,
+        result: MethodChannel.Result
+    ) {
+        val arguments = call.arguments<JSONObject>() ?: error("arguments data is required")
+        val languageTag = arguments.optString("languageTag")
+        getLocaleManager(application).setLocale(languageTag, activity)
+        result.success(null)
+    }
+
     fun presentEntirePaymentFlow(
         activity: ComponentActivity,
         call: MethodCall,
         result: MethodChannel.Result
     ) {
+        applyLocale(activity)
         val session = parseSessionFromCall(call)
         AirwallexStarter.presentEntirePaymentFlow(
             activity = activity,
@@ -85,6 +102,7 @@ class AirwallexPaymentSdkModule {
         call: MethodCall,
         result: MethodChannel.Result
     ) {
+        applyLocale(activity)
         val session = parseSessionFromCall(call)
         AirwallexStarter.presentCardPaymentFlow(
             activity = activity,
@@ -195,6 +213,7 @@ class AirwallexPaymentSdkModule {
     }
 
     private fun runWithAirwallex(activity: ComponentActivity, block: () -> Unit) {
+        applyLocale(activity)
         if (!::airwallex.isInitialized) {
             airwallex = Airwallex(activity)
         }
@@ -278,5 +297,15 @@ class AirwallexPaymentSdkModule {
             Environment.PRODUCTION.value -> Environment.PRODUCTION
             else -> defaultEnvironment
         }
+    }
+
+    private fun getLocaleManager(application: Application): AirwallexLocaleManager {
+        return localeManager ?: AirwallexLocaleManager(application).also {
+            localeManager = it
+        }
+    }
+
+    private fun applyLocale(activity: ComponentActivity) {
+        getLocaleManager(activity.application).applyLocale(activity)
     }
 }

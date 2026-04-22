@@ -34,30 +34,33 @@ class AirwallexPaymentFlutterPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         AirwallexLogger.info("AirwallexPaymentFlutterPlugin: onMethodCall call.method= ${call.method}")
-        activity?.let {
-            when (call.method) {
-                //initialize
-                "initialize" -> {
-                    sdkModule.initialize(applicationContext as Application, call, result)
+        when (call.method) {
+            "initialize" -> sdkModule.initialize(applicationContext as Application, call, result)
+            "setLocale" -> sdkModule.setLocale(
+                application = applicationContext as Application,
+                activity = resolveActivity(),
+                call = call,
+                result = result
+            )
+            "closeNativeScreen" -> {
+                activityManager?.getCurrentActivity()?.finish()
+                result.success(null)
+            }
+            else -> {
+                val currentActivity = resolveActivity()
+                if (currentActivity == null) {
+                    result.error("Activity not attached", "Unable to perform operation", null)
+                    return
                 }
-                //ui
-                "presentEntirePaymentFlow" -> sdkModule.presentEntirePaymentFlow(it, call, result)
-                "presentCardPaymentFlow" -> sdkModule.presentCardPaymentFlow(it, call, result)
-                //low-level
-                "payWithCardDetails" -> sdkModule.payWithCardDetails(it, call, result)
-                "startGooglePay" -> sdkModule.startGooglePay(it, call, result)
-                "payWithConsent" -> sdkModule.payWithConsent(it, call, result)
-                "closeNativeScreen" -> {
-                    activityManager?.getCurrentActivity()?.finish()
-                    result.success(null)
-                }
-
-                else -> {
-                    result.notImplemented()
+                when (call.method) {
+                    "presentEntirePaymentFlow" -> sdkModule.presentEntirePaymentFlow(currentActivity, call, result)
+                    "presentCardPaymentFlow" -> sdkModule.presentCardPaymentFlow(currentActivity, call, result)
+                    "payWithCardDetails" -> sdkModule.payWithCardDetails(currentActivity, call, result)
+                    "startGooglePay" -> sdkModule.startGooglePay(currentActivity, call, result)
+                    "payWithConsent" -> sdkModule.payWithConsent(currentActivity, call, result)
+                    else -> result.notImplemented()
                 }
             }
-        } ?: run {
-            result.error("Activity not attached", "Unable to perform operation", null)
         }
     }
 
@@ -81,5 +84,8 @@ class AirwallexPaymentFlutterPlugin : FlutterPlugin, MethodCallHandler, Activity
         onAttachedToActivity(binding)
     }
 
+    private fun resolveActivity(): ComponentActivity? {
+        return activity ?: (activityManager?.getCurrentActivity() as? ComponentActivity)
+    }
 
 }

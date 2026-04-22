@@ -35,8 +35,6 @@ dependencies:
   tuple: ^2.0.2
 
 dev_dependencies:
-  integration_test:
-    sdk: flutter
   flutter_test:
     sdk: flutter
 

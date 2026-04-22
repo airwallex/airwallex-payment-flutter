@@ -1,36 +1,45 @@
 import 'package:flutter/material.dart';
 
-Future<void> showCredentialsDialog(BuildContext context, Function(String, String) onSubmit) async {
-  TextEditingController apiKeyController = TextEditingController();
-  TextEditingController clientIdController = TextEditingController();
+Future<void> showCredentialsDialog(
+  BuildContext context, {
+  required String title,
+  required String apiKeyLabel,
+  required String clientIdLabel,
+  required String submitLabel,
+  required Future<void> Function(String apiKey, String clientId) onSubmit,
+}) async {
+  final apiKeyController = TextEditingController();
+  final clientIdController = TextEditingController();
 
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (BuildContext context) {
+    builder: (BuildContext dialogContext) {
       return AlertDialog(
-        title: const Text('Enter API Key and Client ID'),
+        title: Text(title),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
               TextField(
                 controller: apiKeyController,
-                decoration: const InputDecoration(labelText: 'API Key'),
+                decoration: InputDecoration(labelText: apiKeyLabel),
               ),
               TextField(
                 controller: clientIdController,
-                decoration: const InputDecoration(labelText: 'Client ID'),
+                decoration: InputDecoration(labelText: clientIdLabel),
               ),
             ],
           ),
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Submit'),
-            onPressed: () {
-              onSubmit(apiKeyController.text, clientIdController.text);
-              Navigator.of(context).pop();
+            onPressed: () async {
+              await onSubmit(apiKeyController.text, clientIdController.text);
+              if (dialogContext.mounted) {
+                Navigator.of(dialogContext).pop();
+              }
             },
+            child: Text(submitLabel),
           ),
         ],
       );

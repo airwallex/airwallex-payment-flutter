@@ -8,7 +8,6 @@ plugins {
 android {
     namespace = "com.example.airwallex_payment_flutter_example"
     compileSdk = 36
-    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

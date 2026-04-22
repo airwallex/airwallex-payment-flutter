@@ -78,6 +78,23 @@ Airwallex.initialize(environment: 'demo');
 参数`environment`是 Airwallex Flutter Plugin的环境选项，包括`staging`, `demo`和`production`。
 如果您处于测试阶段，建议将环境设置为`staging`或`demo`来进行功能调试。如果您处于生产阶段，则必须设置`production`。
 
+## 语言同步
+如果您的 App 自己维护语言状态，可以调用 `Airwallex.setLocale(...)` 把当前语言同步给 Airwallex 原生支付 UI。
+
+```dart
+await Airwallex.setLocale('zh-Hans');
+```
+
+推荐语言标识：
+- `en`
+- `zh-Hans`
+- `zh-Hant`
+
+推荐调用时机：
+- `Airwallex.initialize(...)` 之后立即调用一次
+- App 语言切换后再次调用
+- 拉起支付流程前再兜底调用一次
+
 
 ## 创建PaymentIntent
 在发起支付前, 你必须在服务端创建一个`PaymentIntent`对象，并返回到客户端.

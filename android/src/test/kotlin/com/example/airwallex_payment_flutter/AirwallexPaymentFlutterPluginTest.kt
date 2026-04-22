@@ -1,27 +1,33 @@
 package com.example.airwallex_payment_flutter
 
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+import com.example.airwallex_payment_flutter.util.AirwallexLocaleManager
+import java.util.Locale
 import kotlin.test.Test
-import org.mockito.Mockito
-
-/*
- * This demonstrates a simple unit test of the Kotlin portion of this plugin's implementation.
- *
- * Once you have built the plugin's example app, you can run these tests from the command
- * line by running `./gradlew testDebugUnitTest` in the `example/android/` directory, or
- * you can run them directly from IDEs that support JUnit such as Android Studio.
- */
+import kotlin.test.assertEquals
 
 internal class AirwallexPaymentFlutterPluginTest {
-  @Test
-  fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
-    val plugin = AirwallexPaymentFlutterPlugin()
+    @Test
+    fun normalizeLanguageTag_mapsChineseVariants() {
+        assertEquals("zh-Hans", AirwallexLocaleManager.normalizeLanguageTag("zh"))
+        assertEquals("zh-Hans", AirwallexLocaleManager.normalizeLanguageTag("zh-CN"))
+        assertEquals("zh-Hant", AirwallexLocaleManager.normalizeLanguageTag("zh_Hant"))
+        assertEquals("zh-Hant", AirwallexLocaleManager.normalizeLanguageTag("zh-TW"))
+    }
 
-    val call = MethodCall("getPlatformVersion", null)
-    val mockResult: MethodChannel.Result = Mockito.mock(MethodChannel.Result::class.java)
-    plugin.onMethodCall(call, mockResult)
+    @Test
+    fun normalizeLanguageTag_fallsBackToEnglishForBlankValues() {
+        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag(null))
+        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag(" "))
+        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag("en-US"))
+    }
 
-    Mockito.verify(mockResult).success("Android " + android.os.Build.VERSION.RELEASE)
-  }
+    @Test
+    fun localeFromLanguageTag_preservesScriptSpecificChineseLocales() {
+        val simplified = AirwallexLocaleManager.localeFromLanguageTag("zh-Hans")
+        val traditional = AirwallexLocaleManager.localeFromLanguageTag("zh-Hant")
+
+        assertEquals("zh", simplified.language)
+        assertEquals("Hans", simplified.script)
+        assertEquals(Locale.forLanguageTag("zh-Hant"), traditional)
+    }
 }
