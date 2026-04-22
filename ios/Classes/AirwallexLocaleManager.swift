@@ -7,6 +7,13 @@ final class AirwallexLocaleManager {
         self.userDefaults = userDefaults
     }
 
+    var currentLanguageTag: String? {
+        guard let languageTag = userDefaults.string(forKey: Self.languageTagKey) else {
+            return nil
+        }
+        return Self.normalizeLanguageTag(languageTag)
+    }
+
     func setLocale(_ languageTag: String?) {
         let normalizedLanguageTag = Self.normalizeLanguageTag(languageTag)
         userDefaults.set(normalizedLanguageTag, forKey: Self.languageTagKey)
@@ -14,11 +21,10 @@ final class AirwallexLocaleManager {
     }
 
     func applyLocale() {
-        guard let languageTag = userDefaults.string(forKey: Self.languageTagKey) else {
+        guard let normalizedLanguageTag = currentLanguageTag else {
             return
         }
 
-        let normalizedLanguageTag = Self.normalizeLanguageTag(languageTag)
         userDefaults.set(Self.preferredLanguageTags(for: normalizedLanguageTag), forKey: "AppleLanguages")
         userDefaults.set(normalizedLanguageTag.replacingOccurrences(of: "-", with: "_"), forKey: "AppleLocale")
         userDefaults.set(normalizedLanguageTag, forKey: Self.languageTagKey)

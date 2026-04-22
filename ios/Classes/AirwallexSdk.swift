@@ -5,7 +5,17 @@ class AirwallexSdk: NSObject {
     private var result: FlutterResult?
     private var paymentConsentID: String?
     private var paymentSessionHandler: PaymentSessionHandler?
-    private let localeManager = AirwallexLocaleManager()
+    private let localeManager: AirwallexLocaleManager
+
+    override init() {
+        localeManager = AirwallexLocaleManager()
+        super.init()
+    }
+
+    init(localeManager: AirwallexLocaleManager) {
+        self.localeManager = localeManager
+        super.init()
+    }
     
     func initialize(environment: String) {
         localeManager.applyLocale()
@@ -17,13 +27,27 @@ class AirwallexSdk: NSObject {
     func setLocale(languageTag: String?) {
         localeManager.setLocale(languageTag)
     }
+
+    func prepareSession(from params: NSDictionary) -> AWXSession {
+        localeManager.applyLocale()
+        let session = buildAirwallexSession(from: params)
+        applyConfiguredLocale(to: session)
+        return session
+    }
+
+    func applyConfiguredLocale(to session: AWXSession) {
+        guard let languageTag = localeManager.currentLanguageTag else {
+            return
+        }
+        session.lang = languageTag
+    }
     
     func presentEntirePaymentFlow(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
         self.result = result
         
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
         
-        let session = buildAirwallexSession(from: session)
+        let session = prepareSession(from: session)
         
         DispatchQueue.main.async {
             self.localeManager.applyLocale()
@@ -41,7 +65,7 @@ class AirwallexSdk: NSObject {
         
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
         
-        let session = buildAirwallexSession(from: session)
+        let session = prepareSession(from: session)
         
         DispatchQueue.main.async {
             self.localeManager.applyLocale()
@@ -59,7 +83,7 @@ class AirwallexSdk: NSObject {
 
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
 
-        let session = buildAirwallexSession(from: session)
+        let session = prepareSession(from: session)
 
         DispatchQueue.main.async {
             self.localeManager.applyLocale()
@@ -79,7 +103,7 @@ class AirwallexSdk: NSObject {
 
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
 
-        let session = buildAirwallexSession(from: session)
+        let session = prepareSession(from: session)
         let card = AWXCard.decode(fromJSON: card as? [AnyHashable : Any]) as! AWXCard
 
         DispatchQueue.main.async {
@@ -100,7 +124,7 @@ class AirwallexSdk: NSObject {
 
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
 
-        let session = buildAirwallexSession(from: session)
+        let session = prepareSession(from: session)
         let consent = AWXPaymentConsent.decode(fromJSON: consent as? [AnyHashable : Any]) as! AWXPaymentConsent
 
         DispatchQueue.main.async {
