@@ -7,7 +7,10 @@ import 'package:airwallex_payment_flutter_example/main.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const channel = MethodChannel('airwallex_payment_flutter', JSONMethodCodec());
+  const airwallexChannel =
+      MethodChannel('airwallex_payment_flutter', JSONMethodCodec());
+  const hostLocaleChannel = MethodChannel('example_host_locale');
+  MethodCall? lastHostLocaleMethodCall;
 
   setUp(() {
     SharedPreferences.setMockInitialValues({
@@ -16,23 +19,33 @@ void main() {
     });
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-          switch (methodCall.method) {
-            case 'initialize':
-            case 'setLocale':
-              return null;
-            default:
-              return null;
-          }
-        });
+        .setMockMethodCallHandler(airwallexChannel,
+            (MethodCall methodCall) async {
+      switch (methodCall.method) {
+        case 'initialize':
+          return null;
+        default:
+          return null;
+      }
+    });
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(hostLocaleChannel,
+            (MethodCall methodCall) async {
+      lastHostLocaleMethodCall = methodCall;
+      return methodCall.arguments;
+    });
   });
 
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, null);
+        .setMockMethodCallHandler(airwallexChannel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(hostLocaleChannel, null);
+    lastHostLocaleMethodCall = null;
   });
 
-  testWidgets('loads saved Chinese locale in the example app', (
+  testWidgets('loads saved Chinese locale and syncs host language', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const MyApp());
@@ -40,6 +53,10 @@ void main() {
 
     expect(find.text('Airwallex 示例'), findsOneWidget);
     expect(find.text('语言演示'), findsOneWidget);
-    expect(find.text('当前同步给 Airwallex 的 locale：zh-Hans'), findsOneWidget);
+    expect(find.text('当前宿主语言标签：zh-Hans'), findsOneWidget);
+    expect(lastHostLocaleMethodCall?.method, 'setLanguage');
+    expect(lastHostLocaleMethodCall?.arguments, {
+      'languageTag': 'zh-Hans',
+    });
   });
 }

@@ -79,21 +79,16 @@ Airwallex.initialize(environment: 'demo');
 如果您处于测试阶段，建议将环境设置为`staging`或`demo`来进行功能调试。如果您处于生产阶段，则必须设置`production`。
 
 ## 语言同步
-如果您的 App 自己维护语言状态，可以调用 `Airwallex.setLocale(...)` 把当前语言同步给 Airwallex 原生支付 UI。
+Flutter 层当前不提供单独的 locale 同步 API。
 
-```dart
-await Airwallex.setLocale('zh-Hans');
-```
+如果您的 App 自己维护语言状态，请先在宿主 App 层完成全局语言切换，再拉起支付流程。原生封装会在初始化时以及每次拉起 Airwallex 支付 UI 前重新读取宿主当前语言。
+
+在 iOS 上，仅切换 Flutter 内部的 `Locale` 并不会自动更新原生支付弹层语言。宿主 App 需要先把原生侧全局语言状态切过去，再启动支付流程；当前 SDK 读取的就是这份宿主语言状态。
 
 推荐语言标识：
 - `en`
 - `zh-Hans`
 - `zh-Hant`
-
-推荐调用时机：
-- `Airwallex.initialize(...)` 之后立即调用一次
-- App 语言切换后再次调用
-- 拉起支付流程前再兜底调用一次
 
 
 ## 创建PaymentIntent

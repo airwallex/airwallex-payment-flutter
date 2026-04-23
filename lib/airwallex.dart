@@ -11,20 +11,12 @@ import '/types/payment_session.dart';
 import 'airwallex_payment_flutter_platform_interface.dart';
 
 class Airwallex {
-  static void initialize(
-      {Environment environment = Environment.production,
-      bool enableLogging = true,
-      bool saveLogToLocal = false}) {
+  static void initialize({
+      Environment environment = Environment.production, bool enableLogging = true, bool saveLogToLocal = false}) {
     if (enableLogging && kDebugMode) {
-      debugPrint(
-          '[AirwallexSdk] Current connected environment: ${environment.name}');
+      debugPrint('[AirwallexSdk] Current connected environment: ${environment.name}');
     }
-    AirwallexPaymentFlutterPlatform.instance
-        .initialize(environment, enableLogging, saveLogToLocal);
-  }
-
-  static Future<void> setLocale(String languageTag) {
-    return AirwallexPaymentFlutterPlatform.instance.setLocale(languageTag);
+    AirwallexPaymentFlutterPlatform.instance.initialize(environment, enableLogging, saveLogToLocal);
   }
 
   Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {
@@ -37,14 +29,12 @@ class Airwallex {
         .presentCardPaymentFlow(session);
   }
 
-  Future<PaymentResult> payWithCardDetails(
-      BaseSession session, Card card, bool saveCard) {
+  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card, bool saveCard) {
     return AirwallexPaymentFlutterPlatform.instance
         .payWithCardDetails(session, card, saveCard);
   }
 
-  Future<PaymentResult> payWithConsent(
-      BaseSession session, PaymentConsent consent) {
+  Future<PaymentResult> payWithConsent(BaseSession session, PaymentConsent consent) {
     return AirwallexPaymentFlutterPlatform.instance
         .payWithConsent(session, consent);
   }

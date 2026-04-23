@@ -79,21 +79,16 @@ If you are in the testing phase, it is recommended to set the environment to `st
 If you are in the production phase, it must be set to `production`.
 
 ## Locale Synchronization
-If your app manages its own language state, call `Airwallex.setLocale(...)` to sync the current locale to the native Airwallex payment UI.
+The Flutter layer does not expose a dedicated locale sync API.
 
-```dart
-await Airwallex.setLocale('zh-Hans');
-```
+If your app manages language inside the host app, switch the host app's global language state before presenting the payment flow. The native wrapper re-reads the host locale during `initialize(...)` and again before each Airwallex payment UI is launched.
+
+On iOS, changing only Flutter's `Locale` does not automatically update the native payment sheet language. Your host app needs to update the native app language state first, for example by mirroring the approach in `AirwallexLocaleManager.swift` before starting the payment flow.
 
 Recommended language tags:
 - `en`
 - `zh-Hans`
 - `zh-Hant`
-
-Recommended call timing:
-- Right after `Airwallex.initialize(...)`
-- Whenever the app language changes
-- Again before presenting the payment flow as a safeguard
 
 ## Create Payment Intent
 Before confirming the `PaymentIntent`, You must create a `PaymentIntent` on the server and pass it to the client.

@@ -1,6 +1,5 @@
 package com.example.airwallex_payment_flutter
 
-import android.app.Activity
 import android.app.Application
 import androidx.activity.ComponentActivity
 import com.airwallex.android.AirwallexStarter
@@ -54,18 +53,6 @@ class AirwallexPaymentSdkModule {
                 )
                 .build()
         )
-        result.success(null)
-    }
-
-    fun setLocale(
-        application: Application,
-        activity: Activity?,
-        call: MethodCall,
-        result: MethodChannel.Result
-    ) {
-        val arguments = call.arguments<JSONObject>() ?: error("arguments data is required")
-        val languageTag = arguments.optString("languageTag")
-        getLocaleManager(application).setLocale(languageTag, activity)
         result.success(null)
     }
 
@@ -299,13 +286,13 @@ class AirwallexPaymentSdkModule {
         }
     }
 
+    private fun applyLocale(activity: ComponentActivity) {
+        getLocaleManager(activity.application).applyLocale(activity)
+    }
+
     private fun getLocaleManager(application: Application): AirwallexLocaleManager {
         return localeManager ?: AirwallexLocaleManager(application).also {
             localeManager = it
         }
-    }
-
-    private fun applyLocale(activity: ComponentActivity) {
-        getLocaleManager(activity.application).applyLocale(activity)
     }
 }

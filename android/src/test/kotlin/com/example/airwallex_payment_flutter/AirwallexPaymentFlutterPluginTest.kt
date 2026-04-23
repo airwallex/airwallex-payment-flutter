@@ -1,24 +1,20 @@
 package com.example.airwallex_payment_flutter
 
 import com.example.airwallex_payment_flutter.util.AirwallexLocaleManager
-import java.util.Locale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class AirwallexPaymentFlutterPluginTest {
     @Test
-    fun normalizeLanguageTag_mapsChineseVariants() {
-        assertEquals("zh-Hans", AirwallexLocaleManager.normalizeLanguageTag("zh"))
-        assertEquals("zh-Hans", AirwallexLocaleManager.normalizeLanguageTag("zh-CN"))
-        assertEquals("zh-Hant", AirwallexLocaleManager.normalizeLanguageTag("zh_Hant"))
-        assertEquals("zh-Hant", AirwallexLocaleManager.normalizeLanguageTag("zh-TW"))
+    fun normalizeLanguageTag_defaultsToEnglishWhenMissing() {
+        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag(null))
+        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag(""))
     }
 
     @Test
-    fun normalizeLanguageTag_fallsBackToEnglishForBlankValues() {
-        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag(null))
-        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag(" "))
-        assertEquals("en", AirwallexLocaleManager.normalizeLanguageTag("en-US"))
+    fun normalizeLanguageTag_normalizesChineseLanguageCodes() {
+        assertEquals("zh-Hans", AirwallexLocaleManager.normalizeLanguageTag("zh_CN"))
+        assertEquals("zh-Hant", AirwallexLocaleManager.normalizeLanguageTag("zh_Hant"))
     }
 
     @Test
@@ -28,6 +24,7 @@ internal class AirwallexPaymentFlutterPluginTest {
 
         assertEquals("zh", simplified.language)
         assertEquals("Hans", simplified.script)
-        assertEquals(Locale.forLanguageTag("zh-Hant"), traditional)
+        assertEquals("zh", traditional.language)
+        assertEquals("Hant", traditional.script)
     }
 }

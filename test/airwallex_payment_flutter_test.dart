@@ -19,11 +19,6 @@ class MockAirwallexPaymentFlutterPlatform
   }
 
   @override
-  Future<void> setLocale(String languageTag) {
-    throw UnimplementedError();
-  }
-
-  @override
   Future<PaymentResult> presentCardPaymentFlow(BaseSession session) {
     throw UnimplementedError();
   }

@@ -19,22 +19,32 @@ const _apiKeyPreferenceKey = 'apiKey';
 const _clientIdPreferenceKey = 'clientId';
 const _appLanguagePreferenceKey = 'app_lang';
 
+class ExampleHostLocaleBridge {
+  static const MethodChannel _channel = MethodChannel('example_host_locale');
+
+  static Future<void> setLanguage(String languageTag) {
+    return _channel.invokeMethod<void>('setLanguage', {
+      'languageTag': languageTag,
+    });
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
 
 enum ExampleLanguage {
-  english(preferenceValue: 'en', airwallexLanguageTag: 'en', label: 'English'),
-  chinese(preferenceValue: 'zh', airwallexLanguageTag: 'zh-Hans', label: '中文');
+  english(preferenceValue: 'en', hostLanguageTag: 'en', label: 'English'),
+  chinese(preferenceValue: 'zh', hostLanguageTag: 'zh-Hans', label: '中文');
 
   const ExampleLanguage({
     required this.preferenceValue,
-    required this.airwallexLanguageTag,
+    required this.hostLanguageTag,
     required this.label,
   });
 
   final String preferenceValue;
-  final String airwallexLanguageTag;
+  final String hostLanguageTag;
   final String label;
 
   static ExampleLanguage fromPreference(String? preferenceValue) {
@@ -109,8 +119,8 @@ class MyHomePageState extends State<MyHomePage> {
       clientId = settings.clientId;
       appLanguage = settings.language;
 
+      await _applyHostLanguage();
       Airwallex.initialize(environment: environment);
-      await _syncAirwallexLocale();
 
       final apiClient = ApiClient(
         environment: environment,
@@ -159,7 +169,7 @@ class MyHomePageState extends State<MyHomePage> {
     });
 
     try {
-      await _syncAirwallexLocale();
+      await _applyHostLanguage();
       final paymentResult = await paymentFunction();
       _showDialog(
         _text(en: 'Payment Result', zh: '支付结果'),
@@ -270,7 +280,7 @@ class MyHomePageState extends State<MyHomePage> {
     await _saveLanguage(language);
 
     try {
-      await _syncAirwallexLocale();
+      await _applyHostLanguage();
     } on PlatformException catch (error) {
       if (!mounted) {
         return;
@@ -278,8 +288,8 @@ class MyHomePageState extends State<MyHomePage> {
       _showDialog(
         _text(en: 'Error', zh: '错误'),
         _text(
-          en: 'Failed to sync locale: ${error.message}',
-          zh: '同步 locale 失败：${error.message}',
+          en: 'Failed to switch host language: ${error.message}',
+          zh: '切换宿主语言失败：${error.message}',
         ),
       );
     }
@@ -324,19 +334,17 @@ class MyHomePageState extends State<MyHomePage> {
     await _initialize();
   }
 
-  Future<void> _syncAirwallexLocale() {
-    return Airwallex.setLocale(appLanguage.airwallexLanguageTag);
+  Future<void> _applyHostLanguage() {
+    return ExampleHostLocaleBridge.setLanguage(appLanguage.hostLanguageTag);
   }
 
   Future<
-    ({
-      Environment environment,
-      String apiKey,
-      String clientId,
-      ExampleLanguage language,
-    })
-  >
-  _loadSettings() async {
+      ({
+        Environment environment,
+        String apiKey,
+        String clientId,
+        ExampleLanguage language,
+      })> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final envString = prefs.getString(_environmentPreferenceKey);
     final savedApiKey = prefs.getString(_apiKeyPreferenceKey) ?? '';
@@ -381,9 +389,9 @@ class MyHomePageState extends State<MyHomePage> {
       ExamplePaymentOption.oneOff => _text(en: 'One-off payment', zh: '单次支付'),
       ExamplePaymentOption.recurring => _text(en: 'Recurring', zh: '周期扣款'),
       ExamplePaymentOption.recurringAndPayment => _text(
-        en: 'Recurring with payment',
-        zh: '周期扣款并支付',
-      ),
+          en: 'Recurring with payment',
+          zh: '周期扣款并支付',
+        ),
     };
   }
 
@@ -475,9 +483,9 @@ class MyHomePageState extends State<MyHomePage> {
                                     .map(
                                       (language) =>
                                           DropdownMenuItem<ExampleLanguage>(
-                                            value: language,
-                                            child: Text(language.label),
-                                          ),
+                                        value: language,
+                                        child: Text(language.label),
+                                      ),
                                     )
                                     .toList(),
                                 onChanged: (value) {
@@ -490,15 +498,23 @@ class MyHomePageState extends State<MyHomePage> {
                               const SizedBox(height: 12),
                               Text(
                                 _text(
-                                  en: 'Current Airwallex locale tag: ${appLanguage.airwallexLanguageTag}',
-                                  zh: '当前同步给 Airwallex 的 locale：${appLanguage.airwallexLanguageTag}',
+                                  en: 'Current host language tag: ${appLanguage.hostLanguageTag}',
+                                  zh: '当前宿主语言标签：${appLanguage.hostLanguageTag}',
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 _text(
-                                  en: 'The example syncs locale after initialize, after language changes, and again right before payment.',
-                                  zh: '示例会在初始化后、语言切换后，以及支付前再次同步 locale。',
+                                  en: 'The example updates the host app language after initialize, after language changes, and again right before payment.',
+                                  zh: '示例会在初始化后、语言切换后，以及支付前再次更新宿主语言。',
+                                ),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                _text(
+                                  en: 'On iOS, changing only Flutter text does not change the native payment sheet language.',
+                                  zh: '在 iOS 上，只切 Flutter 文案并不会改变原生支付弹层语言。',
                                 ),
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
@@ -525,9 +541,9 @@ class MyHomePageState extends State<MyHomePage> {
                             .map(
                               (option) =>
                                   DropdownMenuItem<ExamplePaymentOption>(
-                                    value: option,
-                                    child: Text(_paymentOptionLabel(option)),
-                                  ),
+                                value: option,
+                                child: Text(_paymentOptionLabel(option)),
+                              ),
                             )
                             .toList(),
                       ),
@@ -535,10 +551,12 @@ class MyHomePageState extends State<MyHomePage> {
                       ElevatedButton(
                         onPressed: isRepositoryReady
                             ? () => _handleSubmit(
-                                () async => airwallex.presentEntirePaymentFlow(
-                                  await _createSession(customerId: customerId),
-                                ),
-                              )
+                                  () async =>
+                                      airwallex.presentEntirePaymentFlow(
+                                    await _createSession(
+                                        customerId: customerId),
+                                  ),
+                                )
                             : null,
                         child: Text(
                           _text(en: 'presentEntirePaymentFlow', zh: '拉起完整支付流程'),
@@ -548,10 +566,11 @@ class MyHomePageState extends State<MyHomePage> {
                       ElevatedButton(
                         onPressed: isRepositoryReady
                             ? () => _handleSubmit(
-                                () async => airwallex.presentCardPaymentFlow(
-                                  await _createSession(customerId: customerId),
-                                ),
-                              )
+                                  () async => airwallex.presentCardPaymentFlow(
+                                    await _createSession(
+                                        customerId: customerId),
+                                  ),
+                                )
                             : null,
                         child: Text(
                           _text(en: 'presentCardPaymentFlow', zh: '拉起卡支付流程'),
@@ -595,10 +614,10 @@ class MyHomePageState extends State<MyHomePage> {
                         ElevatedButton(
                           onPressed: isRepositoryReady
                               ? () => _handleSubmit(
-                                  () async => airwallex.startGooglePay(
-                                    await _createSession(),
-                                  ),
-                                )
+                                    () async => airwallex.startGooglePay(
+                                      await _createSession(),
+                                    ),
+                                  )
                               : null,
                           child: Text(
                             _text(en: 'startGooglePay', zh: '发起 Google Pay'),
@@ -611,10 +630,10 @@ class MyHomePageState extends State<MyHomePage> {
                         ElevatedButton(
                           onPressed: isRepositoryReady
                               ? () => _handleSubmit(
-                                  () async => airwallex.startApplePay(
-                                    await _createSession(),
-                                  ),
-                                )
+                                    () async => airwallex.startApplePay(
+                                      await _createSession(),
+                                    ),
+                                  )
                               : null,
                           child: Text(
                             _text(en: 'startApplePay', zh: '发起 Apple Pay'),

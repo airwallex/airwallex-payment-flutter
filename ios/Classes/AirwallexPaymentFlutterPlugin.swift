@@ -20,10 +20,6 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
             let arguments = call.arguments as! NSDictionary
             sdk.initialize(environment: arguments["environment"] as! String)
             result(nil)
-        case "setLocale":
-            let arguments = call.arguments as! NSDictionary
-            sdk.setLocale(languageTag: arguments["languageTag"] as? String)
-            result(nil)
         case "presentEntirePaymentFlow":
             let arguments = call.arguments as! NSDictionary
             let session = arguments["session"] as! NSDictionary

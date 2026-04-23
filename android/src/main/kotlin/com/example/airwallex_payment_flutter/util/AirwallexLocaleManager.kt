@@ -3,7 +3,6 @@ package com.example.airwallex_payment_flutter.util
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
@@ -12,31 +11,37 @@ import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
 internal class AirwallexLocaleManager(
-    private val application: Application,
-    private val preferences: SharedPreferences = application.getSharedPreferences(
-        PREFERENCES_NAME,
-        Context.MODE_PRIVATE
-    )
+    private val application: Application
 ) {
-    fun setLocale(languageTag: String?, activity: Activity? = null) {
-        preferences.edit()
-            .putString(KEY_LANGUAGE_TAG, normalizeLanguageTag(languageTag))
-            .apply()
-        applyLocale(activity)
-    }
-
     fun applyLocale(activity: Activity? = null) {
-        val languageTag = preferences.getString(KEY_LANGUAGE_TAG, null) ?: return
-        val normalizedLanguageTag = normalizeLanguageTag(languageTag)
-        val locale = localeFromLanguageTag(normalizedLanguageTag)
+        val languageTag = currentLanguageTag(activity)
+        val locale = localeFromLanguageTag(languageTag)
 
         Locale.setDefault(locale)
         AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.forLanguageTags(normalizedLanguageTag)
+            LocaleListCompat.forLanguageTags(languageTag)
         )
 
         updateResources(application, locale)
         activity?.let { updateResources(it, locale) }
+    }
+
+    fun currentLanguageTag(activity: Activity? = null): String {
+        val context = activity ?: application
+        return normalizeLanguageTag(resolveLocale(context).toLanguageTag())
+    }
+
+    private fun resolveLocale(context: Context): Locale {
+        val configuration = context.resources.configuration
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val locale = configuration.locales[0]
+            if (locale != null) {
+                return locale
+            }
+        }
+
+        @Suppress("DEPRECATION")
+        return configuration.locale ?: Locale.getDefault()
     }
 
     private fun updateResources(context: Context, locale: Locale) {
@@ -54,8 +59,6 @@ internal class AirwallexLocaleManager(
     }
 
     companion object {
-        private const val PREFERENCES_NAME = "airwallex_payment_flutter.locale"
-        private const val KEY_LANGUAGE_TAG = "languageTag"
         internal const val DEFAULT_LANGUAGE_TAG = "en"
 
         internal fun normalizeLanguageTag(languageTag: String?): String {

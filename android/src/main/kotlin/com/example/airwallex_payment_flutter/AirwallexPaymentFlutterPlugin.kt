@@ -36,12 +36,6 @@ class AirwallexPaymentFlutterPlugin : FlutterPlugin, MethodCallHandler, Activity
         AirwallexLogger.info("AirwallexPaymentFlutterPlugin: onMethodCall call.method= ${call.method}")
         when (call.method) {
             "initialize" -> sdkModule.initialize(applicationContext as Application, call, result)
-            "setLocale" -> sdkModule.setLocale(
-                application = applicationContext as Application,
-                activity = resolveActivity(),
-                call = call,
-                result = result
-            )
             "closeNativeScreen" -> {
                 activityManager?.getCurrentActivity()?.finish()
                 result.success(null)
@@ -87,5 +81,4 @@ class AirwallexPaymentFlutterPlugin : FlutterPlugin, MethodCallHandler, Activity
     private fun resolveActivity(): ComponentActivity? {
         return activity ?: (activityManager?.getCurrentActivity() as? ComponentActivity)
     }
-
 }

@@ -24,10 +24,6 @@ class AirwallexSdk: NSObject {
         AWXAPIClientConfiguration.shared()
     }
 
-    func setLocale(languageTag: String?) {
-        localeManager.setLocale(languageTag)
-    }
-
     func prepareSession(from params: NSDictionary) -> AWXSession {
         localeManager.applyLocale()
         let session = buildAirwallexSession(from: params)
@@ -36,10 +32,7 @@ class AirwallexSdk: NSObject {
     }
 
     func applyConfiguredLocale(to session: AWXSession) {
-        guard let languageTag = localeManager.currentLanguageTag else {
-            return
-        }
-        session.lang = languageTag
+        session.lang = localeManager.currentLanguageTag
     }
     
     func presentEntirePaymentFlow(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
