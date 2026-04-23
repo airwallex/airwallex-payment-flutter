@@ -7,7 +7,7 @@ airwallex_version = '~> 6.4.1'
 
 Pod::Spec.new do |s|
   s.name             = 'airwallex_payment_flutter'
-  s.version          = '0.0.1'
+  s.version          = '0.0.3'
   s.summary          = 'Airwallex Payment Flutter plugin project.'
   s.description      = <<-DESC
 Airwallex Payment Flutter plugin project.
@@ -15,7 +15,7 @@ Airwallex Payment Flutter plugin project.
   s.homepage         = 'https://www.airwallex.com'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Airwallex PA Mobile' => 'pa_mobile_sdk@airwallex.com' }
-  s.source           = { :path => '.' }
+  s.source           = { :git => 'https://github.com/airwallex/airwallex-payment-flutter.git', :tag => s.version }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
   s.dependency 'Airwallex', airwallex_version
