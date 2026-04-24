@@ -52,7 +52,9 @@ class AirwallexPaymentSdkModule {
                 .build()
         )
         AnalyticsLogger.initialize(application)
-        AnalyticsLogger.updateExtraCommonData(mapOf("framework" to "flutter"))
+        AnalyticsLogger.updateExtraCommonData(
+            mapOf("framework" to "flutter", "frameworkVersion" to "0.1.12")
+        )
         result.success(null)
     }
 
