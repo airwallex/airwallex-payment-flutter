@@ -36,7 +36,8 @@ abstract class BaseSession {
     this.googlePayOptions,
     this.applePayOptions,
     this.paymentMethods,
-  });
+  }) : assert(customerId == null || customerId.isNotEmpty,
+            'customerId must not be an empty string');
 
   Map<String, dynamic> toJson();
 }
