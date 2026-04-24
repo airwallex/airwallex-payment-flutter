@@ -1,3 +1,16 @@
+## 0.1.13
+
+# [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.12...0.2.0) (2026-04-24)
+
+
+### Features
+
+* add preview environment support ([a063519](https://github.com/airwallex/airwallex-payment-flutter/commit/a06351957b5cb1c9ce23ad3e33fc60932983c1ce))
+
+
+
+
+
 ## 0.1.12
 
   Bug Fixes                                                                                                                                                                                                                                                                                                                                                           - iOS: Fix UIScene lifecycle support — use scene-based window lookup in getViewController() to support apps using UIScene lifecycle, where the app delegate's window is nil       (#49, fixes #48)                                                                                                                                                                                                                                                                                                                                                    Dependencies        - Android: Update Airwallex Android SDK to 6.5.0 (#47)                                                                                                                            - iOS: Update Airwallex iOS SDK to 6.4.0 (#46)                                                                                                                                                                                     Build & Tooling                                                                                                                                                                                                                                                                                                                                                     - Update Kotlin versions (plugin: 1.8.22 → 1.9.25, example: 1.8.22 → 2.1.0)                                                                                                       - Bump minimum Flutter to 3.38.1 for UIScene lifecycle support   - Update compileSdkVersion to match native SDK requirement                                                                                                                        - Adopt UIScene lifecycle in example app                                                                                                                                          - CI: require iOS and Android builds to pass before publishing  
