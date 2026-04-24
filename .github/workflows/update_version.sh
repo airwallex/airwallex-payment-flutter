@@ -4,8 +4,17 @@ set -e
 # make pipelines' return status equal the last command to exit with a non-zero status, or zero if all commands exit successfully
 set -o pipefail
 
+# Cross-platform in-place sed (BSD sed on macOS requires an explicit backup extension)
+sedi() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
+
 # Update version in pubspec.yaml
-sed -i "s/^version: .*$/version: $VERSION/" pubspec.yaml
+sedi "s/^version: .*$/version: $VERSION/" pubspec.yaml
 
 # Debugging to confirm change
 echo "Updated pubspec.yaml:"
@@ -22,9 +31,15 @@ else
 fi
 
 # Update dependency version in code block in README.md, README-zh.md, GUIDE.md and GUIDE-zh.md
-sed -i "s/airwallex_payment_flutter: [0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: $VERSION/" README.md
-sed -i "s/airwallex_payment_flutter: [0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: $VERSION/" README-zh.md
-sed -i "s/airwallex_payment_flutter: \^[0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: ^$VERSION/" GUIDE.md
-sed -i "s/airwallex_payment_flutter: \^[0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: ^$VERSION/" GUIDE-zh.md
+sedi "s/airwallex_payment_flutter: [0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: $VERSION/" README.md
+sedi "s/airwallex_payment_flutter: [0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: $VERSION/" README-zh.md
+sedi "s/airwallex_payment_flutter: \^[0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: ^$VERSION/" GUIDE.md
+sedi "s/airwallex_payment_flutter: \^[0-9]\+\.[0-9]\+\.[0-9]\+/airwallex_payment_flutter: ^$VERSION/" GUIDE-zh.md
 
 echo "Updated dependency version in README.md, README-zh.md, GUIDE.md and GUIDE-zh.md"
+
+# Update frameworkVersion in native files
+sedi "s/\"frameworkVersion\" to \"[0-9]\+\.[0-9]\+\.[0-9]\+\"/\"frameworkVersion\" to \"$VERSION\"/" android/src/main/kotlin/com/example/airwallex_payment_flutter/AirwallexPaymentSdkModule.kt
+sedi "s/\"frameworkVersion\": \"[0-9]\+\.[0-9]\+\.[0-9]\+\"/\"frameworkVersion\": \"$VERSION\"/" ios/Classes/AirwallexSdk.swift
+
+echo "Updated frameworkVersion in AirwallexPaymentSdkModule.kt and AirwallexSdk.swift"
