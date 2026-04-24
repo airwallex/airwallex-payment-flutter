@@ -1,18 +1,40 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:http/io_client.dart';
 
 class ApiClient {
+  // Set to true to route iOS debug traffic through a local proxy (e.g. Charles/Proxyman)
+  static const _useProxy = false;
+  static const _proxyPort = 9090;
+
   late String checkoutDemoBaseUrl;
   final String apiKey;
   final String clientId;
   final Environment environment;
+  late final http.Client _client;
 
   ApiClient(
       {required this.environment,
       required this.apiKey,
       required this.clientId}) {
     checkoutDemoBaseUrl = _getCheckoutDemoBaseUrlForEnvironment(environment);
+    _client = _createClient();
+  }
+
+  http.Client _createClient() {
+    http.Client? client;
+    assert(() {
+      if (Platform.isIOS && _useProxy) {
+        final httpClient = HttpClient();
+        httpClient.findProxy = (_) => 'PROXY localhost:$_proxyPort';
+        httpClient.badCertificateCallback = (_, __, ___) => true;
+        client = IOClient(httpClient);
+      }
+      return true;
+    }());
+    return client ?? http.Client();
   }
 
   String _getCheckoutDemoBaseUrlForEnvironment(Environment environment) {
@@ -21,6 +43,8 @@ class ApiClient {
         return 'https://demo-pacheckoutdemo.airwallex.com';
       case Environment.staging:
         return 'https://staging-pacheckoutdemo.airwallex.com';
+      case Environment.preview:
+        return 'https://pacheckoutdemo.sandbox.airwallex.com';
       default:
         return '';
     }
@@ -30,7 +54,7 @@ class ApiClient {
       Map<String, dynamic> params) async {
     print('Creating payment intent with params: $params');
     try {
-      final response = await http.post(
+      final response = await _client.post(
         Uri.parse('$checkoutDemoBaseUrl/api/v1/pa/payment_intents/create'),
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +79,7 @@ class ApiClient {
       Map<String, dynamic> params) async {
     print('Creating customer with params: $params');
     try {
-      final response = await http.post(
+      final response = await _client.post(
         Uri.parse('$checkoutDemoBaseUrl/api/v1/pa/customers/create'),
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +104,7 @@ class ApiClient {
       String customerId) async {
     print('Generating client secret for customer: $customerId');
     try {
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse(
             '$checkoutDemoBaseUrl/api/v1/pa/customers/$customerId/generate_client_secret?apiKey=$apiKey&clientId=$clientId'),
       );
@@ -101,7 +125,7 @@ class ApiClient {
   Future<Map<String, dynamic>> getPaymentConsents(String customerId) async {
     print('Fetching payment consents');
     try {
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse('$checkoutDemoBaseUrl/api/v1/pa/payment_consents?customer_id=$customerId')
       );
       print('HTTP Response Status Code: ${response.statusCode}');

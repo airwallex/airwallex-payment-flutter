@@ -154,6 +154,8 @@ private extension AirwallexSDKMode {
             return .demoMode
         case "production":
             return .productionMode
+        case "preview":
+            return .previewMode
         default:
             #if DEBUG
             let defaultMode = AirwallexSDKMode.demoMode
