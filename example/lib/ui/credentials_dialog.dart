@@ -28,8 +28,8 @@ Future<void> showCredentialsDialog(BuildContext context, Function(String, String
           TextButton(
             child: const Text('Submit'),
             onPressed: () {
-              onSubmit(apiKeyController.text, clientIdController.text);
               Navigator.of(context).pop();
+              onSubmit(apiKeyController.text, clientIdController.text);
             },
           ),
         ],

@@ -276,6 +276,7 @@ class AirwallexPaymentSdkModule {
             Environment.STAGING.value -> Environment.STAGING
             Environment.DEMO.value -> Environment.DEMO
             Environment.PRODUCTION.value -> Environment.PRODUCTION
+            Environment.PREVIEW.value -> Environment.PREVIEW
             else -> defaultEnvironment
         }
     }
