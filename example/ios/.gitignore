@@ -34,3 +34,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.perspectivev3
 
 Podfile.lock
+
+# Swift Package Manager (per-workspace lockfiles)
+**/xcshareddata/swiftpm/

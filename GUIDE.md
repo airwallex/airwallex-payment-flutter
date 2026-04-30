@@ -40,6 +40,13 @@ To install the Plugin, in your `pubspec.yaml`, add the following:
 dependencies:
   airwallex_payment_flutter: ^0.1.13
 ```
+### iOS
+The plugin supports both **CocoaPods** (default) and **Swift Package Manager** (Flutter 3.27+ recommended). To use SPM, enable it once for your Flutter installation:
+```bash
+flutter config --enable-swift-package-manager
+```
+Then run `flutter pub get` and `flutter build ios` as usual; Flutter will resolve the iOS dependency via SPM automatically. To switch back to CocoaPods, run `flutter config --no-enable-swift-package-manager`.
+
 ### Android
 **In your project's `/android` directory, find `MainAcitvity.kt` and change its class type from `FlutterActivity` to `FlutterFragmentActivity`**, otherwise you might encounter this [issue](https://github.com/airwallex/airwallex-payment-flutter/issues/17). 
 

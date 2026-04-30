@@ -121,6 +121,13 @@ jobs:
             sed -i "s/airwallex_version = '.*'/airwallex_version = '~> $NEW_VERSION'/" "$VERSION_FILE"
             echo "Updated podspec:"
             grep "airwallex_version" "$VERSION_FILE"
+
+            # Also update the SPM dependency in Package.swift to the exact version.
+            PACKAGE_FILE="ios/airwallex_payment_flutter/Package.swift"
+            echo "Updating $PACKAGE_FILE to exact: \"$NEW_VERSION\""
+            sed -i "s/exact: \"[0-9.]*\"/exact: \"$NEW_VERSION\"/" "$PACKAGE_FILE"
+            echo "Updated Package.swift:"
+            grep "airwallex-payment-ios" "$PACKAGE_FILE"
           else
             VERSION_FILE="android/build.gradle"
             echo "Updating $VERSION_FILE to version $NEW_VERSION"

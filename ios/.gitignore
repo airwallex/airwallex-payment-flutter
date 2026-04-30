@@ -36,3 +36,8 @@ Icon?
 /Flutter/Generated.xcconfig
 /Flutter/ephemeral/
 /Flutter/flutter_export_environment.sh
+
+# Swift Package Manager
+airwallex_payment_flutter/.build/
+airwallex_payment_flutter/.swiftpm/
+airwallex_payment_flutter/Package.resolved

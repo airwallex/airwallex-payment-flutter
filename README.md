@@ -26,6 +26,11 @@ dependencies:
     airwallex_payment_flutter: 0.1.13
 ```
 
+On iOS, the plugin supports both **CocoaPods** (default) and **Swift Package Manager**. To use SPM, enable it once for your Flutter installation:
+```bash
+flutter config --enable-swift-package-manager
+```
+
 ## Getting Start
 [Quick Start](GUIDE.md) for integrating Airwallex Flutter Plugin in your Flutter application.
 
