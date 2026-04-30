@@ -236,9 +236,19 @@ static BaseSession createRecurringWithIntentSession(
 ```
 ### 卡支付页面
 - 使用 `presentCardPaymentFlow` 调起卡支付页面，来完成整个支付流程
-```kotlin
+```dart
    final result = await airwallex.presentCardPaymentFlow(paymentSession);
 ```
+- 您可以选择传入 `supportedBrands` 来限制接受的卡品牌：
+```dart
+   import 'package:airwallex_payment_flutter/types/card_brand.dart';
+
+   final result = await airwallex.presentCardPaymentFlow(
+     paymentSession,
+     supportedBrands: [CardBrand.visa, CardBrand.mastercard],
+   );
+```
+> 可用的卡品牌：`visa`、`mastercard`、`amex`、`discover`、`jcb`、`dinersClub`、`unionPay`。
 ### 自定义主题
 #### Android：
 您可以在应用程序中覆盖这些颜色值, 用来适配您的应用风格。 https://developer.android.com/guide/topics/ui/look-and-feel/themes#CustomizeTheme

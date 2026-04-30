@@ -235,9 +235,19 @@ static BaseSession createRecurringWithIntentSession(
 ```
 ### Launch card payment page
 - Use `presentCardPaymentFlow` to launch the card payment page and complete the entire payment process.
-```kotlin
+```dart
    final result = await airwallex.presentCardPaymentFlow(paymentSession);
 ```
+- You can optionally pass `supportedBrands` to restrict which card brands are accepted:
+```dart
+   import 'package:airwallex_payment_flutter/types/card_brand.dart';
+
+   final result = await airwallex.presentCardPaymentFlow(
+     paymentSession,
+     supportedBrands: [CardBrand.visa, CardBrand.mastercard],
+   );
+```
+> Available card brands: `visa`, `mastercard`, `amex`, `discover`, `jcb`, `dinersClub`, `unionPay`.
 ### Custom Theme
 #### Android：
 You can overwrite these color values in your app. https://developer.android.com/guide/topics/ui/look-and-feel/themes#CustomizeTheme
