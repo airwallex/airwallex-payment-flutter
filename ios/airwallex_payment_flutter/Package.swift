@@ -15,6 +15,7 @@ let package = Package(
             name: "airwallex_payment_flutter",
             dependencies: [
                 .product(name: "Airwallex", package: "airwallex-payment-ios"),
+                .product(name: "AirwallexWeChatPay", package: "airwallex-payment-ios"),
             ],
             resources: [
                 .process("Resources/PrivacyInfo.xcprivacy"),

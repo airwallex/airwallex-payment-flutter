@@ -19,6 +19,7 @@ Airwallex Payment Flutter plugin project.
   s.source_files = 'airwallex_payment_flutter/Sources/airwallex_payment_flutter/**/*.swift'
   s.dependency 'Flutter'
   s.dependency 'Airwallex', airwallex_version
+  s.dependency 'Airwallex/AirwallexWeChatPay', airwallex_version
   s.platform = :ios, '13.0'
   s.static_framework = true
 
