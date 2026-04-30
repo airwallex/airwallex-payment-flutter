@@ -7,6 +7,7 @@ import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 
@@ -175,7 +176,7 @@ class MyHomePageState extends State<MyHomePage> {
           actions: [
             TextButton(
               child: const Text('OK'),
-              onPressed: () => exit(0),
+              onPressed: () => Restart.restartApp(forceKill: true),
             ),
           ],
         );
