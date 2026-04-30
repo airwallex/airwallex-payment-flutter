@@ -29,18 +29,29 @@ class AirwallexSdk: NSObject {
         }
     }
     
-    func presentCardPaymentFlow(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
+    func presentCardPaymentFlow(clientSecret: String, session: NSDictionary, supportedBrands: [String]?, result: @escaping FlutterResult) {
         self.result = result
-        
+
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
-        
+
         let session = buildAirwallexSession(from: session)
-        
+        let brands: [AWXCardBrand]
+        if let supportedBrands = supportedBrands, !supportedBrands.isEmpty {
+            let knownBrands = AWXCardBrand.allAvailable
+            let filtered = supportedBrands.compactMap { value in
+                knownBrands.first { $0.rawValue == value }
+            }
+            brands = filtered.isEmpty ? knownBrands : filtered
+        } else {
+            brands = AWXCardBrand.allAvailable
+        }
+
         DispatchQueue.main.async {
             AWXUIContext.launchCardPayment(
                 from: self.getViewController(),
                 session: session,
                 paymentResultDelegate: self,
+                supportedBrands: brands,
                 launchStyle: .present
             )
         }

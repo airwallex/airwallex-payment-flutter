@@ -1,6 +1,7 @@
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_method_channel.dart';
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_platform_interface.dart';
 import 'package:airwallex_payment_flutter/types/card.dart';
+import 'package:airwallex_payment_flutter/types/card_brand.dart';
 import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
@@ -19,7 +20,10 @@ class MockAirwallexPaymentFlutterPlatform
   }
 
   @override
-  Future<PaymentResult> presentCardPaymentFlow(BaseSession session) {
+  Future<PaymentResult> presentCardPaymentFlow(
+    BaseSession session, {
+    List<CardBrand>? supportedBrands,
+  }) {
     throw UnimplementedError();
   }
 
