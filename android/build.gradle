@@ -3,7 +3,7 @@ version = "1.0-SNAPSHOT"
 
 buildscript {
     ext.kotlin_version = "1.9.25"
-    ext.airwallex_version = "6.6.0"
+    ext.airwallex_version = "6.7.0"
     repositories {
         google()
         mavenCentral()
@@ -57,6 +57,7 @@ android {
     dependencies {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
+        testImplementation("org.json:json:20240303")
     }
 
     testOptions {

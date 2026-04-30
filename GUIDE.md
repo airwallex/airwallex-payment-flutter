@@ -38,7 +38,7 @@ Our sample app is open source on [Github](https://github.com/airwallex/airwallex
 To install the Plugin, in your `pubspec.yaml`, add the following:
 ```yaml
 dependencies:
-  airwallex_payment_flutter: ^0.1.12
+  airwallex_payment_flutter: ^0.1.13
 ```
 ### Android
 **In your project's `/android` directory, find `MainAcitvity.kt` and change its class type from `FlutterActivity` to `FlutterFragmentActivity`**, otherwise you might encounter this [issue](https://github.com/airwallex/airwallex-payment-flutter/issues/17). 

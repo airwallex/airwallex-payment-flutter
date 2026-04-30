@@ -1,5 +1,6 @@
 import 'package:airwallex_payment_flutter/airwallex_payment_flutter_method_channel.dart';
 import 'package:airwallex_payment_flutter/types/card.dart';
+import 'package:airwallex_payment_flutter/types/card_brand.dart';
 import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
 import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
 import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
@@ -143,6 +144,55 @@ void main() {
       final result = await platform.startGooglePay(session);
       expect(result, isA<PaymentSuccessResult>());
       expect((result as PaymentSuccessResult).paymentConsentId, 'google_pay_123');
+    });
+
+    test('presentCardPaymentFlow should forward supportedBrands over the channel', () async {
+      List<dynamic>? capturedBrands;
+      bool argsContainsKey = false;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        (MethodCall methodCall) async {
+          if (methodCall.method == 'presentCardPaymentFlow') {
+            final args = methodCall.arguments as Map;
+            argsContainsKey = args.containsKey('supportedBrands');
+            capturedBrands = args['supportedBrands'] as List<dynamic>?;
+            return {'status': 'success', 'consentId': '123'};
+          }
+          return null;
+        },
+      );
+
+      final session = createMockSession();
+      await platform.presentCardPaymentFlow(
+        session,
+        supportedBrands: [CardBrand.visa, CardBrand.mastercard],
+      );
+
+      expect(argsContainsKey, isTrue);
+      expect(capturedBrands, ['visa', 'mastercard']);
+    });
+
+    test('presentCardPaymentFlow should omit supportedBrands when null or empty', () async {
+      bool argsContainsKey = true;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        (MethodCall methodCall) async {
+          if (methodCall.method == 'presentCardPaymentFlow') {
+            final args = methodCall.arguments as Map;
+            argsContainsKey = args.containsKey('supportedBrands');
+            return {'status': 'success', 'consentId': '123'};
+          }
+          return null;
+        },
+      );
+
+      final session = createMockSession();
+      await platform.presentCardPaymentFlow(session);
+      expect(argsContainsKey, isFalse);
+
+      argsContainsKey = true;
+      await platform.presentCardPaymentFlow(session, supportedBrands: []);
+      expect(argsContainsKey, isFalse);
     });
 
     test('presentCardPaymentFlow should return PaymentCancelledResult on cancelled status', () async {

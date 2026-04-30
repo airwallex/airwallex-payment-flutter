@@ -3,6 +3,7 @@ import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:flutter/services.dart';
 
 import '/types/card.dart';
+import '/types/card_brand.dart';
 import '/types/payment_result.dart';
 import '/types/payment_session.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -39,7 +40,10 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
   }
 
-  Future<PaymentResult> presentCardPaymentFlow(BaseSession session) {
+  Future<PaymentResult> presentCardPaymentFlow(
+    BaseSession session, {
+    List<CardBrand>? supportedBrands,
+  }) {
     throw UnimplementedError('presentCardPaymentFlow() has not been implemented.');
   }
 

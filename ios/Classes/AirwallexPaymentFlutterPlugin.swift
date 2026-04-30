@@ -28,7 +28,8 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
         case "presentCardPaymentFlow":
             let arguments = call.arguments as! NSDictionary
             let session = arguments["session"] as! NSDictionary
-            sdk?.presentCardPaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
+            let supportedBrands = arguments["supportedBrands"] as? [String]
+            sdk?.presentCardPaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, supportedBrands: supportedBrands, result: result)
         case "startApplePay":
             let arguments = call.arguments as! NSDictionary
             let session = arguments["session"] as! NSDictionary

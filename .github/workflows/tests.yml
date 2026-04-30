@@ -58,6 +58,10 @@ jobs:
         working-directory: example
         run: flutter build apk --debug
 
+      - name: Run Android unit tests
+        working-directory: example/android
+        run: ./gradlew :airwallex_payment_flutter:testDebugUnitTest
+
   build-ios:
     name: Build iOS
     runs-on: macos-latest
@@ -81,3 +85,13 @@ jobs:
       - name: Build iOS example app
         working-directory: example
         run: flutter build ios --no-codesign --debug
+
+      - name: Run iOS unit tests
+        working-directory: example
+        run: |
+          xcodebuild test \
+            -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -only-testing:RunnerTests \
+            CODE_SIGNING_ALLOWED=NO

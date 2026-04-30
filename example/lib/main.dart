@@ -62,7 +62,7 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
     environmentOptions = ['demo', 'staging', 'production'];
     assert(() {
-      environmentOptions = ['demo', 'staging'];
+      environmentOptions = ['demo', 'staging', 'preview'];
       return true;
     }());
     _initialize();
@@ -152,15 +152,35 @@ class MyHomePageState extends State<MyHomePage> {
     return Tuple3(Environment.values.firstWhere((e) => e.name == envString, orElse: () => Environment.demo), apiKey ?? '', clientId ?? '');
   }
 
-  void saveEnvironment(Environment environment) async {
+  Future<void> saveEnvironment(Environment environment) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('environment', environment.name);
+    await prefs.setString('environment', environment.name);
   }
 
-  void saveKeys(String apiKey, String clientId) async {
+  Future<void> saveKeys(String apiKey, String clientId) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('apiKey', apiKey);
-    prefs.setString('clientId', clientId);
+    await prefs.setString('apiKey', apiKey);
+    await prefs.setString('clientId', clientId);
+  }
+
+  void _showRestartDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Restart Required'),
+          content: const Text(
+              'The app needs to restart for the new environment to take effect.'),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () => exit(0),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showDialog(String title, String message) {
@@ -190,22 +210,20 @@ class MyHomePageState extends State<MyHomePage> {
         actions: [
           DropdownButton<String>(
             value: environment.name,
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  saveEnvironment(Environment.values
-                      .firstWhere((element) => element.name == newValue));
-                });
+            onChanged: (String? newValue) async {
+              if (newValue != null && newValue != environment.name) {
+                final newEnv = Environment.values
+                    .firstWhere((e) => e.name == newValue);
+                await saveEnvironment(newEnv);
                 if (newValue == "production") {
+                  if (!context.mounted) return;
                   showCredentialsDialog(context,
-                      (String apiKeyValue, String clientIdValue) {
-                    setState(() {
-                      saveKeys(apiKeyValue, clientIdValue);
-                    });
-                    _initialize();
+                      (String apiKeyValue, String clientIdValue) async {
+                    await saveKeys(apiKeyValue, clientIdValue);
+                    _showRestartDialog();
                   });
                 } else {
-                  _initialize();
+                  _showRestartDialog();
                 }
               }
             },
@@ -254,7 +272,9 @@ class MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
                       airwallex.presentCardPaymentFlow(
-                          await _createSession(customerId: customerId))),
+                          await _createSession(customerId: customerId),
+                          supportedBrands: [.amex, .visa, .mastercard]
+                          )),
                   child: const Text('presentCardPaymentFlow'),
                 ),
                 const SizedBox(height: 20),

@@ -9,8 +9,10 @@ import com.airwallex.android.core.AirwallexConfiguration
 import com.airwallex.android.core.AirwallexPaymentSession
 import com.airwallex.android.core.AirwallexPaymentStatus
 import com.airwallex.android.core.AirwallexSession
+import com.airwallex.android.core.AirwallexSupportedCard
 import com.airwallex.android.core.Environment
 import com.airwallex.android.core.log.AnalyticsLogger
+import com.airwallex.android.view.composables.PaymentElementConfiguration
 import com.airwallex.android.core.log.AirwallexLogger
 import com.airwallex.android.core.model.PaymentConsent
 import com.airwallex.android.core.model.PaymentMethod
@@ -22,6 +24,7 @@ import com.example.airwallex_payment_flutter.util.AirwallexPaymentConsentParser
 import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionParser
+import com.example.airwallex_payment_flutter.util.AirwallexSupportedBrandsParser
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -91,9 +94,16 @@ class AirwallexPaymentSdkModule {
         result: MethodChannel.Result
     ) {
         val session = parseSessionFromCall(call)
+        val supportedBrands = parseSupportedBrandsFromCall(call)
+        val configuration = if (!supportedBrands.isNullOrEmpty()) {
+            PaymentElementConfiguration.Card(supportedCardBrands = supportedBrands)
+        } else {
+            PaymentElementConfiguration.Card()
+        }
         AirwallexStarter.presentCardPaymentFlow(
             activity = activity,
             session = session,
+            configuration = configuration,
             paymentResultListener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
                     AirwallexLogger.info("AirwallexPaymentSdkModule: presentCardPaymentFlow, status = $status")
@@ -218,6 +228,11 @@ class AirwallexPaymentSdkModule {
         return AirwallexCardParser.parse(cardJson)
     }
 
+    private fun parseSupportedBrandsFromCall(call: MethodCall): List<AirwallexSupportedCard>? {
+        val argumentsObject = call.arguments<JSONObject>() ?: return null
+        return AirwallexSupportedBrandsParser.parse(argumentsObject.optJSONArray("supportedBrands"))
+    }
+
     private fun parseSessionFromCall(call: MethodCall): AirwallexSession {
         val argumentsObject = call.arguments<JSONObject>() ?: error("arguments is required")
         val sessionObject = argumentsObject.getJSONObject("session")
@@ -281,6 +296,7 @@ class AirwallexPaymentSdkModule {
             Environment.STAGING.value -> Environment.STAGING
             Environment.DEMO.value -> Environment.DEMO
             Environment.PRODUCTION.value -> Environment.PRODUCTION
+            Environment.PREVIEW.value -> Environment.PREVIEW
             else -> defaultEnvironment
         }
     }
