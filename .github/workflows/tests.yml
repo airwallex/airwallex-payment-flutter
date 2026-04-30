@@ -9,6 +9,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  FLUTTER_VERSION: '3.38.1'
+
 jobs:
   analyze:
     name: Analyze & Test
@@ -19,7 +22,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046  # 2.19.0
         with:
-          flutter-version: '3.38.1'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies
@@ -48,7 +51,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046  # 2.19.0
         with:
-          flutter-version: '3.38.1'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies
@@ -68,7 +71,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046  # 2.19.0
         with:
-          flutter-version: '3.38.1'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies
@@ -79,5 +82,28 @@ jobs:
         run: pod install
 
       - name: Build iOS example app
+        working-directory: example
+        run: flutter build ios --no-codesign --debug
+
+  build-ios-spm:
+    name: Build iOS (SPM)
+    runs-on: macos-latest
+    needs: analyze
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # 6.0.2
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046  # 2.19.0
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Enable Swift Package Manager
+        run: flutter config --enable-swift-package-manager
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS example app via SPM
         working-directory: example
         run: flutter build ios --no-codesign --debug

@@ -26,6 +26,11 @@ dependencies:
     airwallex_payment_flutter: 0.1.13
 ```
 
+iOS 端同时支持 **CocoaPods**（默认）和 **Swift Package Manager**。如需启用 SPM，请执行一次：
+```bash
+flutter config --enable-swift-package-manager
+```
+
 ## 快速上手
 请参考：[快速开始](GUIDE-zh.md)
 
