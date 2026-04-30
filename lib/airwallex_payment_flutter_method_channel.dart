@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'airwallex_payment_flutter_platform_interface.dart';
 import 'types/card.dart';
+import 'types/card_brand.dart';
 import 'types/payment_result.dart';
 import 'types/payment_session.dart';
 
@@ -36,9 +37,15 @@ class MethodChannelAirwallexPaymentFlutter
   }
 
   @override
-  Future<PaymentResult> presentCardPaymentFlow(BaseSession session) async {
-    final result = await methodChannel
-        .invokeMethod('presentCardPaymentFlow', {'session': session.toJson()});
+  Future<PaymentResult> presentCardPaymentFlow(
+    BaseSession session, {
+    List<CardBrand>? supportedBrands,
+  }) async {
+    final result = await methodChannel.invokeMethod('presentCardPaymentFlow', {
+      'session': session.toJson(),
+      if (supportedBrands != null && supportedBrands.isNotEmpty)
+        'supportedBrands': supportedBrands.map((b) => b.value).toList(),
+    });
     return parsePaymentResult(result);
   }
 

@@ -272,7 +272,9 @@ class MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed: () => _handleSubmit(() async =>
                       airwallex.presentCardPaymentFlow(
-                          await _createSession(customerId: customerId))),
+                          await _createSession(customerId: customerId),
+                          supportedBrands: [.amex, .visa, .mastercard]
+                          )),
                   child: const Text('presentCardPaymentFlow'),
                 ),
                 const SizedBox(height: 20),

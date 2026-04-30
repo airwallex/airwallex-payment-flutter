@@ -5,6 +5,7 @@ import 'package:airwallex_payment_flutter/types/payment_consent.dart';
 import 'package:flutter/foundation.dart';
 
 import '/types/card.dart';
+import '/types/card_brand.dart';
 import '/types/payment_result.dart';
 import '/types/payment_session.dart';
 
@@ -24,9 +25,12 @@ class Airwallex {
         .presentEntirePaymentFlow(session);
   }
 
-  Future<PaymentResult> presentCardPaymentFlow(BaseSession session) {
+  Future<PaymentResult> presentCardPaymentFlow(
+    BaseSession session, {
+    List<CardBrand>? supportedBrands,
+  }) {
     return AirwallexPaymentFlutterPlatform.instance
-        .presentCardPaymentFlow(session);
+        .presentCardPaymentFlow(session, supportedBrands: supportedBrands);
   }
 
   Future<PaymentResult> payWithCardDetails(BaseSession session, Card card, bool saveCard) {
