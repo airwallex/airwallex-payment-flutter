@@ -1,3 +1,16 @@
+## 0.1.14
+
+# [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.13...0.2.0) (2026-04-30)
+
+
+### Features
+
+* add supportedBrands parameter to presentCardPaymentFlow ([389658e](https://github.com/airwallex/airwallex-payment-flutter/commit/389658e4ccf48dc36f4e70a617b189ae364a6e62))
+
+
+
+
+
 ## 0.1.13
 
 # [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.12...0.2.0) (2026-04-24)
