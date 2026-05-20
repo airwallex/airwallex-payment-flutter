@@ -15,6 +15,11 @@ class PaymentConsent {
   String? status;
   NextTriggeredBy? nextTriggeredBy;
   MerchantTriggerReason? merchantTriggerReason;
+  @Deprecated(
+    'requiresCvc is not used by the native Android or iOS implementations. '
+    'CVC collection is determined by paymentMethod.card.numberType == "PAN". '
+    'Read paymentMethod?.card?.numberType instead.',
+  )
   bool requiresCvc;
   String? createdAt;
   String? updatedAt;
@@ -28,6 +33,7 @@ class PaymentConsent {
     this.status,
     this.nextTriggeredBy,
     this.merchantTriggerReason,
+    // ignore: deprecated_member_use_from_same_package
     this.requiresCvc = false,
     this.createdAt,
     this.updatedAt,
