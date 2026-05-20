@@ -66,6 +66,7 @@ object AirwallexRecurringWithIntentSessionParser {
             .setReturnUrl(returnUrl)
             .setAutoCapture(autoCapture)
             .setGooglePayOptions(googlePayOptions)
+            .setShipping(shipping)
         merchantTriggerReason?.let {
             sessionBuilder.setMerchantTriggerReason(merchantTriggerReason)
         }
