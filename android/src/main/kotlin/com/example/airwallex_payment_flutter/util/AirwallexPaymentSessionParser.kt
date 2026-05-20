@@ -53,6 +53,7 @@ object AirwallexPaymentSessionParser {
             .setAutoCapture(autoCapture)
             .setHidePaymentConsents(hidePaymentConsents)
             .setPaymentMethods(paymentMethods)
+            .setShipping(shipping)
             .build()
     }
 
