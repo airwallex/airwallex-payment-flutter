@@ -6,6 +6,7 @@ import '/types/card.dart';
 import '/types/card_brand.dart';
 import '/types/payment_result.dart';
 import '/types/payment_session.dart';
+import '/types/payment_sheet_configuration.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'airwallex_payment_flutter_method_channel.dart';
@@ -36,7 +37,10 @@ abstract class AirwallexPaymentFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {
+  Future<PaymentResult> presentEntirePaymentFlow(
+    BaseSession session, {
+    PaymentSheetConfiguration? configuration,
+  }) {
     throw UnimplementedError('presentEntirePaymentFlow() has not been implemented.');
   }
 

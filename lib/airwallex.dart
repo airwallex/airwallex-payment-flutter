@@ -8,6 +8,7 @@ import '/types/card.dart';
 import '/types/card_brand.dart';
 import '/types/payment_result.dart';
 import '/types/payment_session.dart';
+import '/types/payment_sheet_configuration.dart';
 
 import 'airwallex_payment_flutter_platform_interface.dart';
 
@@ -20,9 +21,12 @@ class Airwallex {
     AirwallexPaymentFlutterPlatform.instance.initialize(environment, enableLogging, saveLogToLocal);
   }
 
-  Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) {
+  Future<PaymentResult> presentEntirePaymentFlow(
+    BaseSession session, {
+    PaymentSheetConfiguration? configuration,
+  }) {
     return AirwallexPaymentFlutterPlatform.instance
-        .presentEntirePaymentFlow(session);
+        .presentEntirePaymentFlow(session, configuration: configuration);
   }
 
   Future<PaymentResult> presentCardPaymentFlow(

@@ -13,19 +13,20 @@ class AirwallexSdk: NSObject {
         AnalyticsLogger.shared().bindExtraCommonData(["framework": "flutter", "frameworkVersion": "0.1.14"])
     }
     
-    func presentEntirePaymentFlow(clientSecret: String, session: NSDictionary, result: @escaping FlutterResult) {
+    func presentEntirePaymentFlow(clientSecret: String, session: NSDictionary, configuration: NSDictionary?, result: @escaping FlutterResult) {
         self.result = result
-        
+
         AWXAPIClientConfiguration.shared().clientSecret = clientSecret
-        
+
         let session = buildAirwallexSession(from: session)
-        
+
         DispatchQueue.main.async {
+            let config = AWXUIContext.Configuration(from: configuration)
             AWXUIContext.launchPayment(
                 from: self.getViewController(),
                 session: session,
                 paymentResultDelegate: self,
-                launchStyle: .present
+                configuration: config
             )
         }
     }
@@ -154,6 +155,18 @@ extension AirwallexSdk: AWXPaymentResultDelegate {
 
     func paymentViewController(_ controller: UIViewController?, didCompleteWithPaymentConsentId paymentConsentId: String) {
         self.paymentConsentID = paymentConsentId
+    }
+}
+
+private extension AWXUIContext.Configuration {
+    convenience init(from params: NSDictionary?) {
+        self.init()
+        self.launchStyle = .present
+        if let layout = params?["layout"] as? String, layout.lowercased() == "accordion" {
+            self.layout = .accordion
+        } else {
+            self.layout = .tab
+        }
     }
 }
 
