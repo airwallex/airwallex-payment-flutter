@@ -5,6 +5,7 @@ import 'package:airwallex_payment_flutter/airwallex.dart';
 import 'package:airwallex_payment_flutter/types/environment.dart';
 import 'package:airwallex_payment_flutter/types/payment_result.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
+import 'package:airwallex_payment_flutter/types/payment_sheet_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:restart_app/restart_app.dart';
@@ -267,7 +268,17 @@ class MyHomePageState extends State<MyHomePage> {
                   onPressed: () => _handleSubmit(() async =>
                       airwallex.presentEntirePaymentFlow(
                           await _createSession(customerId: customerId))),
-                  child: const Text('presentEntirePaymentFlow'),
+                  child: const Text('presentEntirePaymentFlow (tab)'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => _handleSubmit(() async =>
+                      airwallex.presentEntirePaymentFlow(
+                        await _createSession(customerId: customerId),
+                        configuration: const PaymentSheetConfiguration(
+                            layout: PaymentLayout.accordion),
+                      )),
+                  child: const Text('presentEntirePaymentFlow (accordion)'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(

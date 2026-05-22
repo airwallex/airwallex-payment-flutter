@@ -10,6 +10,7 @@ import 'types/card.dart';
 import 'types/card_brand.dart';
 import 'types/payment_result.dart';
 import 'types/payment_session.dart';
+import 'types/payment_sheet_configuration.dart';
 
 /// An implementation of [AirwallexPaymentFlutterPlatform] that uses method channels.
 class MethodChannelAirwallexPaymentFlutter
@@ -30,9 +31,15 @@ class MethodChannelAirwallexPaymentFlutter
   }
 
   @override
-  Future<PaymentResult> presentEntirePaymentFlow(BaseSession session) async {
+  Future<PaymentResult> presentEntirePaymentFlow(
+    BaseSession session, {
+    PaymentSheetConfiguration? configuration,
+  }) async {
     final result = await methodChannel.invokeMethod(
-        'presentEntirePaymentFlow', {'session': session.toJson()});
+        'presentEntirePaymentFlow', {
+      'session': session.toJson(),
+      if (configuration != null) 'configuration': configuration.toJson(),
+    });
     return parsePaymentResult(result);
   }
 

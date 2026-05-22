@@ -25,6 +25,7 @@ import com.example.airwallex_payment_flutter.util.AirwallexPaymentSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexRecurringWithIntentSessionParser
 import com.example.airwallex_payment_flutter.util.AirwallexSupportedBrandsParser
+import com.example.airwallex_payment_flutter.util.PaymentSheetConfigurationParser
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -67,9 +68,12 @@ class AirwallexPaymentSdkModule {
         result: MethodChannel.Result
     ) {
         val session = parseSessionFromCall(call)
+        val configJson = call.arguments<JSONObject>()?.optJSONObject("configuration")
+        val configuration = PaymentSheetConfigurationParser.parse(configJson)
         AirwallexStarter.presentEntirePaymentFlow(
             activity = activity,
             session = session,
+            configuration = configuration,
             paymentResultListener = object : Airwallex.PaymentResultListener {
                 override fun onCompleted(status: AirwallexPaymentStatus) {
                     AirwallexLogger.info("AirwallexPaymentSdkModule: presentEntirePaymentFlow, status = $status")

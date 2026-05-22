@@ -24,7 +24,8 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
         case "presentEntirePaymentFlow":
             let arguments = call.arguments as! NSDictionary
             let session = arguments["session"] as! NSDictionary
-            sdk?.presentEntirePaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, result: result)
+            let configuration = arguments["configuration"] as? NSDictionary
+            sdk?.presentEntirePaymentFlow(clientSecret: session["clientSecret"] as! String, session: session, configuration: configuration, result: result)
         case "presentCardPaymentFlow":
             let arguments = call.arguments as! NSDictionary
             let session = arguments["session"] as! NSDictionary
