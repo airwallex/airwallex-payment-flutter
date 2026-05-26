@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "airwallex-payment-flutter", targets: ["airwallex_payment_flutter"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/airwallex/airwallex-payment-ios.git", exact: "6.4.2"),
+        .package(url: "https://github.com/airwallex/airwallex-payment-ios.git", exact: "6.4.3"),
     ],
     targets: [
         .target(
