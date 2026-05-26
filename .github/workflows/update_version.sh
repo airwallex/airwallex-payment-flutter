@@ -40,6 +40,6 @@ echo "Updated dependency version in README.md, README-zh.md, GUIDE.md and GUIDE-
 
 # Update frameworkVersion in native files
 sedi "s/\"frameworkVersion\" to \"[0-9]\+\.[0-9]\+\.[0-9]\+\"/\"frameworkVersion\" to \"$VERSION\"/" android/src/main/kotlin/com/example/airwallex_payment_flutter/AirwallexPaymentSdkModule.kt
-sedi "s/\"frameworkVersion\": \"[0-9]\+\.[0-9]\+\.[0-9]\+\"/\"frameworkVersion\": \"$VERSION\"/" ios/Classes/AirwallexSdk.swift
+sedi "s/\"frameworkVersion\": \"[0-9]\+\.[0-9]\+\.[0-9]\+\"/\"frameworkVersion\": \"$VERSION\"/" ios/airwallex_payment_flutter/Sources/airwallex_payment_flutter/AirwallexSdk.swift
 
 echo "Updated frameworkVersion in AirwallexPaymentSdkModule.kt and AirwallexSdk.swift"
