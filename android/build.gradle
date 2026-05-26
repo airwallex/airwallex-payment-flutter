@@ -3,7 +3,7 @@ version = "1.0-SNAPSHOT"
 
 buildscript {
     ext.kotlin_version = "1.9.25"
-    ext.airwallex_version = "6.7.2"
+    ext.airwallex_version = "6.8.0"
     repositories {
         google()
         mavenCentral()
