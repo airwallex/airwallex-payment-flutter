@@ -1,3 +1,23 @@
+## 0.2.0
+
+# [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.14...0.2.0) (2026-05-26)
+
+
+### Bug Fixes
+
+* **android:** pass shipping to session builder to pre-fill billing form ([cfab256](https://github.com/airwallex/airwallex-payment-flutter/commit/cfab256552be00eb1ab2c1f656f36888be92fe64))
+* file path for AirwallexSdk.swift [no ci] ([0c56d82](https://github.com/airwallex/airwallex-payment-flutter/commit/0c56d829bc8f4a7a42d61cf29486b3b9a61a6d7a))
+
+
+### Features
+
+* expose tab/accordion layout configuration for presentEntirePaymentFlow ([a4d0541](https://github.com/airwallex/airwallex-payment-flutter/commit/a4d0541f38502de7eef595ed2aa79e40fb04b9fc))
+* **ios:** bundle AirwallexWeChatPay in podspec and Package.swift ([1422776](https://github.com/airwallex/airwallex-payment-flutter/commit/1422776e422d35ee32c30581c76bb21be9192fd9))
+
+
+
+
+
 ## 0.1.14
 
 # [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.13...0.2.0) (2026-04-30)
