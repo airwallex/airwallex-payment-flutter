@@ -1,0 +1,84 @@
+# airwallex_payment_flutter
+
+## Airwallex Flutter Plugin[![Platform](https://img.shields.io/badge/platform-flutter-darkgreen)](https://flutter.dev/)
+
+[![Flutter version: 3.24.3](https://img.shields.io/badge/flutter-3.24.3-brightgreen)](https://medium.com/flutter/flutter-3-24-dart-3-5-204b7d20c45d)
+[![GitHub release](https://img.shields.io/github/v/release/airwallex/airwallex-payment-flutter)](https://github.com/airwallex/airwallex-payment-flutter/releases)
+[![license: BSD 3-Clause](https://img.shields.io/badge/license-BSD%203--Clause-lightblue)](https://github.com/airwallex/airwallex-payment-flutter/blob/main/LICENSE)
+
+EN | [中文](README-zh.md)
+
+This library makes it quick and easy to build an excellent payment experience in your Flutter application.
+Currently, this library supports both Android and iOS platforms.
+Payment methods supported:
+
+- Cards: `Visa`, `Mastercard`, `Amex`, `Dinners Club`, `JCB`, `Discover`, `Union Pay`. If you want to integrate Airwallex API without our Native UI for card payments, then your app is required to be PCI-DSS compliant.
+- E-Wallets: `Alipay`, `AlipayHK`, `DANA`, `GCash`, `Kakao Pay`, `Touch ‘n Go`, `WeChat Pay`, etc.
+- Apple Pay
+- Google Pay
+
+Localizations supported:
+English, Chinese Simplified, Chinese Traditional, French, German, Japanese, Korean, Portuguese Portugal, Portuguese Brazil, Russian, Spanish, Thai.
+
+## Installation
+
+The Components are available through [pub.dev](https://pub.dev/packages/airwallex_payment_flutter), you only need to add the dependency.
+
+Add the dependency in`pubspec.yaml`
+
+```yaml
+dependencies:
+    airwallex_payment_flutter: 0.2.0
+```
+
+On iOS, the plugin supports both **CocoaPods** (default) and **Swift Package Manager**. To use SPM, enable it once for your Flutter installation:
+
+```bash
+flutter config --enable-swift-package-manager
+```
+
+## Getting Start
+
+[Quick Start](GUIDE.md) for integrating Airwallex Flutter Plugin in your Flutter application.
+
+## Screenshots
+
+![](https://github.com/user-attachments/assets/babf2af3-d59b-49fc-8b86-26e85df28a0c)
+![](https://github.com/user-attachments/assets/d228ed51-2405-4322-be08-b1946801e076)
+![](https://github.com/user-attachments/assets/c86b7f3f-d2bc-4326-b82e-145f52d35c72)
+![](https://github.com/user-attachments/assets/938e6101-edb2-4fcf-89fa-07936e4af5a9)
+![](https://github.com/user-attachments/assets/5556a6af-882d-4474-915e-2c9d5953aaa8)
+![](https://github.com/user-attachments/assets/eb6f0b38-d88b-4c27-b843-9948bc25c5a0)
+![](https://github.com/user-attachments/assets/1de983a9-b062-4108-82f5-917e0fc0fb57)
+
+## Feedback
+
+We appreciate the time you take to try out our sample code and welcome your feedback. Here are a few ways to get in touch:
+
+- For general issues and feedback, please create an issue in this repository [`Issues`](https://github.com/airwallex/airwallex-payment-flutter/issues).
+- [[pa_mobile_sdk@airwallex.com](mailto:pa_mobile_sdk@airwallex.com)](mailto:pa_mobile_sdk@airwallex.com)- For personal support at any phase of integration.
+
+## Changelog
+
+All notable changes to this project will be documented in [Changelog](CHANGELOG.md).
+
+## Libraries
+
+| Library | Description |
+|---|---|
+| [airwallex](airwallex/index.md) | A payment Flutter plugin project. |
+| [airwallex_payment_flutter_method_channel](airwallex_payment_flutter_method_channel/index.md) | A payment Flutter plugin project. |
+| [airwallex_payment_flutter_platform_interface](airwallex_payment_flutter_platform_interface/index.md) | A payment Flutter plugin project. |
+| [apple_pay_options](types_apple_pay_options/index.md) | A payment Flutter plugin project. |
+| [billing](types_billing/index.md) | A payment Flutter plugin project. |
+| [card](types_card/index.md) | A payment Flutter plugin project. |
+| [card_brand](types_card_brand/index.md) | A payment Flutter plugin project. |
+| [environment](types_environment/index.md) | A payment Flutter plugin project. |
+| [google_pay_options](types_google_pay_options/index.md) | A payment Flutter plugin project. |
+| [merchant_trigger_reason](types_merchant_trigger_reason/index.md) | A payment Flutter plugin project. |
+| [next_triggered_by](types_next_triggered_by/index.md) | A payment Flutter plugin project. |
+| [payment_consent](types_payment_consent/index.md) | A payment Flutter plugin project. |
+| [payment_result](types_payment_result/index.md) | A payment Flutter plugin project. |
+| [payment_session](types_payment_session/index.md) | A payment Flutter plugin project. |
+| [payment_sheet_configuration](types_payment_sheet_configuration/index.md) | A payment Flutter plugin project. |
+| [shipping](types_shipping/index.md) | A payment Flutter plugin project. |
