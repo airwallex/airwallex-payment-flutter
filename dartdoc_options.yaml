@@ -1,0 +1,4 @@
+dartdoc:
+  linkToSource:
+    root: '.'
+    uriTemplate: 'https://github.com/airwallex/airwallex-payment-flutter/tree/main/%f%#L%l%'
