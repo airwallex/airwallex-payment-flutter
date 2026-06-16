@@ -1,3 +1,16 @@
+## 0.3.0
+
+# [0.3.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.2.0...0.3.0) (2026-06-16)
+
+
+### Features
+
+* add markdown generation logic to pipeline ([3558139](https://github.com/airwallex/airwallex-payment-flutter/commit/3558139da74314fcfbf7f73bb277849989bebb7f))
+
+
+
+
+
 ## 0.2.0
 
 # [0.2.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.1.14...0.2.0) (2026-05-26)

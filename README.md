@@ -23,7 +23,7 @@ The Components are available through [pub.dev](https://pub.dev/packages/airwalle
 Add the dependency in`pubspec.yaml`
 ```yaml
 dependencies:
-    airwallex_payment_flutter: 0.2.0
+    airwallex_payment_flutter: 0.3.0
 ```
 
 On iOS, the plugin supports both **CocoaPods** (default) and **Swift Package Manager**. To use SPM, enable it once for your Flutter installation:
