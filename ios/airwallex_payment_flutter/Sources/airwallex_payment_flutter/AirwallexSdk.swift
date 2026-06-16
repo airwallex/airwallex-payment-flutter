@@ -6,10 +6,15 @@ class AirwallexSdk: NSObject {
     private var paymentConsentID: String?
     private var paymentSessionHandler: PaymentSessionHandler?
     
-    func initialize(environment: String) {
+    func initialize(environment: String, saveLogToLocal: Bool) {
         let mode = AirwallexSDKMode.from(environment)
         Airwallex.setMode(mode)
         AWXAPIClientConfiguration.shared()
+        if saveLogToLocal {
+            Airwallex.enableLocalLogFile()
+        } else {
+            Airwallex.disableLocalLogFile()
+        }
         AnalyticsLogger.shared().bindExtraCommonData(["framework": "flutter", "frameworkVersion": "0.3.0"])
     }
     

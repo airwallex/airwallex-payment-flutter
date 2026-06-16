@@ -2,6 +2,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'card.g.dart';
 
+/// Card details. When used as input to `payWithCardDetails`, the merchant
+/// supplies `number`, `expiryMonth`, `expiryYear`, `cvc`, and optionally `name`.
+///
+/// The remaining fields (`bin`, `last4`, `brand`, `fingerprint`, `cvcCheck`,
+/// `avsCheck`, etc.) are populated by Airwallex when a Card is returned as part of
+/// a saved payment method on a `PaymentConsent`.
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class Card {
   String? cvc;
