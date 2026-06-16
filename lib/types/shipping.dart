@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'shipping.g.dart';
 
+/// Customer shipping (and billing, when reused via `PaymentMethod.billing`) details
+/// pre-filled into the payment sheet.
 @JsonSerializable(explicitToJson: true)
 class Shipping {
   String? firstName;

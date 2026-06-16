@@ -6,6 +6,9 @@ import 'package:airwallex_payment_flutter/types/shipping.dart';
 
 part 'payment_consent.g.dart';
 
+/// A reusable payment authorization tied to a customer and a payment method.
+/// Created during a `RecurringSession` / `RecurringWithIntentSession` flow,
+/// and later passed to `payWithConsent` to charge without re-prompting the customer.
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake, includeIfNull: false)
 class PaymentConsent {
   String? id;
@@ -45,6 +48,8 @@ class PaymentConsent {
   Map<String, dynamic> toJson() => _$PaymentConsentToJson(this);
 }
 
+/// The payment instrument attached to a `PaymentConsent` — typically a saved card,
+/// along with its billing details.
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake, includeIfNull: false)
 class PaymentMethod {
   String? id;

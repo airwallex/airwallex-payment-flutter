@@ -19,7 +19,8 @@ public class AirwallexPaymentFlutterPlugin: NSObject, FlutterPlugin {
         case "initialize":
             sdk = AirwallexSdk()
             let arguments = call.arguments as! NSDictionary
-            sdk?.initialize(environment: arguments["environment"] as! String)
+            let saveLogToLocal = (arguments["saveLogToLocal"] as? Bool) ?? false
+            sdk?.initialize(environment: arguments["environment"] as! String, saveLogToLocal: saveLogToLocal)
             result(nil)
         case "presentEntirePaymentFlow":
             let arguments = call.arguments as! NSDictionary

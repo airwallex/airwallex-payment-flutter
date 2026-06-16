@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'google_pay_options.g.dart';
 
+/// Google Pay configuration. Required on a `PaymentSession` when invoking
+/// `startGooglePay`, or when offering Google Pay through `presentEntirePaymentFlow` on Android.
 @JsonSerializable(explicitToJson: true)
 class GooglePayOptions {
   List<String>? allowedCardAuthMethods;
@@ -44,6 +46,7 @@ class GooglePayOptions {
   Map<String, dynamic> toJson() => _$GooglePayOptionsToJson(this);
 }
 
+/// Controls how the customer's billing address is collected via Google Pay.
 @JsonSerializable()
 class BillingAddressParameters {
   Format? format;
@@ -59,11 +62,16 @@ class BillingAddressParameters {
   Map<String, dynamic> toJson() => _$BillingAddressParametersToJson(this);
 }
 
+/// How much of the billing address Google Pay should return.
+///
+/// - `min` — postal code and country only (sufficient for most card validation).
+/// - `full` — full address.
 enum Format {
   min,
   full,
 }
 
+/// Controls how the customer's shipping address is collected via Google Pay.
 @JsonSerializable()
 class ShippingAddressParameters {
   List<String>? allowedCountryCodes;
@@ -79,6 +87,8 @@ class ShippingAddressParameters {
   Map<String, dynamic> toJson() => _$ShippingAddressParametersToJson(this);
 }
 
+/// The set of card networks Airwallex supports through Google Pay. Useful as a default value
+/// for `GooglePayOptions.allowedCardNetworks` when the merchant has no preference.
 List<String> googlePaySupportedNetworks() {
   return [
     "AMEX",
