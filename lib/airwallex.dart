@@ -31,12 +31,16 @@ class Airwallex {
   /// @param environment - The Airwallex environment to connect to. Defaults to `Environment.production`.
   /// @param enableLogging - When `true`, the SDK emits logs to the console. Android only. Defaults to `true`.
   /// @param saveLogToLocal - When `true`, logs are also persisted to a local file for debugging. Defaults to `false`.
-  static void initialize({
-      Environment environment = Environment.production, bool enableLogging = true, bool saveLogToLocal = false}) {
+  static void initialize(
+      {Environment environment = Environment.production,
+      bool enableLogging = true,
+      bool saveLogToLocal = false}) {
     if (enableLogging && kDebugMode) {
-      debugPrint('[AirwallexSdk] Current connected environment: ${environment.name}');
+      debugPrint(
+          '[AirwallexSdk] Current connected environment: ${environment.name}');
     }
-    AirwallexPaymentFlutterPlatform.instance.initialize(environment, enableLogging, saveLogToLocal);
+    AirwallexPaymentFlutterPlatform.instance
+        .initialize(environment, enableLogging, saveLogToLocal);
   }
 
   /// Presents the full Airwallex payment sheet, letting the customer pick any supported payment method
@@ -74,7 +78,8 @@ class Airwallex {
   /// @param card - The card details to charge.
   /// @param saveCard - When `true`, the card is saved as a payment consent for future use.
   /// @returns The result of the payment attempt.
-  Future<PaymentResult> payWithCardDetails(BaseSession session, Card card, bool saveCard) {
+  Future<PaymentResult> payWithCardDetails(
+      BaseSession session, Card card, bool saveCard) {
     return AirwallexPaymentFlutterPlatform.instance
         .payWithCardDetails(session, card, saveCard);
   }
@@ -84,7 +89,8 @@ class Airwallex {
   /// @param session - The payment session describing the intent, amount, currency, and customer.
   /// @param consent - The payment consent to charge.
   /// @returns The result of the payment attempt.
-  Future<PaymentResult> payWithConsent(BaseSession session, PaymentConsent consent) {
+  Future<PaymentResult> payWithConsent(
+      BaseSession session, PaymentConsent consent) {
     return AirwallexPaymentFlutterPlatform.instance
         .payWithConsent(session, consent);
   }

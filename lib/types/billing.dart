@@ -2,7 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'billing.g.dart';
 
-@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake, includeIfNull: false)
+@JsonSerializable(
+    explicitToJson: true, fieldRename: FieldRename.snake, includeIfNull: false)
 class Billing {
   String? firstName;
   String? lastName;
@@ -22,7 +23,8 @@ class Billing {
     this.address,
   });
 
-  factory Billing.fromJson(Map<String, dynamic> json) => _$BillingFromJson(json);
+  factory Billing.fromJson(Map<String, dynamic> json) =>
+      _$BillingFromJson(json);
 
   Map<String, dynamic> toJson() => _$BillingToJson(this);
 }
@@ -35,9 +37,11 @@ class BillingAddress {
   String? postcode;
   String? state;
 
-  BillingAddress({this.city, this.countryCode, this.street, this.postcode, this.state});
-  
-  factory BillingAddress.fromJson(Map<String, dynamic> json) => _$BillingAddressFromJson(json);
+  BillingAddress(
+      {this.city, this.countryCode, this.street, this.postcode, this.state});
+
+  factory BillingAddress.fromJson(Map<String, dynamic> json) =>
+      _$BillingAddressFromJson(json);
 
   Map<String, dynamic> toJson() => _$BillingAddressToJson(this);
 }
