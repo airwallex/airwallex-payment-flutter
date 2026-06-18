@@ -51,7 +51,7 @@ abstract class BaseSession {
 }
 
 /// A one-off payment against a payment intent.
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, createFactory: false)
 class OneOffSession extends BaseSession {
   String paymentIntentId;
   bool? autoCapture;
@@ -81,7 +81,7 @@ class OneOffSession extends BaseSession {
 
 /// A session that sets up a payment consent for future recurring charges
 /// without charging the customer right now.
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, createFactory: false)
 class RecurringSession extends BaseSession {
   NextTriggeredBy nextTriggeredBy;
   MerchantTriggerReason merchantTriggerReason;
@@ -109,7 +109,7 @@ class RecurringSession extends BaseSession {
 
 /// A session that charges a payment intent now and sets up a payment consent
 /// for future recurring charges in a single step.
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, createFactory: false)
 class RecurringWithIntentSession extends BaseSession {
   String paymentIntentId;
   bool? autoCapture;

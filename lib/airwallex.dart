@@ -1,3 +1,10 @@
+/// Public API for the Airwallex Flutter payment plugin.
+///
+/// Import this library to initialize the SDK and present payment flows
+/// (full checkout sheet, card-only flow, Google Pay, Apple Pay) from your
+/// Flutter app. See [Airwallex] for the entry-point class.
+library;
+
 import 'dart:ui';
 
 import 'package:airwallex_payment_flutter/types/environment.dart';
@@ -12,6 +19,12 @@ import '/types/payment_sheet_configuration.dart';
 
 import 'airwallex_payment_flutter_platform_interface.dart';
 
+/// Entry point for the Airwallex payment SDK.
+///
+/// Call [Airwallex.initialize] once at app startup, then use instance
+/// methods such as [presentEntirePaymentFlow], [presentCardPaymentFlow],
+/// [payWithCardDetails], [startGooglePay], or [startApplePay] to drive
+/// individual payments.
 class Airwallex {
   /// Initializes the Airwallex SDK. Call this once at app startup before invoking any other payment method.
   ///

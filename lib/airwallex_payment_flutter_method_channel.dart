@@ -104,7 +104,7 @@ class MethodChannelAirwallexPaymentFlutter
     }
   }
 
-  PaymentResult parsePaymentResult(result) {
+  PaymentResult parsePaymentResult(Map<String, dynamic>? result) {
     if (result == null) {
       throw Exception('Result is null');
     }
