@@ -41,7 +41,8 @@ class GooglePayOptions {
   }) : allowedCardNetworks =
             allowedCardNetworks ?? googlePaySupportedNetworks();
 
-  factory GooglePayOptions.fromJson(Map<String, dynamic> json) => _$GooglePayOptionsFromJson(json);
+  factory GooglePayOptions.fromJson(Map<String, dynamic> json) =>
+      _$GooglePayOptionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$GooglePayOptionsToJson(this);
 }
@@ -57,7 +58,8 @@ class BillingAddressParameters {
     this.phoneNumberRequired = false,
   });
 
-  factory BillingAddressParameters.fromJson(Map<String, dynamic> json) => _$BillingAddressParametersFromJson(json);
+  factory BillingAddressParameters.fromJson(Map<String, dynamic> json) =>
+      _$BillingAddressParametersFromJson(json);
 
   Map<String, dynamic> toJson() => _$BillingAddressParametersToJson(this);
 }
@@ -82,7 +84,8 @@ class ShippingAddressParameters {
     this.phoneNumberRequired = false,
   });
 
-  factory ShippingAddressParameters.fromJson(Map<String, dynamic> json) => _$ShippingAddressParametersFromJson(json);
+  factory ShippingAddressParameters.fromJson(Map<String, dynamic> json) =>
+      _$ShippingAddressParametersFromJson(json);
 
   Map<String, dynamic> toJson() => _$ShippingAddressParametersToJson(this);
 }

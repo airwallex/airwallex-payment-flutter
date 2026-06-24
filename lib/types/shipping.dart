@@ -24,7 +24,8 @@ class Shipping {
     this.address,
   });
 
-  factory Shipping.fromJson(Map<String, dynamic> json) => _$ShippingFromJson(json);
+  factory Shipping.fromJson(Map<String, dynamic> json) =>
+      _$ShippingFromJson(json);
 
   Map<String, dynamic> toJson() => _$ShippingToJson(this);
 }
@@ -37,9 +38,11 @@ class ShippingAddress {
   String? postcode;
   String? state;
 
-  ShippingAddress({this.city, this.countryCode, this.street, this.postcode, this.state});
-  
-  factory ShippingAddress.fromJson(Map<String, dynamic> json) => _$ShippingAddressFromJson(json);
+  ShippingAddress(
+      {this.city, this.countryCode, this.street, this.postcode, this.state});
+
+  factory ShippingAddress.fromJson(Map<String, dynamic> json) =>
+      _$ShippingAddressFromJson(json);
 
   Map<String, dynamic> toJson() => _$ShippingAddressToJson(this);
 }

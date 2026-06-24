@@ -35,8 +35,8 @@ class MethodChannelAirwallexPaymentFlutter
     BaseSession session, {
     PaymentSheetConfiguration? configuration,
   }) async {
-    final result = await methodChannel.invokeMethod(
-        'presentEntirePaymentFlow', {
+    final result =
+        await methodChannel.invokeMethod('presentEntirePaymentFlow', {
       'session': session.toJson(),
       if (configuration != null) 'configuration': configuration.toJson(),
     });
@@ -104,7 +104,7 @@ class MethodChannelAirwallexPaymentFlutter
     }
   }
 
-  PaymentResult parsePaymentResult(result) {
+  PaymentResult parsePaymentResult(Map<String, dynamic>? result) {
     if (result == null) {
       throw Exception('Result is null');
     }

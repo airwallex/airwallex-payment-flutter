@@ -26,7 +26,8 @@ class ApplePayOptions {
     this.totalPriceLabel,
   });
 
-  factory ApplePayOptions.fromJson(Map<String, dynamic> json) => _$ApplePayOptionsFromJson(json);
+  factory ApplePayOptions.fromJson(Map<String, dynamic> json) =>
+      _$ApplePayOptionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$ApplePayOptionsToJson(this);
 }
@@ -73,7 +74,8 @@ class CartSummaryItem {
     this.type,
   });
 
-  factory CartSummaryItem.fromJson(Map<String, dynamic> json) => _$CartSummaryItemFromJson(json);
+  factory CartSummaryItem.fromJson(Map<String, dynamic> json) =>
+      _$CartSummaryItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$CartSummaryItemToJson(this);
 }

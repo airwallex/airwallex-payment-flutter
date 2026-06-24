@@ -12,8 +12,7 @@ abstract class PaymentResult {
 class PaymentSuccessResult extends PaymentResult {
   final String? paymentConsentId;
 
-  PaymentSuccessResult({this.paymentConsentId})
-      : super('success');
+  PaymentSuccessResult({this.paymentConsentId}) : super('success');
 }
 
 /// The payment has been submitted but its final outcome is not yet known.
