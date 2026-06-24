@@ -15,7 +15,7 @@ class AirwallexSdk: NSObject {
         } else {
             Airwallex.disableLocalLogFile()
         }
-        AnalyticsLogger.shared().bindExtraCommonData(["framework": "flutter", "frameworkVersion": "0.3.0"])
+        AnalyticsLogger.shared().bindExtraCommonData(["framework": "flutter", "frameworkVersion": "0.3.1"])
     }
     
     func presentEntirePaymentFlow(clientSecret: String, session: NSDictionary, configuration: NSDictionary?, result: @escaping FlutterResult) {

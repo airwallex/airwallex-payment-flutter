@@ -1,6 +1,6 @@
 name: airwallex_payment_flutter
 description: "Official Airwallex Flutter plugin for accepting payments on Android and iOS. Supports cards, Apple Pay, Google Pay, and major e-wallets."
-version: 0.3.0
+version: 0.3.1
 homepage: "https://www.airwallex.com/"
 
 environment:

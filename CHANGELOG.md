@@ -1,3 +1,7 @@
+## 0.3.1
+
+Improve pub.dev scoring by adding Dart formatting, related package quality fixes.
+
 ## 0.3.0
 
 # [0.3.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.2.0...0.3.0) (2026-06-16)
