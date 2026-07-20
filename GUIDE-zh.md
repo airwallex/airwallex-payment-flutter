@@ -38,7 +38,7 @@ Airwallex Flutter Plugin是一种灵活的工具，可让您将支付功能集�
 在 `pubspec.yaml`中添加以下依赖
 ```yaml
 dependencies:
-  airwallex_payment_flutter: ^0.3.1
+  airwallex_payment_flutter: ^0.3.2
 ```
 ### iOS
 插件同时支持 **CocoaPods**（默认）和 **Swift Package Manager**（推荐 Flutter 3.27+）。如需启用 SPM，请执行一次：

@@ -1,3 +1,7 @@
+## 0.3.2
+
+add maestro card support
+
 ## 0.3.1
 
 Improve pub.dev scoring by adding Dart formatting, related package quality fixes.
