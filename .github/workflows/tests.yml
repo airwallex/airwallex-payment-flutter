@@ -95,7 +95,7 @@ jobs:
           xcodebuild test \
             -workspace ios/Runner.xcworkspace \
             -scheme Runner \
-            -destination 'platform=iOS Simulator' \
+            -destination 'generic/platform=iOS Simulator' \
             -only-testing:RunnerTests \
             CODE_SIGNING_ALLOWED=NO
             
