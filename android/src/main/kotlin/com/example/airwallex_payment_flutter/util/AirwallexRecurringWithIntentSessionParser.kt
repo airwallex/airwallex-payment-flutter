@@ -19,6 +19,8 @@ object AirwallexRecurringWithIntentSessionParser {
 
         val currency = sessionObject.optString("currency")
         val countryCode = sessionObject.optString("countryCode")
+        val locale = sessionObject.toLocale()
+        // TODO: Pass locale to session builder once Android SDK supports it.
 
         val amount = BigDecimal(sessionObject.optDouble("amount", -1.0).takeIf { it != -1.0 }
             ?.toString() ?: error("amount is required"))

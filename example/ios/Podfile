@@ -32,6 +32,10 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_modular_headers!
 
+  # Override Airwallex iOS SDK to develop branch for local plugin development.
+  pod 'Airwallex', :git => 'https://github.com/airwallex/airwallex-payment-ios.git', :branch => 'develop'
+  pod 'Airwallex/AirwallexWeChatPay', :git => 'https://github.com/airwallex/airwallex-payment-ios.git', :branch => 'develop'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
     inherit! :search_paths

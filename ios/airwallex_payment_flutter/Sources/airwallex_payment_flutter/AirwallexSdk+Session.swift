@@ -88,6 +88,9 @@ private extension AWXSession {
             }
         }
         countryCode = params["countryCode"] as! String
+        if let lang = params["lang"] as? String {
+            self.lang = lang
+        }
         if let returnUrl = params["returnUrl"] as? String {
             self.returnURL = returnUrl
         }

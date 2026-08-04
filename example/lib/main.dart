@@ -165,19 +165,51 @@ class MyHomePageState extends State<MyHomePage> {
     await prefs.setString('clientId', clientId);
   }
 
+  Future<void> _restartApp() async {
+    final RestartResult result;
+
+    if (Platform.isIOS) {
+      // iOS has no public API for automatic full process restart. Use the
+      // notification fallback to exit and let the user cold-launch the app,
+      // which resets native SDK state such as Airwallex.initialize().
+      result = await Restart.restartApp(
+        mode: RestartMode.notificationFallback,
+        notificationTitle: 'Restart Required',
+        notificationBody: 'Tap to reopen the app with the new environment.',
+      );
+    } else {
+      result = await Restart.restartApp(
+        mode: RestartMode.process,
+      );
+    }
+
+    if (!result.success && mounted) {
+      _showDialog(
+        'Restart Failed',
+        result.message ?? result.code ?? 'Unable to restart the app.',
+      );
+    }
+  }
+
   void _showRestartDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Restart Required'),
-          content: const Text(
-              'The app needs to restart for the new environment to take effect.'),
+          content: Text(
+            Platform.isIOS
+                ? 'The app will close. Tap the notification to reopen with the new environment.'
+                : 'The app needs to restart for the new environment to take effect.',
+          ),
           actions: [
             TextButton(
               child: const Text('OK'),
-              onPressed: () => Restart.restartApp(forceKill: true),
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+                await _restartApp();
+              },
             ),
           ],
         );

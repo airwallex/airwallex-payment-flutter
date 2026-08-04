@@ -29,6 +29,7 @@ class SessionCreator {
       isBillingRequired: true,
       isEmailRequired: false,
       countryCode: 'HK',
+      lang: 'zh-Hant',
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(

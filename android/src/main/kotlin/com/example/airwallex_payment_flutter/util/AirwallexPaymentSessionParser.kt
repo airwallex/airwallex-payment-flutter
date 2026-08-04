@@ -25,6 +25,8 @@ object AirwallexPaymentSessionParser {
             ?.toString() ?: error("amount is required"))
         val currency = sessionObject.optString("currency")
         val countryCode = sessionObject.optString("countryCode")
+        val locale = sessionObject.toLocale()
+        // TODO: Pass locale to session builder once Android SDK supports it.
 
         val paymentIntentId = sessionObject.optString("paymentIntentId")
 
