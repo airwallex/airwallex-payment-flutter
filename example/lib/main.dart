@@ -17,6 +17,7 @@ import 'api/payment_repository.dart';
 import 'ui/credentials_dialog.dart';
 import 'util/card_creator.dart';
 import 'util/session_creator.dart';
+import 'util/supported_languages.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,6 +54,7 @@ class MyHomePageState extends State<MyHomePage> {
   bool saveCard = false;
   bool isLoading = false;
   String selectedOption = 'one off';
+  String selectedLang = nullLangOption;
   //for demo or staging environment, you can set your own api key and client id,
   // if you don't, We will use the default value
   String apiKey = '';
@@ -107,24 +109,32 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<BaseSession> _createSession({String? customerId}) async {
+    final lang = selectedLang == nullLangOption ? null : selectedLang;
     switch (selectedOption) {
       case 'one off':
         final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
-        return SessionCreator.createOneOffSession(paymentIntent);
+        return SessionCreator.createOneOffSession(paymentIntent, lang: lang);
       case 'recurring':
         final customerId = await paymentRepository.getCustomerId();
         this.customerId = customerId;
         final clientSecret =
             await paymentRepository.getClientSecret(customerId);
-        return SessionCreator.createRecurringSession(clientSecret, customerId);
+        return SessionCreator.createRecurringSession(
+          clientSecret,
+          customerId,
+          lang: lang,
+        );
       default: //'recurring and payment':
         final customerId = await paymentRepository.getCustomerId();
         this.customerId = customerId;
         final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
         return SessionCreator.createRecurringWithIntentSession(
-            paymentIntent, customerId);
+          paymentIntent,
+          customerId,
+          lang: lang,
+        );
     }
   }
 
@@ -277,23 +287,45 @@ class MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                DropdownButton<String>(
-                  value: selectedOption,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedOption = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'one off',
-                    'recurring',
-                    'recurring and payment'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DropdownButton<String>(
+                      value: selectedOption,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedOption = newValue!;
+                        });
+                      },
+                      items: <String>[
+                        'one off',
+                        'recurring',
+                        'recurring and payment'
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(width: 16),
+                    DropdownButton<String>(
+                      value: selectedLang,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedLang = newValue!;
+                        });
+                      },
+                      items: supportedLangOptions
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(

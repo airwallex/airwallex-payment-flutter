@@ -6,7 +6,10 @@ import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
 import 'package:airwallex_payment_flutter/types/apple_pay_options.dart';
 
 class SessionCreator {
-  static BaseSession createOneOffSession(Map<String, dynamic> paymentIntent) {
+  static BaseSession createOneOffSession(
+    Map<String, dynamic> paymentIntent, {
+    String? lang,
+  }) {
     final String paymentIntentId = paymentIntent['id'];
     final String clientSecret = paymentIntent['client_secret'];
     final amountValue = paymentIntent['amount'];
@@ -29,7 +32,7 @@ class SessionCreator {
       isBillingRequired: true,
       isEmailRequired: false,
       countryCode: 'HK',
-      lang: 'zh-Hant',
+      lang: lang,
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
@@ -44,7 +47,10 @@ class SessionCreator {
   }
 
   static BaseSession createRecurringSession(
-      String clientSecret, String customerId) {
+    String clientSecret,
+    String customerId, {
+    String? lang,
+  }) {
     print('clientSecret: $clientSecret\n'
         'customerId: $customerId');
 
@@ -57,6 +63,7 @@ class SessionCreator {
       amount: 1.00,
       currency: 'HKD',
       countryCode: 'HK',
+      lang: lang,
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
@@ -70,7 +77,10 @@ class SessionCreator {
   }
 
   static BaseSession createRecurringWithIntentSession(
-      Map<String, dynamic> paymentIntent, String customerId) {
+    Map<String, dynamic> paymentIntent,
+    String customerId, {
+    String? lang,
+  }) {
     final String paymentIntentId = paymentIntent['id'];
     final String clientSecret = paymentIntent['client_secret'];
     final double amount = (paymentIntent['amount'] as int).toDouble();
@@ -87,6 +97,7 @@ class SessionCreator {
       clientSecret: clientSecret,
       currency: currency,
       countryCode: 'HK',
+      lang: lang,
       amount: amount,
       paymentIntentId: paymentIntentId,
       shipping: createShipping(),
