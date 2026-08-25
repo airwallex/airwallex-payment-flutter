@@ -1,13 +1,15 @@
+import 'package:airwallex_payment_flutter/types/apple_pay_options.dart';
+import 'package:airwallex_payment_flutter/types/environment.dart';
+import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
+import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
+import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
 import 'package:airwallex_payment_flutter/types/payment_session.dart';
 import 'package:airwallex_payment_flutter/types/shipping.dart';
-import 'package:airwallex_payment_flutter/types/google_pay_options.dart';
-import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
-import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
-import 'package:airwallex_payment_flutter/types/apple_pay_options.dart';
 
 class SessionCreator {
   static BaseSession createOneOffSession(
     Map<String, dynamic> paymentIntent, {
+    required Environment environment,
     String? lang,
   }) {
     final String paymentIntentId = paymentIntent['id'];
@@ -39,7 +41,7 @@ class SessionCreator {
         billingAddressRequired: true,
         billingAddressParameters: BillingAddressParameters(format: Format.full),
       ),
-      applePayOptions: createApplePayOptions(),
+      applePayOptions: createApplePayOptions(environment),
       // paymentMethods: ['card'],
       autoCapture: true,
       hidePaymentConsents: false,
@@ -49,6 +51,7 @@ class SessionCreator {
   static BaseSession createRecurringSession(
     String clientSecret,
     String customerId, {
+    required Environment environment,
     String? lang,
   }) {
     print('clientSecret: $clientSecret\n'
@@ -70,7 +73,7 @@ class SessionCreator {
         billingAddressRequired: true,
         billingAddressParameters: BillingAddressParameters(format: Format.full),
       ),
-      applePayOptions: createApplePayOptions(),
+      applePayOptions: createApplePayOptions(environment),
       nextTriggeredBy: NextTriggeredBy.customer,
       merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
@@ -79,6 +82,7 @@ class SessionCreator {
   static BaseSession createRecurringWithIntentSession(
     Map<String, dynamic> paymentIntent,
     String customerId, {
+    required Environment environment,
     String? lang,
   }) {
     final String paymentIntentId = paymentIntent['id'];
@@ -109,15 +113,15 @@ class SessionCreator {
         billingAddressRequired: true,
         billingAddressParameters: BillingAddressParameters(format: Format.full),
       ),
-      applePayOptions: createApplePayOptions(),
+      applePayOptions: createApplePayOptions(environment),
       nextTriggeredBy: NextTriggeredBy.merchant,
       merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
   }
 
-  static ApplePayOptions createApplePayOptions() {
+  static ApplePayOptions createApplePayOptions(Environment environment) {
     return ApplePayOptions(
-      merchantIdentifier: 'merchant.com.airwallex.paymentacceptance',
+      merchantIdentifier: _applePayMerchantIdentifier(environment),
       supportedNetworks: [ApplePaySupportedNetwork.visa, ApplePaySupportedNetwork.masterCard, ApplePaySupportedNetwork.unionPay],
       additionalPaymentSummaryItems: [CartSummaryItem(label: "goods", amount: 2, type: CartSummaryItemType.pendingType), CartSummaryItem(label: "tax", amount: 1)],
       merchantCapabilities: [ApplePayMerchantCapability.supports3DS, ApplePayMerchantCapability.supportsCredit, ApplePayMerchantCapability.supportsDebit],
@@ -125,6 +129,20 @@ class SessionCreator {
       supportedCountries: ['HK', 'US', 'AU'],
       totalPriceLabel: "COMPANY, INC.",
     );
+  }
+
+  /// Must match a merchant ID in `example/ios/Runner/Runner.entitlements`.
+  static String _applePayMerchantIdentifier(Environment environment) {
+    switch (environment) {
+      case Environment.demo:
+        return 'merchant.demo.com.airwallex.paymentacceptance';
+      case Environment.staging:
+        return 'merchant.staging.com.airwallex.paymentacceptance';
+      case Environment.preview:
+        return 'merchant.sandbox.com.airwallex.paymentacceptance';
+      case Environment.production:
+        return 'merchant.prod.com.airwallex.paymentacceptance';
+    }
   }
 
   static Shipping createShipping() {
