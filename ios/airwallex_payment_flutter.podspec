@@ -3,7 +3,7 @@
 # Run `pod lib lint airwallex_payment_flutter.podspec` to validate before publishing.
 #
 
-airwallex_version = '~> 6.6.0'
+airwallex_version = '~> 6.7.0'
 
 Pod::Spec.new do |s|
   s.name             = 'airwallex_payment_flutter'
