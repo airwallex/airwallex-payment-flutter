@@ -64,7 +64,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    environmentOptions = ['demo', 'staging', 'preview', 'production'];
+    environmentOptions = ['demo', 'staging', 'production'];
     assert(() {
       environmentOptions = ['demo', 'staging', 'preview'];
       return true;
@@ -114,11 +114,7 @@ class MyHomePageState extends State<MyHomePage> {
       case 'one off':
         final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
-        return SessionCreator.createOneOffSession(
-          paymentIntent,
-          environment: environment,
-          lang: lang,
-        );
+        return SessionCreator.createOneOffSession(paymentIntent, lang: lang);
       case 'recurring':
         final customerId = await paymentRepository.getCustomerId();
         this.customerId = customerId;
@@ -127,7 +123,6 @@ class MyHomePageState extends State<MyHomePage> {
         return SessionCreator.createRecurringSession(
           clientSecret,
           customerId,
-          environment: environment,
           lang: lang,
         );
       default: //'recurring and payment':
@@ -138,7 +133,6 @@ class MyHomePageState extends State<MyHomePage> {
         return SessionCreator.createRecurringWithIntentSession(
           paymentIntent,
           customerId,
-          environment: environment,
           lang: lang,
         );
     }
