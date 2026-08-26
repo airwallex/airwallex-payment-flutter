@@ -25,6 +25,7 @@ object AirwallexPaymentSessionParser {
             ?.toString() ?: error("amount is required"))
         val currency = sessionObject.optString("currency")
         val countryCode = sessionObject.optString("countryCode")
+        val locale = sessionObject.toLocale()
 
         val paymentIntentId = sessionObject.optString("paymentIntentId")
 
@@ -54,6 +55,7 @@ object AirwallexPaymentSessionParser {
             .setHidePaymentConsents(hidePaymentConsents)
             .setPaymentMethods(paymentMethods)
             .setShipping(shipping)
+            .setLocale(locale)
             .build()
     }
 

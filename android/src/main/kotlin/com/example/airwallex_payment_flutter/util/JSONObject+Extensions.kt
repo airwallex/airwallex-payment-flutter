@@ -8,6 +8,7 @@ import com.airwallex.android.core.model.Address
 import com.airwallex.android.core.model.PaymentConsent
 import com.airwallex.android.core.model.Shipping
 import org.json.JSONObject
+import java.util.Locale
 
 fun JSONObject.getNullableString(key: String): String? {
     return if (has(key) && !isNull(key)) getString(key) else null
@@ -15,6 +16,10 @@ fun JSONObject.getNullableString(key: String): String? {
 
 fun JSONObject.getNullableBoolean(key: String): Boolean? {
     return if (has(key) && !isNull(key)) getBoolean(key) else null
+}
+
+fun JSONObject.toLocale(): Locale? {
+    return getNullableString("lang")?.let { Locale.forLanguageTag(it.replace('_', '-')) }
 }
 
 fun JSONObject.toNextTriggeredBy(): PaymentConsent.NextTriggeredBy? {

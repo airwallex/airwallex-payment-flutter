@@ -17,6 +17,7 @@ import 'api/payment_repository.dart';
 import 'ui/credentials_dialog.dart';
 import 'util/card_creator.dart';
 import 'util/session_creator.dart';
+import 'util/supported_languages.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,6 +54,7 @@ class MyHomePageState extends State<MyHomePage> {
   bool saveCard = false;
   bool isLoading = false;
   String selectedOption = 'one off';
+  String selectedLang = defaultLangOption;
   //for demo or staging environment, you can set your own api key and client id,
   // if you don't, We will use the default value
   String apiKey = '';
@@ -111,20 +113,27 @@ class MyHomePageState extends State<MyHomePage> {
       case 'one off':
         final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
-        return SessionCreator.createOneOffSession(paymentIntent);
+        return SessionCreator.createOneOffSession(paymentIntent, lang: selectedLang);
       case 'recurring':
         final customerId = await paymentRepository.getCustomerId();
         this.customerId = customerId;
         final clientSecret =
             await paymentRepository.getClientSecret(customerId);
-        return SessionCreator.createRecurringSession(clientSecret, customerId);
+        return SessionCreator.createRecurringSession(
+          clientSecret,
+          customerId,
+          lang: selectedLang,
+        );
       default: //'recurring and payment':
         final customerId = await paymentRepository.getCustomerId();
         this.customerId = customerId;
         final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
         return SessionCreator.createRecurringWithIntentSession(
-            paymentIntent, customerId);
+          paymentIntent,
+          customerId,
+          lang: selectedLang,
+        );
     }
   }
 
@@ -165,19 +174,51 @@ class MyHomePageState extends State<MyHomePage> {
     await prefs.setString('clientId', clientId);
   }
 
+  Future<void> _restartApp() async {
+    final RestartResult result;
+
+    if (Platform.isIOS) {
+      // iOS has no public API for automatic full process restart. Use the
+      // notification fallback to exit and let the user cold-launch the app,
+      // which resets native SDK state such as Airwallex.initialize().
+      result = await Restart.restartApp(
+        mode: RestartMode.notificationFallback,
+        notificationTitle: 'Restart Required',
+        notificationBody: 'Tap to reopen the app with the new environment.',
+      );
+    } else {
+      result = await Restart.restartApp(
+        mode: RestartMode.process,
+      );
+    }
+
+    if (!result.success && mounted) {
+      _showDialog(
+        'Restart Failed',
+        result.message ?? result.code ?? 'Unable to restart the app.',
+      );
+    }
+  }
+
   void _showRestartDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Restart Required'),
-          content: const Text(
-              'The app needs to restart for the new environment to take effect.'),
+          content: Text(
+            Platform.isIOS
+                ? 'The app will close. Tap the notification to reopen with the new environment.'
+                : 'The app needs to restart for the new environment to take effect.',
+          ),
           actions: [
             TextButton(
               child: const Text('OK'),
-              onPressed: () => Restart.restartApp(forceKill: true),
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+                await _restartApp();
+              },
             ),
           ],
         );
@@ -245,23 +286,46 @@ class MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                DropdownButton<String>(
-                  value: selectedOption,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedOption = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'one off',
-                    'recurring',
-                    'recurring and payment'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    DropdownButton<String>(
+                      value: selectedOption,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedOption = newValue!;
+                        });
+                      },
+                      items: <String>[
+                        'one off',
+                        'recurring',
+                        'recurring and payment'
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(width: 16),
+                    DropdownButton<String>(
+                      value: selectedLang,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedLang = newValue!;
+                        });
+                      },
+                      items: supportedLangOptions
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text('lang: $value'),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(

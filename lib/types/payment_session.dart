@@ -24,6 +24,7 @@ abstract class BaseSession {
   bool? isEmailRequired;
   String currency;
   String countryCode;
+  String? lang;
   double amount;
   String? returnUrl;
   GooglePayOptions? googlePayOptions;
@@ -39,6 +40,7 @@ abstract class BaseSession {
     this.isEmailRequired,
     required this.currency,
     required this.countryCode,
+    this.lang,
     required this.amount,
     this.returnUrl,
     this.googlePayOptions,
@@ -65,6 +67,7 @@ class OneOffSession extends BaseSession {
     super.isEmailRequired,
     required super.currency,
     required super.countryCode,
+    super.lang,
     required super.amount,
     super.returnUrl,
     super.googlePayOptions,
@@ -94,6 +97,7 @@ class RecurringSession extends BaseSession {
     super.isEmailRequired,
     required super.currency,
     required super.countryCode,
+    super.lang,
     required super.amount,
     super.returnUrl,
     super.googlePayOptions,
@@ -124,6 +128,7 @@ class RecurringWithIntentSession extends BaseSession {
     super.isEmailRequired,
     required super.currency,
     required super.countryCode,
+    super.lang,
     required super.amount,
     super.returnUrl,
     super.googlePayOptions,

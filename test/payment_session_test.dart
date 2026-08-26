@@ -24,6 +24,19 @@ void main() {
       expect(json['hidePaymentConsents'], isFalse);
       expect(json['type'], equals('OneOff'));
     });
+
+    test('toJson includes lang when provided', () {
+      final session = OneOffSession(
+        clientSecret: 'testSecret',
+        currency: 'HKD',
+        countryCode: 'HK',
+        lang: 'zh-Hans',
+        amount: 50.00,
+        paymentIntentId: 'intent123',
+      );
+
+      expect(session.toJson()['lang'], equals('zh-Hans'));
+    });
   });
 
   group('RecurringSession', () {
