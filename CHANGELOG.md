@@ -1,3 +1,16 @@
+## 0.4.0
+
+# [0.4.0](https://github.com/airwallex/airwallex-payment-flutter/compare/0.3.2...0.4.0) (2026-08-26)
+
+
+### Features
+
+* [APAM-877] Add lang to payment sessions for UI locale ([#81](https://github.com/airwallex/airwallex-payment-flutter/issues/81)) ([dcac506](https://github.com/airwallex/airwallex-payment-flutter/commit/dcac50697e3d52ff6cad559b9b17463529e3c8fb))
+
+
+
+
+
 ## 0.3.2
 
 add maestro card support
