@@ -54,7 +54,7 @@ class MyHomePageState extends State<MyHomePage> {
   bool saveCard = false;
   bool isLoading = false;
   String selectedOption = 'one off';
-  String selectedLang = nullLangOption;
+  String selectedLang = defaultLangOption;
   //for demo or staging environment, you can set your own api key and client id,
   // if you don't, We will use the default value
   String apiKey = '';
@@ -109,12 +109,11 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<BaseSession> _createSession({String? customerId}) async {
-    final lang = selectedLang == nullLangOption ? null : selectedLang;
     switch (selectedOption) {
       case 'one off':
         final paymentIntent = await paymentRepository
             .getPaymentIntentFromServer(false, customerId);
-        return SessionCreator.createOneOffSession(paymentIntent, lang: lang);
+        return SessionCreator.createOneOffSession(paymentIntent, lang: selectedLang);
       case 'recurring':
         final customerId = await paymentRepository.getCustomerId();
         this.customerId = customerId;
@@ -123,7 +122,7 @@ class MyHomePageState extends State<MyHomePage> {
         return SessionCreator.createRecurringSession(
           clientSecret,
           customerId,
-          lang: lang,
+          lang: selectedLang,
         );
       default: //'recurring and payment':
         final customerId = await paymentRepository.getCustomerId();
@@ -133,7 +132,7 @@ class MyHomePageState extends State<MyHomePage> {
         return SessionCreator.createRecurringWithIntentSession(
           paymentIntent,
           customerId,
-          lang: lang,
+          lang: selectedLang,
         );
     }
   }
@@ -290,6 +289,7 @@ class MyHomePageState extends State<MyHomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     DropdownButton<String>(
                       value: selectedOption,
@@ -321,7 +321,7 @@ class MyHomePageState extends State<MyHomePage> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text('lang: $value'),
                         );
                       }).toList(),
                     ),

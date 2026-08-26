@@ -5,6 +5,8 @@ import 'package:airwallex_payment_flutter/types/next_triggered_by.dart';
 import 'package:airwallex_payment_flutter/types/merchant_trigger_reason.dart';
 import 'package:airwallex_payment_flutter/types/apple_pay_options.dart';
 
+import 'supported_languages.dart';
+
 class SessionCreator {
   static BaseSession createOneOffSession(
     Map<String, dynamic> paymentIntent, {
@@ -32,7 +34,7 @@ class SessionCreator {
       isBillingRequired: true,
       isEmailRequired: false,
       countryCode: 'HK',
-      lang: lang,
+      lang: _sessionLang(lang),
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
@@ -63,7 +65,7 @@ class SessionCreator {
       amount: 1.00,
       currency: 'HKD',
       countryCode: 'HK',
-      lang: lang,
+      lang: _sessionLang(lang),
       returnUrl:
           'airwallexcheckout://com.example.airwallex_payment_flutter_example',
       googlePayOptions: GooglePayOptions(
@@ -97,7 +99,7 @@ class SessionCreator {
       clientSecret: clientSecret,
       currency: currency,
       countryCode: 'HK',
-      lang: lang,
+      lang: _sessionLang(lang),
       amount: amount,
       paymentIntentId: paymentIntentId,
       shipping: createShipping(),
@@ -113,6 +115,13 @@ class SessionCreator {
       nextTriggeredBy: NextTriggeredBy.merchant,
       merchantTriggerReason: MerchantTriggerReason.scheduled,
     );
+  }
+
+  static String? _sessionLang(String? lang) {
+    if (lang == null || lang == defaultLangOption) {
+      return null;
+    }
+    return lang;
   }
 
   static ApplePayOptions createApplePayOptions() {
