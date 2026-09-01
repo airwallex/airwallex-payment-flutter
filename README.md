@@ -1,38 +1,62 @@
 # Airwallex Flutter Plugin
 [![Platform](https://img.shields.io/badge/platform-flutter-darkgreen)](https://flutter.dev/)
-[![Flutter version: 3.24.3](https://img.shields.io/badge/flutter-3.24.3-brightgreen)](https://medium.com/flutter/flutter-3-24-dart-3-5-204b7d20c45d)
+[![Flutter version: 3.24.3](https://img.shields.io/badge/flutter-%3E%3D3.24.3-brightgreen)](https://docs.flutter.dev/)
+[![pub package](https://img.shields.io/pub/v/airwallex_payment_flutter.svg)](https://pub.dev/packages/airwallex_payment_flutter)
 [![GitHub release](https://img.shields.io/github/v/release/airwallex/airwallex-payment-flutter)](https://github.com/airwallex/airwallex-payment-flutter/releases)
 [![license: BSD 3-Clause](https://img.shields.io/badge/license-BSD%203--Clause-lightblue)](https://github.com/airwallex/airwallex-payment-flutter/blob/main/LICENSE)
 
 EN | [中文](README-zh.md)
 
-This library makes it quick and easy to build an excellent payment experience in your Flutter application.
-Currently, this library supports both Android and iOS platforms.
-Payment methods supported:
-- Cards: `Visa`, `Mastercard`, `Amex`, `Dinners Club`, `JCB`, `Discover`, `Union Pay`. If you want to integrate Airwallex API without our Native UI for card payments, then your app is required to be PCI-DSS compliant. 
-- E-Wallets: `Alipay`, `AlipayHK`, `DANA`, `GCash`, `Kakao Pay`, `Touch ‘n Go`, `WeChat Pay`, etc.
-- Apple Pay
-- Google Pay
+Official Airwallex plugin for accepting payments in Flutter apps on **Android** and **iOS**. Use the pre-built native checkout UI, or call lower-level APIs with your own screens.
 
-Localizations supported:
-English, Chinese Simplified, Chinese Traditional, French, German, Japanese, Korean, Portuguese Portugal, Portuguese Brazil, Russian, Spanish, Thai.
+**Requirements:** Dart ^3.5.3, Flutter >= 3.24.3, iOS 13.0+
+
+### Payment methods
+- **Cards:** Visa, Mastercard, Amex, Diners Club, JCB, Discover, UnionPay, Maestro. Integrating card payments without the native UI requires your app to be PCI-DSS compliant.
+- **E-wallets:** Alipay, AlipayHK, DANA, GCash, Kakao Pay, Touch 'n Go, WeChat Pay, and others.
+- **Apple Pay** (iOS)
+- **Google Pay** (Android)
+
+### Localizations
+English, Chinese Simplified, Chinese Traditional, French, German, Japanese, Korean, Portuguese (Portugal), Portuguese (Brazil), Russian, Spanish, Thai.
 
 ## Installation
-The Components are available through [pub.dev](https://pub.dev/packages/airwallex_payment_flutter), you only need to add the dependency.
 
-Add the dependency in`pubspec.yaml`
+Add the dependency in `pubspec.yaml`:
+
 ```yaml
 dependencies:
-    airwallex_payment_flutter: 0.4.0
+  airwallex_payment_flutter: ^0.4.0
 ```
 
-On iOS, the plugin supports both **CocoaPods** (default) and **Swift Package Manager**. To use SPM, enable it once for your Flutter installation:
+Then run `flutter pub get`.
+
+On iOS, the plugin supports **CocoaPods** (default) and **Swift Package Manager**. To use SPM, enable it once for your Flutter installation:
+
 ```bash
 flutter config --enable-swift-package-manager
 ```
 
-## Getting Start
-[Quick Start](GUIDE.md) for integrating Airwallex Flutter Plugin in your Flutter application.
+On Android, `MainActivity` must extend `FlutterFragmentActivity` (not `FlutterActivity`). See the [Quick Start](GUIDE.md#android) for ProGuard notes and other platform setup.
+
+## Getting started
+
+1. Initialize the SDK once at app startup.
+2. Create a payment intent on your server, then build a session in Flutter.
+3. Present the native payment flow (or call a low-level API).
+
+```dart
+import 'package:airwallex_payment_flutter/airwallex.dart';
+import 'package:airwallex_payment_flutter/types/environment.dart';
+
+Airwallex.initialize(environment: Environment.demo);
+
+final result = await Airwallex().presentEntirePaymentFlow(session);
+```
+
+Full integration steps, session types, return URLs, Apple Pay / Google Pay, and theming: **[Quick Start](GUIDE.md)**.
+
+A working sample is in [`example/`](example/).
 
 ## Screenshots
 <p align="left">
@@ -46,11 +70,10 @@ flutter config --enable-swift-package-manager
 </p>
 
 ## Feedback
-We appreciate the time you take to try out our sample code and welcome your feedback. Here are a few ways to get in touch:
 
-* For general issues and feedback, please create an issue in this repository [`Issues`](https://github.com/airwallex/airwallex-payment-flutter/issues).
-* [pa_mobile_sdk@airwallex.com](mailto:pa_mobile_sdk@airwallex.com)- For personal support at any phase of integration.
+- General issues and feedback: open a GitHub [Issue](https://github.com/airwallex/airwallex-payment-flutter/issues).
+- Integration support: [pa_mobile_sdk@airwallex.com](mailto:pa_mobile_sdk@airwallex.com)
 
 ## Changelog
-All notable changes to this project will be documented in [Changelog](CHANGELOG.md).
 
+See [CHANGELOG.md](CHANGELOG.md).
